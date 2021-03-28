@@ -1,9 +1,9 @@
-name: sk69
+name: skirt
 authors:
   - Mrs Darth
-description: i like sk69
+description: i like skirts
 version: 1.0.0
-main: io.github.mrsdarth.sk69.Main
+main: io.github.mrsdarth.skirt.Main
 depend:
   - Skript
 api-version: 1.16
