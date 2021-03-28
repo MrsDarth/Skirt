@@ -16,7 +16,7 @@ public class Main extends JavaPlugin {
         instance = this;
         addon = Skript.registerAddon(this);
         try {
-            addon.loadClasses("io.github.mrsdarth.sk69", "elements");
+            addon.loadClasses("io.github.mrsdarth.skirt", "elements");
         } catch (IOException e) {
             e.printStackTrace();
         }
