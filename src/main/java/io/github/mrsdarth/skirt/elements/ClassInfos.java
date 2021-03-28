@@ -1,4 +1,4 @@
-package io.github.mrsdarth.sk69.elements;
+package io.github.mrsdarth.skirt.elements;
 
 import ch.njol.skript.classes.ClassInfo;
 import ch.njol.skript.classes.Parser;

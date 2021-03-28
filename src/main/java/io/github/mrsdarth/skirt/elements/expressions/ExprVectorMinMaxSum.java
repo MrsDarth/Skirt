@@ -1,4 +1,4 @@
-package io.github.mrsdarth.sk69.elements.expressions;
+package io.github.mrsdarth.skirt.elements.expressions;
 
 import ch.njol.skript.Skript;
 import ch.njol.skript.lang.ExpressionType;
@@ -13,10 +13,10 @@ import org.bukkit.util.Vector;
 import org.jetbrains.annotations.Nullable;
 
 
-public class ExprVectorMaxMin extends SimpleExpression<Vector> {
+public class ExprVectorMinMaxSum extends SimpleExpression<Vector> {
 
     static {
-        Skript.registerExpression(ExprVectorMaxMin.class, Vector.class, ExpressionType.COMBINED,
+        Skript.registerExpression(ExprVectorMinMaxSum.class, Vector.class, ExpressionType.COMBINED,
                 "(1¦max|2¦min)[imum] of vec[tor][s] %vectors%",
                 "sum of [vector[s]] %vectors%");
     }

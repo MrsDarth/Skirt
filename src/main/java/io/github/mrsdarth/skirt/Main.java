@@ -1,4 +1,4 @@
-package io.github.mrsdarth.sk69;
+package io.github.mrsdarth.skirt;
 
 import java.io.IOException;
 

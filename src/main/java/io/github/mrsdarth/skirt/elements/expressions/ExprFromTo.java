@@ -1,4 +1,4 @@
-package io.github.mrsdarth.sk69.elements.expressions;
+package io.github.mrsdarth.skirt.elements.expressions;
 
 
 import org.bukkit.event.Event;

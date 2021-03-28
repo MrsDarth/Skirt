@@ -1,4 +1,4 @@
-package io.github.mrsdarth.sk69.elements.conditions;
+package io.github.mrsdarth.skirt.elements.conditions;
 
 
 import org.bukkit.event.Event;

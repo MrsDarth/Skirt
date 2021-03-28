@@ -1,4 +1,4 @@
-package io.github.mrsdarth.sk69.elements.expressions;
+package io.github.mrsdarth.skirt.elements.expressions;
 
 import ch.njol.skript.Skript;
 import ch.njol.skript.lang.ExpressionType;
@@ -20,7 +20,7 @@ public class ExprBoundingBoxPoints extends SimpleExpression<Vector> {
     static {
         Skript.registerExpression(ExprBoundingBoxPoints.class, Vector.class, ExpressionType.SIMPLE,
                 "cent(er|re) [vector] of %boundingboxes%",
-                "(1¦upper|2¦lower) corner of %boundingboxes%");
+                "(1¦upper|2¦lower) (corner|vector) of %boundingboxes%");
     }
 
 

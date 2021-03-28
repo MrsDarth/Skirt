@@ -1,4 +1,4 @@
-package io.github.mrsdarth.sk69.elements.expressions;
+package io.github.mrsdarth.skirt.elements.expressions;
 
 import ch.njol.skript.Skript;
 import ch.njol.skript.lang.Expression;
@@ -17,10 +17,10 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 
-public class ExprVecToDir extends SimpleExpression<Object> {
+public class ExprVecFromDir extends SimpleExpression<Object> {
 
     static {
-        Skript.registerExpression(ExprVecToDir.class, Object.class, ExpressionType.SIMPLE,
+        Skript.registerExpression(ExprVecFromDir.class, Object.class, ExpressionType.SIMPLE,
                 "vector[s] (of|from) dir[ection][s] %directions%"
         );
     }

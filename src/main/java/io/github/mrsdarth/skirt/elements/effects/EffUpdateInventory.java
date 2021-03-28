@@ -1,4 +1,4 @@
-package io.github.mrsdarth.sk69.elements.effects;
+package io.github.mrsdarth.skirt.elements.effects;
 
 import ch.njol.skript.Skript;
 import ch.njol.skript.lang.Effect;

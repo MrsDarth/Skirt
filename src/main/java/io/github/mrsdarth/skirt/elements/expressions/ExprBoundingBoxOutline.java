@@ -1,4 +1,4 @@
-package io.github.mrsdarth.sk69.elements.expressions;
+package io.github.mrsdarth.skirt.elements.expressions;
 
 import ch.njol.skript.Skript;
 import ch.njol.skript.lang.ExpressionType;

@@ -1,4 +1,4 @@
-package io.github.mrsdarth.sk69.elements.events;
+package io.github.mrsdarth.skirt.elements.events;
 
 import org.bukkit.event.Event;
 import org.bukkit.event.player.PlayerMoveEvent;

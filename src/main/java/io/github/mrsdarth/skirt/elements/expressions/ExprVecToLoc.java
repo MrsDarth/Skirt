@@ -1,4 +1,4 @@
-package io.github.mrsdarth.sk69.elements.expressions;
+package io.github.mrsdarth.skirt.elements.expressions;
 
 import ch.njol.skript.Skript;
 import ch.njol.skript.lang.ExpressionType;
@@ -21,8 +21,8 @@ public class ExprVecToLoc extends SimpleExpression<Location> {
 
     static {
         Skript.registerExpression(ExprVecToLoc.class, Location.class, ExpressionType.COMBINED,
-                "%vectors% as location[s][ in %world%]",
-                "[new] (zero|0|empty) location[ in %worlds%]");
+                "%vectors% as location[s][ in %world%]"/*,
+                "[new] (zero|0|empty) location[ in %worlds%]"*/);
     }
 
     private Expression<Vector> vecs;
