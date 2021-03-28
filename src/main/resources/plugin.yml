@@ -1,0 +1,9 @@
+name: sk69
+authors:
+  - Mrs Darth
+description: i like sk69
+version: 1.0.0
+main: io.github.mrsdarth.sk69.Main
+depend:
+  - Skript
+api-version: 1.16
