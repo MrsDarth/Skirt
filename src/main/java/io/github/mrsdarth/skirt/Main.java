@@ -20,7 +20,7 @@ public class Main extends JavaPlugin {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        System.out.println("§d§lSkirt!");
+        System.out.println("Skirt!");
     }
 
     public Main getInstance() {
