@@ -1,7 +1,7 @@
-name: skirt
+name: Skirt
 authors:
   - Mrs Darth
-description: i like skirts
+description: I like skirt
 version: 1.0.0
 main: io.github.mrsdarth.skirt.Main
 depend:
