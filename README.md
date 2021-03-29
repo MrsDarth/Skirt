@@ -1,5 +1,5 @@
 # Skirt
-Skript addon that comes with bounding boxes, ray trace and some more stuff.
+Skirt
 
 ### Requires
 * [Paper](https://papermc.io) or [Spigot](https://www.spigotmc.org)
