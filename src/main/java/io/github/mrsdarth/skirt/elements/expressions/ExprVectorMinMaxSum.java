@@ -12,6 +12,17 @@ import org.bukkit.util.Vector;
 
 import org.jetbrains.annotations.Nullable;
 
+import ch.njol.skript.doc.Name;
+import ch.njol.skript.doc.Description;
+import ch.njol.skript.doc.Examples;
+import ch.njol.skript.doc.Since;
+
+
+@Name("Vector Min/Max/Sum")
+@Description("Returns the maximum, minimum or sum of a list of vectors")
+@Examples({"set {_max} to max of vectors (vector(1,2,3) and vector(2,0,1)) #returns vector(2,2,3)",
+        "set {_sum} to sum of vectors (vector(1,2,3) and vector(2,0,1)) #returns vector(3,2,4)"})
+@Since("1.0.0")
 
 public class ExprVectorMinMaxSum extends SimpleExpression<Vector> {
 

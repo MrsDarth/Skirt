@@ -18,6 +18,17 @@ import java.util.ArrayList;
 
 import org.jetbrains.annotations.Nullable;
 
+import ch.njol.skript.doc.Name;
+import ch.njol.skript.doc.Description;
+import ch.njol.skript.doc.Examples;
+import ch.njol.skript.doc.Since;
+
+
+@Name("Create Bounding Box")
+@Description("Creates a bounding box, read [this](https://github.com/MrsDarth/skirt/wiki/BoundingBox) for more info.")
+@Examples({"set {_box} to new bounding box with centre vector(0,0,0) with dimensions 1, 2, 3",
+        "# creates a bounding box between vector 1, 2, 3 and vector -1, -2, -3"})
+@Since("1.0.0")
 
 public class ExprBoundingBox extends SimpleExpression<BoundingBox> {
 

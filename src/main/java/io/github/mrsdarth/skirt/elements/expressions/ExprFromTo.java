@@ -19,6 +19,16 @@ import ch.njol.util.Kleenean;
 
 import org.jetbrains.annotations.Nullable;
 
+import ch.njol.skript.doc.Name;
+import ch.njol.skript.doc.Description;
+import ch.njol.skript.doc.Examples;
+import ch.njol.skript.doc.Since;
+
+@Name("Get From/To")
+@Description("Gets the location from and location to in a player move event, can be set")
+@Examples({"on player move:",
+        "\tsend \"%player% moved from %getFrom% to %getTo%\" to {staff::*}"})
+@Since("1.0.0")
 
 public class ExprFromTo extends SimpleExpression<Location> {
 

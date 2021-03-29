@@ -10,6 +10,16 @@ import ch.njol.skript.lang.SkriptParser.ParseResult;
 
 import org.jetbrains.annotations.Nullable;
 
+import ch.njol.skript.doc.Name;
+import ch.njol.skript.doc.Description;
+import ch.njol.skript.doc.Examples;
+import ch.njol.skript.doc.Since;
+
+@Name("Player Move Event")
+@Description("Called when any player moves")
+@Examples({"on player move:",
+        "\tsend \"%player% moved from %getFrom% to %getTo%\" to {staff::*}"})
+@Since("1.0.0")
 
 public class PlayerMove extends SkriptEvent {
 

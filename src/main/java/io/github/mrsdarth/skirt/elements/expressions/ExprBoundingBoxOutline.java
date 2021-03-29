@@ -16,6 +16,25 @@ import java.util.Arrays;
 
 import org.jetbrains.annotations.Nullable;
 
+import ch.njol.skript.doc.Name;
+import ch.njol.skript.doc.Description;
+import ch.njol.skript.doc.Examples;
+import ch.njol.skript.doc.Since;
+
+
+@Name("Bounding Box outline")
+@Description("Returns a list of vectors in the shape of a bounding box")
+@Examples({"command /blockshape:",
+        "\ttrigger:",
+        "",
+        "\t\tset {_box} to bounding box of (exact target block)",
+        "\t\tset {_vectors::*} to box outline of {_box} with density 5",
+        "\t\tset {_locations::*} to {_vectors::*} as locations",
+        "",
+        "\t\tloop 10 times:",
+        "\t\t\tplay happy villager at {_locations::*}",
+        "\t\t\twait 2 ticks"})
+@Since("1.0.0")
 
 public class ExprBoundingBoxOutline extends SimpleExpression<Vector> {
 

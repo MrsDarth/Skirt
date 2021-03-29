@@ -9,6 +9,17 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.Event;
 import org.jetbrains.annotations.Nullable;
 
+import ch.njol.skript.doc.Name;
+import ch.njol.skript.doc.Description;
+import ch.njol.skript.doc.Examples;
+import ch.njol.skript.doc.Since;
+
+
+@Name("Update inventory")
+@Description("updates a player's inventory. Useful to get rid of ghost items")
+@Examples("update inventory of player")
+@Since("1.0.0")
+
 public class EffUpdateInventory extends Effect {
 
     static {

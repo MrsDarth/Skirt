@@ -1,17 +1,28 @@
 package io.github.mrsdarth.skirt.elements.conditions;
 
 
+import org.bukkit.util.Vector;
 import org.bukkit.event.Event;
+import org.bukkit.util.BoundingBox;
 
 import ch.njol.skript.Skript;
 import ch.njol.skript.lang.Condition;
 import ch.njol.skript.lang.Expression;
 import ch.njol.skript.lang.SkriptParser.ParseResult;
 import ch.njol.util.Kleenean;
-import org.bukkit.util.BoundingBox;
 
-import org.bukkit.util.Vector;
 import org.jetbrains.annotations.Nullable;
+
+import ch.njol.skript.doc.Name;
+import ch.njol.skript.doc.Description;
+import ch.njol.skript.doc.Examples;
+import ch.njol.skript.doc.Since;
+
+
+@Name("Bounding Box intersect")
+@Description("Checks whether a bounding box intersects with another, fully contains another, or contains positions")
+@Examples("if {_box} intersects bounding box of player:")
+@Since("1.0.0")
 
 public class CondBoundingBoxIntersect extends Condition {
 

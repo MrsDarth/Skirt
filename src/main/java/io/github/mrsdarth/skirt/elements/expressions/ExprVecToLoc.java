@@ -16,6 +16,16 @@ import java.util.ArrayList;
 
 import org.jetbrains.annotations.Nullable;
 
+import ch.njol.skript.doc.Name;
+import ch.njol.skript.doc.Description;
+import ch.njol.skript.doc.Examples;
+import ch.njol.skript.doc.Since;
+
+
+@Name("Vector to location")
+@Description("returns a location from a vector")
+@Examples("set {_locations::*} to {_vectors::*} as locations")
+@Since("1.0.0")
 
 public class ExprVecToLoc extends SimpleExpression<Location> {
 

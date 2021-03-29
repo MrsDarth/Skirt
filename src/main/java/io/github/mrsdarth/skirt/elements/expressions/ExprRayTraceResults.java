@@ -14,16 +14,28 @@ import org.bukkit.block.BlockFace;
 import org.bukkit.entity.Entity;
 import org.bukkit.event.Event;
 import org.bukkit.util.RayTraceResult;
-
 import org.bukkit.util.Vector;
-import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 
-public class ExprRayTraceProperties extends SimpleExpression<Object> {
+import org.jetbrains.annotations.Nullable;
+
+import ch.njol.skript.doc.Name;
+import ch.njol.skript.doc.Description;
+import ch.njol.skript.doc.Examples;
+import ch.njol.skript.doc.Since;
+
+
+@Name("Ray Trace Results")
+@Description("The results of a ray trace")
+@Examples("if hit face of {_ray} = north:")
+@Since("1.0.0")
+
+
+public class ExprRayTraceResults extends SimpleExpression<Object> {
 
     static {
-        Skript.registerExpression(ExprRayTraceProperties.class, Object.class, ExpressionType.SIMPLE,
+        Skript.registerExpression(ExprRayTraceResults.class, Object.class, ExpressionType.SIMPLE,
                 "[the] hit block[s] of %raytraceresults%",
                 "[the] hit (vector|position) of %raytraceresults%",
                 "[the] hit [block[ ]]fac(e|ing)[s] of %raytraceresults%",

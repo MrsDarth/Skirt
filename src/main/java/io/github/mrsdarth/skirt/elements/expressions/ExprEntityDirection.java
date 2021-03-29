@@ -18,6 +18,18 @@ import ch.njol.util.coll.CollectionUtils;
 
 import org.jetbrains.annotations.Nullable;
 
+import ch.njol.skript.doc.Name;
+import ch.njol.skript.doc.Description;
+import ch.njol.skript.doc.Examples;
+import ch.njol.skript.doc.Since;
+
+
+@Name("Entity Direction")
+@Description("Returns the direction of an entity as a vector, similar to vector from entity's yaw and pitch. Can be set")
+@Examples({"set vector direction of all entities to vector(0,1,0)",
+        "makes all entities look up"})
+@Since("1.0.0")
+
 public class ExprEntityDirection extends PropertyExpression<Entity, Vector> {
 
     static {

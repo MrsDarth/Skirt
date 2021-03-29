@@ -15,6 +15,19 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 
+import ch.njol.skript.doc.Name;
+import ch.njol.skript.doc.Description;
+import ch.njol.skript.doc.Examples;
+import ch.njol.skript.doc.Since;
+
+
+@Name("Bounding Box Points")
+@Description("Get the upper, lower or centre point of a bounding box")
+@Examples({"set {_l1} to (upper corner of {_box}) as location",
+        "set {_l2} to (lower corner of {_box}) as location",
+        "set blocks within {_l1} and {_l2} to air"})
+@Since("1.0.0")
+
 public class ExprBoundingBoxPoints extends SimpleExpression<Vector> {
 
     static {

@@ -5,10 +5,23 @@ import ch.njol.skript.lang.Effect;
 import ch.njol.skript.lang.Expression;
 import ch.njol.skript.lang.SkriptParser;
 import ch.njol.util.Kleenean;
+
 import org.bukkit.event.Event;
 import org.bukkit.util.BoundingBox;
 import org.bukkit.util.Vector;
+
 import org.jetbrains.annotations.Nullable;
+
+import ch.njol.skript.doc.Name;
+import ch.njol.skript.doc.Description;
+import ch.njol.skript.doc.Examples;
+import ch.njol.skript.doc.Since;
+
+
+@Name("Edit Bounding Box")
+@Description("move or expand a bounding box")
+@Examples("shift {_box} by vector from {_pos1} to {_pos2}")
+@Since("1.0.0")
 
 public class EffEditBoundingBox extends Effect {
 

@@ -17,6 +17,19 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 
+import ch.njol.skript.doc.Name;
+import ch.njol.skript.doc.Description;
+import ch.njol.skript.doc.Examples;
+import ch.njol.skript.doc.Since;
+
+
+@Name("Vector from direction")
+@Description("Converts a skript direction to a vector, useful if you want to manipulate a direction")
+@Examples({"set {_v} to vector from direction (facing of player)",
+        "loop 360 times:",
+        "\tadd 1 to vector yaw of {_v}"})
+@Since("1.0.0")
+
 public class ExprVecFromDir extends SimpleExpression<Object> {
 
     static {

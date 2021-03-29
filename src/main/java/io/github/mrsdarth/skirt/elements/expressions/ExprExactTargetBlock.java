@@ -15,6 +15,16 @@ import java.util.ArrayList;
 
 import org.jetbrains.annotations.Nullable;
 
+import ch.njol.skript.doc.Name;
+import ch.njol.skript.doc.Description;
+import ch.njol.skript.doc.Examples;
+import ch.njol.skript.doc.Since;
+
+
+@Name("Exact target block")
+@Description("returns the exact target block of a living entity, accounting for partial blocks such as stairs and doors")
+@Examples("set {_b} to exact target block")
+@Since("1.0.0")
 
 public class ExprExactTargetBlock extends SimpleExpression<Block> {
 
