@@ -33,7 +33,9 @@ import ch.njol.skript.doc.Since;
 public class ExprFromTo extends SimpleExpression<Location> {
 
     static {
-        Skript.registerExpression(ExprFromTo.class, Location.class, ExpressionType.COMBINED, "(get|loc[ation])[ ](1¦From|2¦To)");
+        Skript.registerExpression(ExprFromTo.class, Location.class, ExpressionType.COMBINED,
+                "(get|loc[ation])[ ](1¦From|2¦To)",
+                "[the] (1¦(old|former|past|previous)|2¦(new|future|after)) location");
     }
 
 

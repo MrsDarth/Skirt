@@ -25,10 +25,6 @@
             <url>https://jitpack.io</url>
         </repository>
 
-        <repository>
-            <id>dre-repo</id>
-            <url>http://erethon.de/repo/</url>
-        </repository>
 
     </repositories>
 
@@ -41,6 +37,20 @@
             <version>1.16.5-R0.1-SNAPSHOT</version>
             <scope>provided</scope>
         </dependency>
+
+        <dependency>
+            <groupId>com.destroystokyo.paper</groupId>
+            <artifactId>paper</artifactId>
+            <version>1.16.5-R0.1-SNAPSHOT</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>io.papermc</groupId>
+                    <artifactId>minecraft-server</artifactId>
+                </exclusion>
+            </exclusions>
+            <scope>provided</scope>
+        </dependency>
+
 
         <dependency>
             <groupId>com.github.SkriptLang</groupId>
@@ -61,6 +71,8 @@
                 </exclusion>
             </exclusions>
         </dependency>
+
+
 
 
     </dependencies>

@@ -7,3 +7,5 @@ main: io.github.mrsdarth.skirt.Main
 depend:
   - Skript
 api-version: 1.16
+softdepend:
+  - ProtocolLib
