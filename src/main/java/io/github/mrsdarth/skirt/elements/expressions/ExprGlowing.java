@@ -11,7 +11,9 @@ import ch.njol.skript.lang.ExpressionType;
 import ch.njol.skript.lang.SkriptParser;
 import ch.njol.skript.lang.util.SimpleExpression;
 import ch.njol.util.Kleenean;
-import org.bukkit.Bukkit;
+
+import io.github.mrsdarth.skirt.Main;
+
 import org.bukkit.event.Event;
 import org.bukkit.inventory.ItemStack;
 
@@ -69,22 +71,15 @@ public class ExprGlowing extends SimpleExpression {
         return true;
     }
 
-    private String ver = (Bukkit.getServer().getClass().getPackage().getName().split("\\.")[3]),
-            craftistack = ("org.bukkit.craftbukkit." + ver + ".inventory.CraftItemStack"),
-            nmsistack = ("net.minecraft.server." + ver + ".ItemStack"),
-            nbttlist = ("net.minecraft.server." + ver + ".NBTTagList"),
-            nbttcompound = ("net.minecraft.server." + ver + ".NBTTagCompound"),
-            nbtb = ("net.minecraft.server." + ver + ".NBTBase");
-
     public ItemStack Glow(ItemStack item) {
         if (!item.getItemMeta().hasEnchants()) {
 
             try {
-                Class cstack = Class.forName(craftistack);
-                Class istack = Class.forName(nmsistack);
-                Class taglist = Class.forName(nbttlist);
-                Class compound = Class.forName(nbttcompound);
-                Class nbtbase = Class.forName(nbtb);
+                Class cstack = Main.craftclass("inventory.CraftItemStack");
+                Class istack = Main.nmsclass("ItemStack");
+                Class taglist = Main.nmsclass("NBTTagList");
+                Class compound = Main.nmsclass("NBTTagCompound");
+                Class nbtbase = Main.nmsclass("NBTBase");
 
                 Constructor tlist = taglist.getConstructor();
                 Constructor tcompound = compound.getConstructor();

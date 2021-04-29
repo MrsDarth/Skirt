@@ -57,7 +57,7 @@ public class ExprTimespan extends SimpleExpression<Number> {
 
     @Override
     public String toString(@Nullable Event event, boolean debug) {
-        return "timespan number";
+        return "timespan to number";
     }
 
     @Override
