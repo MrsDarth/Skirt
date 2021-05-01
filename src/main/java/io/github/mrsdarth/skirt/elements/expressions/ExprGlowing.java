@@ -12,7 +12,7 @@ import ch.njol.skript.lang.SkriptParser;
 import ch.njol.skript.lang.util.SimpleExpression;
 import ch.njol.util.Kleenean;
 
-import io.github.mrsdarth.skirt.Main;
+import io.github.mrsdarth.skirt.Reflectness;
 
 import org.bukkit.event.Event;
 import org.bukkit.inventory.ItemStack;
@@ -75,11 +75,11 @@ public class ExprGlowing extends SimpleExpression {
         if (!item.getItemMeta().hasEnchants()) {
 
             try {
-                Class cstack = Main.craftclass("inventory.CraftItemStack");
-                Class istack = Main.nmsclass("ItemStack");
-                Class taglist = Main.nmsclass("NBTTagList");
-                Class compound = Main.nmsclass("NBTTagCompound");
-                Class nbtbase = Main.nmsclass("NBTBase");
+                Class cstack = Reflectness.craftclass("inventory.CraftItemStack");
+                Class istack = Reflectness.nmsclass("ItemStack");
+                Class taglist = Reflectness.nmsclass("NBTTagList");
+                Class compound = Reflectness.nmsclass("NBTTagCompound");
+                Class nbtbase = Reflectness.nmsclass("NBTBase");
 
                 Constructor tlist = taglist.getConstructor();
                 Constructor tcompound = compound.getConstructor();
