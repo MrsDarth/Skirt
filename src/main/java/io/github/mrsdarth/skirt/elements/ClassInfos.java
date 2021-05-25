@@ -2,21 +2,26 @@ package io.github.mrsdarth.skirt.elements;
 
 import ch.njol.skript.classes.ClassInfo;
 import ch.njol.skript.classes.Parser;
+import ch.njol.skript.classes.Serializer;
 import ch.njol.skript.lang.ParseContext;
 import ch.njol.skript.registrations.Classes;
 
+import ch.njol.yggdrasil.Fields;
+import org.bukkit.map.MapView;
 import org.bukkit.util.BoundingBox;
 import org.bukkit.util.RayTraceResult;
 import org.bukkit.FluidCollisionMode;
 
 import org.jetbrains.annotations.Nullable;
 
+import java.io.StreamCorruptedException;
+
 
 public class ClassInfos {
     static {
         Classes.registerClass(new ClassInfo<>(RayTraceResult.class, "raytraceresult")
-                .user("raytrace(( )?result)?s?")
-                .name("raytrace result")
+                .user("ray ?trace( ?result)?s?")
+                .name("raytraceresult")
                 .description("Represent the raytrace")
                 .since("1.0.0")
                 .parser(new Parser<RayTraceResult>() {
@@ -46,10 +51,11 @@ public class ClassInfos {
                     public String getVariableNamePattern() {
                         return "raytrace;-?\\d+";
                     }
-                }));
+                })
+        );
 
         Classes.registerClass(new ClassInfo<>(BoundingBox.class, "boundingbox")
-                .user("bounding( )?box(es)?")
+                .user("bounding ?box(es)?")
                 .name("BoundingBox")
                 .description("Represents a bounding box between 2 points")
                 .since("1.0.0")
@@ -80,7 +86,47 @@ public class ClassInfos {
                     public String getVariableNamePattern() {
                         return "box;(.*)";
                     }
-                }));
+                }).serializer(new Serializer<BoundingBox>() {
+                    @Override
+                    public Fields serialize(BoundingBox b) {
+                        Fields f = new Fields();
+                        f.putPrimitive("x1", b.getMinX());
+                        f.putPrimitive("y1", b.getMinY());
+                        f.putPrimitive("z1", b.getMinZ());
+                        f.putPrimitive("x2", b.getMaxX());
+                        f.putPrimitive("y2", b.getMaxY());
+                        f.putPrimitive("z2", b.getMaxZ());
+                        return f;
+                    }
+
+                    @Override
+                    public void deserialize(BoundingBox b, Fields fields) {
+                        assert false;
+                    }
+
+                    @Override
+                    protected BoundingBox deserialize(Fields f) throws StreamCorruptedException {
+                        return new BoundingBox(
+                                f.getPrimitive("x1",double.class),
+                                f.getPrimitive("y1",double.class),
+                                f.getPrimitive("z1",double.class),
+                                f.getPrimitive("x2",double.class),
+                                f.getPrimitive("y2",double.class),
+                                f.getPrimitive("z2",double.class)
+                        );
+                    }
+
+                    @Override
+                    public boolean mustSyncDeserialization() {
+                        return false;
+                    }
+
+                    @Override
+                    protected boolean canBeInstantiated() {
+                        return false;
+                    }
+                })
+        );
 
         Classes.registerClass(new ClassInfo<>(FluidCollisionMode.class, "fluidcollisionmode")
                 .user("fluidcollisionmodes?")
@@ -104,6 +150,11 @@ public class ClassInfos {
                     }
 
                     @Override
+                    public boolean canParse(ParseContext context) {
+                        return true;
+                    }
+
+                    @Override
                     public String toString(FluidCollisionMode f, int flags) {
                         return f.toString();
                     }
@@ -118,7 +169,54 @@ public class ClassInfos {
                         return "fluidcollisionmode;(always|never|source_only)";
                     }
                 }));
+        Classes.registerClass(new ClassInfo<>(MapView.class, "map")
+                .user("maps?")
+                .name("Map")
+                .since("1.1.0").parser(new Parser<MapView>() {
+                    @Override
+                    public String toString(MapView mapView, int i) {
+                        return mapView.toString();
+                    }
 
+                    @Override
+                    public String toVariableNameString(MapView mapView) {
+                        return null;
+                    }
+
+                    @Override
+                    public String getVariableNamePattern() {
+                        return null;
+                    }
+                }).parser(new Parser<MapView>() {
+                    @Override
+                    @Nullable
+                    public MapView parse(String input, ParseContext context) {
+                        return null;
+                    }
+
+                    @Override
+                    public boolean canParse(ParseContext context) {
+                        return false;
+                    }
+
+
+                    @Override
+                    public String toString(MapView mapView, int i) {
+                        return toVariableNameString(mapView);
+                    }
+
+                    @Override
+                    public String toVariableNameString(MapView mapView) {
+                        return "map;" + mapView.getId();
+                    }
+
+                    @Override
+                    public String getVariableNamePattern() {
+                        return "map;\\d+";
+                    }
+                })
+
+        );
 
     }
 }

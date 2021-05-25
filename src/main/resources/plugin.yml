@@ -2,8 +2,10 @@ name: Skirt
 authors:
   - Mrs Darth
 description: I like skirt
-version: 1.0.1
+version: 1.1.0
 main: io.github.mrsdarth.skirt.Main
 depend:
   - Skript
+#softdepend:
+#  - ProtocolLib
 api-version: 1.16

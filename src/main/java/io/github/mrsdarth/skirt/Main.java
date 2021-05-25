@@ -15,12 +15,12 @@ public class Main extends JavaPlugin {
     public void onEnable() {
         instance = this;
         addon = Skript.registerAddon(this);
+
         try {
             addon.loadClasses("io.github.mrsdarth.skirt", "elements");
         } catch (IOException e) {
             e.printStackTrace();
         }
-
 
         System.out.println("Skirt!");
     }
@@ -32,7 +32,5 @@ public class Main extends JavaPlugin {
     public SkriptAddon getAddonInstance() {
         return addon;
     }
-
-
 
 }
