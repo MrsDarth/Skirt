@@ -1,6 +1,7 @@
 package io.github.mrsdarth.skirt.elements.Other.expressions;
 
 
+import io.papermc.paper.event.entity.EntityMoveEvent;
 import org.bukkit.event.Event;
 import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.Location;
@@ -24,7 +25,7 @@ import ch.njol.skript.doc.Examples;
 import ch.njol.skript.doc.Since;
 
 @Name("Get From/To")
-@Description("Gets the location from and location to in a player move event, can be set")
+@Description("Gets the location from and location to in a player or entity move event, can be set")
 @Examples({"on player move:",
         "\tsend \"%player% moved from %getFrom% to %getTo%\" to {staff::*}"})
 @Since("1.0.0")
@@ -54,13 +55,13 @@ public class ExprFromTo extends SimpleExpression<Location> {
     @SuppressWarnings("unchecked")
     @Override
     public boolean init(Expression<?>[] exprs, int matchedPattern, Kleenean isDelayed, ParseResult parser) {
-        if (ScriptLoader.isCurrentEvent(PlayerMoveEvent.class)) {
+        if (ScriptLoader.isCurrentEvent(PlayerMoveEvent.class) || ScriptLoader.isCurrentEvent(EntityMoveEvent.class)) {
             delay = isDelayed == Kleenean.TRUE;
             int mark = parser.mark;
             from = (mark == 1);
             return true;
         } else {
-            Skript.error("Location From/To can only be used in a player move event", ErrorQuality.SEMANTIC_ERROR);
+            Skript.error("Location From/To can only be used in a player or entity move event", ErrorQuality.SEMANTIC_ERROR);
             return false;
         }
 
@@ -74,9 +75,13 @@ public class ExprFromTo extends SimpleExpression<Location> {
     @Override
     @Nullable
     protected Location[] get(Event event) {
-        PlayerMoveEvent evt = (PlayerMoveEvent) event;
-        Location loc = (from) ? evt.getFrom() : evt.getTo();
-        return new Location[] {loc};
+        if (event instanceof PlayerMoveEvent) {
+            PlayerMoveEvent playermove = (PlayerMoveEvent) event;
+            return new Location[]{(from) ? playermove.getFrom() : playermove.getTo()};
+        } else {
+            EntityMoveEvent entitymove = (EntityMoveEvent) event;
+            return new Location[]{(from) ? entitymove.getFrom() : entitymove.getTo()};
+        }
     }
 
     @Override
@@ -87,11 +92,20 @@ public class ExprFromTo extends SimpleExpression<Location> {
         }
         if (delta != null) {
             Location loc = (Location) delta[0];
-            PlayerMoveEvent e = (PlayerMoveEvent) event;
-            if (from) {
-                e.setFrom(loc);
+            if (event instanceof PlayerMoveEvent) {
+                PlayerMoveEvent e = (PlayerMoveEvent) event;
+                if (from) {
+                    e.setFrom(loc);
+                } else {
+                    e.setTo(loc);
+                }
             } else {
-                e.setTo(loc);
+                EntityMoveEvent e = (EntityMoveEvent) event;
+                if (from) {
+                    e.setFrom(loc);
+                } else {
+                    e.setTo(loc);
+                }
             }
         }
     }

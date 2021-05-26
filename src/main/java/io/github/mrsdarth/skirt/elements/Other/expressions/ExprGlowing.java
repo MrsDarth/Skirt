@@ -1,15 +1,16 @@
 package io.github.mrsdarth.skirt.elements.Other.expressions;
 
 import ch.njol.skript.Skript;
+import ch.njol.skript.aliases.ItemData;
 import ch.njol.skript.aliases.ItemType;
 import ch.njol.skript.doc.Description;
 import ch.njol.skript.doc.Examples;
 import ch.njol.skript.doc.Name;
 import ch.njol.skript.doc.Since;
+import ch.njol.skript.expressions.base.PropertyExpression;
 import ch.njol.skript.lang.Expression;
 import ch.njol.skript.lang.ExpressionType;
 import ch.njol.skript.lang.SkriptParser;
-import ch.njol.skript.lang.util.SimpleExpression;
 import ch.njol.util.Kleenean;
 
 import io.github.mrsdarth.skirt.Reflectness;
@@ -22,56 +23,21 @@ import org.jetbrains.annotations.Nullable;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Method;
-import java.util.ArrayList;
 
 @Name("Glowing item")
 @Description({"returns a glowing item","empty enchants instead of enchanting and hiding flags"})
 @Examples("give player glinted stone")
 @Since("1.0.1")
 
-public class ExprGlowing extends SimpleExpression {
+public class ExprGlowing extends PropertyExpression<ItemType, ItemType> {
 
     static {
-        Skript.registerExpression(ExprGlowing.class, ItemType.class, ExpressionType.COMBINED,
+        Skript.registerExpression(ExprGlowing.class, ItemType.class, ExpressionType.PROPERTY,
                 "(glowing|shiny|glinted) %itemtypes%");
     }
 
-    private Expression<ItemType> items;
 
-    @Nullable
-    @Override
-    protected ItemType[] get(Event event) {
-        ArrayList<ItemType> glowing = new ArrayList<ItemType>();
-        for (ItemType itemtype: items.getArray(event)) {
-            for (ItemStack i: itemtype.getAll()) {
-                glowing.add(new ItemType(Glow(i.clone())));
-            }
-        }
-        return glowing.toArray(new ItemType[glowing.size()]);
-    }
-
-    @Override
-    public boolean isSingle() {
-        return items.isSingle();
-    }
-
-    @Override
-    public Class getReturnType() {
-        return ItemType.class;
-    }
-
-    @Override
-    public String toString(@Nullable Event event, boolean b) {
-        return "glowing item";
-    }
-
-    @Override
-    public boolean init(Expression<?>[] expressions, int i, Kleenean kleenean, SkriptParser.ParseResult parseResult) {
-        items = (Expression<ItemType>) expressions[0];
-        return true;
-    }
-
-    public ItemStack Glow(ItemStack item) {
+    private ItemStack glowing(ItemStack item) {
         if (!item.getItemMeta().hasEnchants()) {
 
             try {
@@ -108,4 +74,31 @@ public class ExprGlowing extends SimpleExpression {
         return item;
     }
 
+    @Override
+    protected ItemType[] get(Event event, ItemType[] itemTypes) {
+        return get(itemTypes, i -> {
+            ItemType result = new ItemType();
+            for (ItemStack item: i.getAll()) {
+                result.add(new ItemData(glowing(item)));
+            }
+            result.setAll(true);
+            return result;
+        });
+    }
+
+    @Override
+    public Class<? extends ItemType> getReturnType() {
+        return ItemType.class;
+    }
+
+    @Override
+    public String toString(@Nullable Event event, boolean b) {
+        return "glowing item";
+    }
+
+    @Override
+    public boolean init(Expression<?>[] expressions, int i, Kleenean kleenean, SkriptParser.ParseResult parseResult) {
+        setExpr((Expression<? extends ItemType>) expressions[0]);
+        return true;
+    }
 }
