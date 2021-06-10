@@ -1,6 +1,7 @@
 package io.github.mrsdarth.skirt.elements.BoundingBox.expressions;
 
 
+import ch.njol.util.coll.CollectionUtils;
 import org.bukkit.block.Block;
 import org.bukkit.event.Event;
 import org.bukkit.util.BoundingBox;
@@ -130,7 +131,7 @@ public class ExprBoundingBox extends SimpleExpression<BoundingBox> {
                 Vector l1 = vec1.getSingle(event);
                 Vector l2 = vec2.getSingle(event);
                 if ((l1 != null) && (l2 != null)) {
-                    return new BoundingBox[] {BoundingBox.of(l1, l2)};
+                    return CollectionUtils.array(BoundingBox.of(l1, l2));
                 }
                 return null;
             case 3:
@@ -139,7 +140,7 @@ public class ExprBoundingBox extends SimpleExpression<BoundingBox> {
                 Number ypos = y.getSingle(event);
                 Number zpos = z.getSingle(event);
                 if (centre != null && xpos != null && ypos != null && zpos != null) {
-                    return new BoundingBox[] {BoundingBox.of(centre, xpos.doubleValue(), ypos.doubleValue(), zpos.doubleValue())};
+                    return CollectionUtils.array(BoundingBox.of(centre, xpos.doubleValue(), ypos.doubleValue(), zpos.doubleValue()));
                 }
                 return null;
             case 4:
@@ -156,7 +157,7 @@ public class ExprBoundingBox extends SimpleExpression<BoundingBox> {
                 BoundingBox b1 = box.getSingle(event);
                 BoundingBox b2 = box2.getSingle(event);
                 if (b1 != null && b2 != null) {
-                    return new BoundingBox[] {b1.clone().intersection(b2)};
+                    return CollectionUtils.array(b1.clone().intersection(b2));
                 }
         }
         return null;

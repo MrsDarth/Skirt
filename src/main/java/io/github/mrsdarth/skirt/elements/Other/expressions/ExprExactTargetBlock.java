@@ -65,9 +65,7 @@ public class ExprExactTargetBlock extends SimpleExpression<Block> {
     protected Block[] get(Event event) {
         LivingEntity[] l = entities.getArray(event);
         Number d1 = (d != null) ? d.getSingle(event) : 100;
-        if (d1 == null) {
-            return null;
-        }
+        if (d1 == null) return null;
         ArrayList<Block> blocks = new ArrayList<Block>();
         for (LivingEntity p : l) {
             if (p != null) {

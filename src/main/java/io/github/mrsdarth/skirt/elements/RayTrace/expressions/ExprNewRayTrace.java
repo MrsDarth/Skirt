@@ -1,5 +1,6 @@
 package io.github.mrsdarth.skirt.elements.RayTrace.expressions;
 
+import ch.njol.util.coll.CollectionUtils;
 import org.bukkit.FluidCollisionMode;
 import org.bukkit.Location;
 import org.bukkit.World;
@@ -179,13 +180,13 @@ public class ExprNewRayTrace extends SimpleExpression<RayTraceResult> {
 
             case 1:
                 Location loc = location.getSingle(event);
-                return new RayTraceResult[] {loc.getWorld().rayTraceBlocks(loc, vector.getSingle(event), maxd, fmode.getSingle(event), ignore)};
+                return CollectionUtils.array(loc.getWorld().rayTraceBlocks(loc, vector.getSingle(event), maxd, fmode.getSingle(event), ignore));
 
             case 2:
-                return new RayTraceResult[] {block.getSingle(event).rayTrace(location.getSingle(event), vector.getSingle(event), maxd, fmode.getSingle(event))};
+                return CollectionUtils.array(block.getSingle(event).rayTrace(location.getSingle(event), vector.getSingle(event), maxd, fmode.getSingle(event)));
 
             case 3:
-                return new RayTraceResult[] {boundingbox.getSingle(event).rayTrace(start.getSingle(event), vector.getSingle(event), maxd)};
+                return CollectionUtils.array(boundingbox.getSingle(event).rayTrace(start.getSingle(event), vector.getSingle(event), maxd));
 
             case 4:
                 Double rs;
@@ -205,15 +206,15 @@ public class ExprNewRayTrace extends SimpleExpression<RayTraceResult> {
                 World world = loc1.getWorld();
                 Vector v1 = vector.getSingle(event);
                 if (rs != null) {
-                    return new RayTraceResult[] {world.rayTraceEntities(loc1, v1, maxd, rs, predicate)};
+                    return CollectionUtils.array(world.rayTraceEntities(loc1, v1, maxd, rs, predicate));
                 }
-                return new RayTraceResult[] {world.rayTraceEntities(loc1, v1, maxd, predicate)};
+                return CollectionUtils.array(world.rayTraceEntities(loc1, v1, maxd, predicate));
 
             case 5:
                 if (entities != null) {
                     predicate = pred(entities.getArray(event));
                 }
-                return new RayTraceResult[] {location.getSingle(event).getWorld().rayTrace(location.getSingle(event), vector.getSingle(event), maxd, fmode.getSingle(event), ignore, raysize.getSingle(event).doubleValue(), predicate)};
+                return CollectionUtils.array(location.getSingle(event).getWorld().rayTrace(location.getSingle(event), vector.getSingle(event), maxd, fmode.getSingle(event), ignore, raysize.getSingle(event).doubleValue(), predicate));
         }
         return null;
 

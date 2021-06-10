@@ -6,6 +6,7 @@ import ch.njol.skript.lang.Expression;
 import ch.njol.skript.lang.SkriptParser.ParseResult;
 import ch.njol.skript.lang.util.SimpleExpression;
 
+import ch.njol.util.coll.CollectionUtils;
 import org.bukkit.event.Event;
 import ch.njol.util.Kleenean;
 import org.bukkit.util.Vector;
@@ -80,7 +81,7 @@ public class ExprVectorMinMaxSum extends SimpleExpression<Vector> {
                     result = Vector.getMinimum(result, v);
                 }
             }
-            return new Vector[] {result};
+            return CollectionUtils.array(result);
         }
         return null;
     }

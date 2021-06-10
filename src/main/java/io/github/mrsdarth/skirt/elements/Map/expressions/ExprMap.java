@@ -2,6 +2,10 @@ package io.github.mrsdarth.skirt.elements.Map.expressions;
 
 import ch.njol.skript.ScriptLoader;
 import ch.njol.skript.Skript;
+import ch.njol.skript.doc.Description;
+import ch.njol.skript.doc.Examples;
+import ch.njol.skript.doc.Name;
+import ch.njol.skript.doc.Since;
 import ch.njol.skript.lang.Expression;
 import ch.njol.skript.lang.ExpressionType;
 import ch.njol.skript.lang.SkriptParser;
@@ -9,6 +13,7 @@ import ch.njol.skript.lang.util.SimpleExpression;
 import ch.njol.skript.log.ErrorQuality;
 import ch.njol.util.Kleenean;
 
+import ch.njol.util.coll.CollectionUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.World;
 import org.bukkit.event.Event;
@@ -16,23 +21,28 @@ import org.bukkit.event.server.MapInitializeEvent;
 import org.bukkit.map.MapView;
 import org.jetbrains.annotations.Nullable;
 
+@Name("Map")
+@Description("returns a map in a map initialise event, from an id or newly created from a world")
+@Examples("set {_map} to map from player's world")
+@Since("1.2.0")
+
 public class ExprMap extends SimpleExpression {
 
     static {
         Skript.registerExpression(ExprMap.class, MapView.class, ExpressionType.COMBINED,
                 "[the] [event-]map",
                 "map from id %number%",
-                "[create] [new] map from world %world%");
+                "[create] [new] map from [world] %world%");
     }
 
     @Nullable
     @Override
     @SuppressWarnings("deprecation")
-    protected MapView[] get(Event event) {
+    protected MapView[] get(Event e) {
         switch (pattern) {
-            case 0: return new MapView[] {((MapInitializeEvent) event).getMap()};
-            case 1: if (id.getSingle(event) != null) return new MapView[] {Bukkit.getMap(id.getSingle(event).intValue())};
-            case 2: if (world.getSingle(event) != null) return new MapView[] {Bukkit.createMap(world.getSingle(event))};
+            case 0: return CollectionUtils.array(((MapInitializeEvent) e).getMap());
+            case 1: if (id.getSingle(e) != null) return CollectionUtils.array(Bukkit.getMap(id.getSingle(e).intValue()));
+            case 2: if (world.getSingle(e) != null) return CollectionUtils.array(Bukkit.createMap(world.getSingle(e)));
         } return null;
     }
 
@@ -40,7 +50,6 @@ public class ExprMap extends SimpleExpression {
     public boolean isSingle() {
         return true;
     }
-
     @Override
     public Class getReturnType() {
         return MapView.class;

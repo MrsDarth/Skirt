@@ -2,6 +2,7 @@ package io.github.mrsdarth.skirt.elements.RayTrace.expressions;
 
 
 import ch.njol.skript.Skript;
+import ch.njol.skript.expressions.base.SimplePropertyExpression;
 import ch.njol.skript.lang.ExpressionType;
 import ch.njol.skript.lang.Expression;
 import ch.njol.skript.lang.SkriptParser.ParseResult;
@@ -9,6 +10,8 @@ import ch.njol.skript.lang.util.SimpleExpression;
 import ch.njol.skript.util.Direction;
 import ch.njol.util.Kleenean;
 
+import org.bukkit.Location;
+import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.entity.Entity;
@@ -32,97 +35,66 @@ import ch.njol.skript.doc.Since;
 @Since("1.0.0")
 
 
-public class ExprRayTraceResults extends SimpleExpression<Object> {
+public class ExprRayTraceResults extends SimplePropertyExpression<RayTraceResult,Object> {
 
     static {
-        Skript.registerExpression(ExprRayTraceResults.class, Object.class, ExpressionType.SIMPLE,
-                "[the] hit block[s] of %raytraceresults%",
-                "[the] hit (vector|position) of %raytraceresults%",
-                "[the] hit [block[ ]]fac(e|ing)[s] of %raytraceresults%",
-                "[the] hit entit(y|ies) of %raytraceresults%"
+        register(ExprRayTraceResults.class,Object.class,
+                "hit (1¦block[s]|2¦(vector|position)[s]|3¦location|4¦[block[ ]]fac(e|ing)[s]|5¦entit(y|ies))", "raytraceresults"
         );
     }
 
-
-    private int pattern;
-    private Expression<RayTraceResult> ray;
+    private int type;
 
     @Override
-    @SuppressWarnings("unchecked")
     public boolean init(Expression<?>[] exprs, int matchedPattern, Kleenean kleenean, ParseResult parseResult) {
-        pattern = matchedPattern;
-        ray = (Expression<RayTraceResult>) exprs[0];
+        type = parseResult.mark;
         return true;
     }
 
     @Override
-    @Nullable
-    protected Object[] get(Event e) {
-        RayTraceResult[] rays = ray.getArray(e);
-        Block block;
-        switch (pattern) {
-            case 0:
-                ArrayList<Block> blocks = new ArrayList<Block>();
-                for (RayTraceResult r: rays) {
-                    blocks.add(r.getHitBlock());
-                }
-                return blocks.toArray(new Block[blocks.size()]);
-
-
-            case 1:
-                ArrayList<Vector> vec = new ArrayList<Vector>();
-                for (RayTraceResult r: rays) {
-                    vec.add(r.getHitPosition());
-                }
-                return vec.toArray(new Vector[vec.size()]);
-
-            case 2:
-                ArrayList<Direction> dirs = new ArrayList<Direction>();
-                Direction d;
-                BlockFace f;
-                for (RayTraceResult r: rays) {
-                    f = r.getHitBlockFace();
-                    if (f != null) {
-                        dirs.add(new Direction(f, 1));
-                    }
-                }
-                return dirs.toArray(new Direction[dirs.size()]);
-
-            case 3:
-                ArrayList<Entity> es = new ArrayList<Entity>();
-                Entity entity;
-                for (RayTraceResult r: rays) {
-                    entity = r.getHitEntity();
-                    if (entity != null) {
-                        es.add(entity);
-                    }
-                }
-                return es.toArray(new Entity[es.size()]);
+    protected String getPropertyName() {
+        switch (type) {
+            case 1: return "hit block";
+            case 2: return "hit position";
+            case 3: return "hit location";
+            case 4: return "hit blockface";
+            case 5: return "hit entity";
         }
         return null;
-
     }
 
-
+    @Nullable
     @Override
-    public boolean isSingle() {
-        return ray.isSingle();
+    public Object convert(RayTraceResult ray) {
+        switch (type) {
+            case 1: return ray.getHitBlock();
+            case 2: return ray.getHitPosition();
+            case 3:
+                Block b = ray.getHitBlock();
+                Entity e = ray.getHitEntity();
+                World world = (b != null) ? b.getWorld() :
+                        (e != null) ? e.getWorld() : null;
+                return (world != null) ? ray.getHitPosition().toLocation(world) : null;
+            case 4:
+                BlockFace face = ray.getHitBlockFace();
+                return face != null ? new Direction(face,1) : null;
+            case 5:
+                return ray.getHitEntity();
+        }
+        return null;
     }
+
 
     @Override
     public Class<? extends Object> getReturnType() {
-        switch (pattern) {
-            case 0: return Block.class;
-            case 1: return Vector.class;
-            case 2: return Direction.class;
-            case 3: return Entity.class;
+        switch (type) {
+            case 1: return Block.class;
+            case 2: return Vector.class;
+            case 3: return Location.class;
+            case 4: return Direction.class;
+            case 5: return Entity.class;
         }
         return null;
-    }
-
-    @Override
-    public String toString(Event e, boolean debug) {
-        return "Ray Trace Properties";
     }
 
 }

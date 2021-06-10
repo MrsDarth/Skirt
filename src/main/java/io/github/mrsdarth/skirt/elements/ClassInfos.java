@@ -6,7 +6,13 @@ import ch.njol.skript.classes.Serializer;
 import ch.njol.skript.lang.ParseContext;
 import ch.njol.skript.registrations.Classes;
 
+import ch.njol.skript.util.Direction;
+import ch.njol.util.StringUtils;
+import ch.njol.util.VectorMath;
 import ch.njol.yggdrasil.Fields;
+import org.bukkit.Statistic;
+import org.bukkit.map.MapCanvas;
+import org.bukkit.map.MapCursor;
 import org.bukkit.map.MapView;
 import org.bukkit.util.BoundingBox;
 import org.bukkit.util.RayTraceResult;
@@ -14,6 +20,7 @@ import org.bukkit.FluidCollisionMode;
 
 import org.jetbrains.annotations.Nullable;
 
+import java.awt.image.BufferedImage;
 import java.io.StreamCorruptedException;
 
 
@@ -21,7 +28,7 @@ public class ClassInfos {
     static {
         Classes.registerClass(new ClassInfo<>(RayTraceResult.class, "raytraceresult")
                 .user("ray ?trace( ?result)?s?")
-                .name("raytraceresult")
+                .name("Ray Trace Result")
                 .description("Represent the raytrace")
                 .since("1.0.0")
                 .parser(new Parser<RayTraceResult>() {
@@ -56,7 +63,7 @@ public class ClassInfos {
 
         Classes.registerClass(new ClassInfo<>(BoundingBox.class, "boundingbox")
                 .user("bounding ?box(es)?")
-                .name("BoundingBox")
+                .name("Bounding Box")
                 .description("Represents a bounding box between 2 points")
                 .since("1.0.0")
                 .parser(new Parser<BoundingBox>() {
@@ -172,7 +179,9 @@ public class ClassInfos {
         Classes.registerClass(new ClassInfo<>(MapView.class, "map")
                 .user("maps?")
                 .name("Map")
-                .since("1.1.0").parser(new Parser<MapView>() {
+                .description("represents a map view")
+                .since("1.2.0")
+                .parser(new Parser<MapView>() {
                     @Override
                     public String toString(MapView mapView, int i) {
                         return mapView.toString();
@@ -217,8 +226,195 @@ public class ClassInfos {
                 })
 
         );
+        Classes.registerClass(new ClassInfo<>(BufferedImage.class, "image")
+                .user("images?")
+                .name("Image")
+                .description("represents an image. Can be displayed on maps")
+                .since("1.2.0")
+                .parser(new Parser<BufferedImage>() {
 
+                    @Nullable
+                    @Override
+                    public BufferedImage parse(String s, ParseContext context) {
+                        return null;
+                    }
+
+                    @Override
+                    public boolean canParse(ParseContext context) {
+                        return false;
+                    }
+
+                    @Override
+                    public String toString(BufferedImage image, int i) {
+                        return image.toString();
+                    }
+
+                    @Override
+                    public String toVariableNameString(BufferedImage image) {
+                        return "image;" + image.hashCode();
+                    }
+
+                    @Override
+                    public String getVariableNamePattern() {
+                        return "image;\\d+";
+                    }
+                }));
+        Classes.registerClass(new ClassInfo<>(MapCursor.class, "mapcursor")
+                .user("map ?cursors?")
+                .name("Map Cursor")
+                .description("represents a cursor in a map")
+                .since("1.2.0")
+                .parser(new Parser<MapCursor>() {
+
+                    @Nullable
+                    @Override
+                    public MapCursor parse(String s, ParseContext context) {
+                        return null;
+                    }
+
+                    @Override
+                    public boolean canParse(ParseContext context) {
+                        return false;
+                    }
+
+                    @Override
+                    @SuppressWarnings("deprecation")
+                    public String toString(MapCursor cursor, int i) {
+                        return (cursor.isVisible() ? "" : "in") + "visible " +
+                                toskript(cursor.getType().name()) +
+                                " map cursor at " + cursor.getX() + ", " + cursor.getY() +
+                                " facing " + Direction.toString(VectorMath.fromYawAndPitch(VectorMath.fromSkriptYaw(22.5f * cursor.getDirection()), 0)).replaceAll(" ?(, |and )?0 meters? \\w+( ,| and)? ?", "") +
+                                (cursor.caption() != null ? "named " + cursor.getCaption() : "");
+                    }
+
+                    @Override
+                    public String toVariableNameString(MapCursor mapCursor) {
+                        return "cursor;" + mapCursor.hashCode();
+                    }
+
+                    @Override
+                    public String getVariableNamePattern() {
+                        return "cursor;\\d+";
+                    }
+                }));
+        Classes.registerClass(new ClassInfo<>(MapCursor.Type.class, "mapcursortype")
+                .user("map ?cursor ?types?")
+                .name("Map Cursor Type")
+                .description("represents the type of a map cursor")
+                .since("1.2.0")
+                .usage(toskript(StringUtils.join(MapCursor.Type.values(), ", ")))
+                .parser(new Parser<MapCursor.Type>() {
+
+                    @Nullable
+                    @Override
+                    public MapCursor.Type parse(String s, ParseContext context) {
+                        try {
+                            return MapCursor.Type.valueOf(fromskript(s));
+                        } catch (Exception ex) {
+                            return null;
+                        }
+                    }
+
+                    @Override
+                    public boolean canParse(ParseContext context) {
+                        return true;
+                    }
+
+                    @Override
+                    public String toString(MapCursor.Type type, int i) {
+                        return toVariableNameString(type);
+                    }
+
+                    @Override
+                    public String toVariableNameString(MapCursor.Type type) {
+                        return toskript(type.name());
+                    }
+
+                    @Override
+                    public String getVariableNamePattern() {
+                        return ".+";
+                    }
+                }));
+        Classes.registerClass(new ClassInfo<>(MapCanvas.class, "mapcanv")
+                .user("map ?canvs?")
+                .name("Map Canvas")
+                .description("the canvas of a map, this is what allows you to set pixels on")
+                .since("1.2.0")
+                .parser(new Parser<MapCanvas>() {
+
+                    @Nullable
+                    @Override
+                    public MapCanvas parse(String s, ParseContext context) {
+                        return null;
+                    }
+
+                    @Override
+                    public boolean canParse(ParseContext context) {
+                        return false;
+                    }
+
+                    @Override
+                    public String toString(MapCanvas mapCanvas, int i) {
+                        return mapCanvas.toString();
+                    }
+
+                    @Override
+                    public String toVariableNameString(MapCanvas mapCanvas) {
+                        return "mapcanvas;" + mapCanvas.hashCode();
+                    }
+
+                    @Override
+                    public String getVariableNamePattern() {
+                        return "mapcanvas;\\d+";
+                    }
+                }));
+        Classes.registerClass(new ClassInfo<>(Statistic.class, "statistic")
+                .user("stat(istic)?s?")
+                .name("Statistic")
+                .description("represents a player statistic")
+                .since("1.2.0")
+                .usage(toskript(StringUtils.join(Statistic.values(), ", ")))
+                .parser(new Parser<Statistic>() {
+
+                    @Nullable
+                    @Override
+                    public Statistic parse(String s, ParseContext context) {
+                        try {
+                            return Statistic.valueOf(fromskript(s));
+                        } catch (Exception ex) {
+                            return null;
+                        }
+                    }
+
+                    @Override
+                    public boolean canParse(ParseContext context) {
+                        return true;
+                    }
+
+                    @Override
+                    public String toString(Statistic statistic, int i) {
+                        return toVariableNameString(statistic);
+                    }
+
+                    @Override
+                    public String toVariableNameString(Statistic statistic) {
+                        return toskript(statistic.toString());
+                    }
+
+                    @Override
+                    public String getVariableNamePattern() {
+                        return ".+";
+                    }
+                }));
     }
+
+    private static String toskript(String s) {
+        return s.replace("_"," ").toLowerCase();
+    }
+    private static String fromskript(String s) {
+        return s.replace(" ", "_").toUpperCase();
+    }
+
 }
 
 

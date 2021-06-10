@@ -1,6 +1,10 @@
 package io.github.mrsdarth.skirt.elements.OtherOther.effects;
 
 import ch.njol.skript.Skript;
+import ch.njol.skript.doc.Description;
+import ch.njol.skript.doc.Examples;
+import ch.njol.skript.doc.Name;
+import ch.njol.skript.doc.Since;
 import ch.njol.skript.lang.Effect;
 import ch.njol.skript.lang.Expression;
 import ch.njol.skript.lang.SkriptParser;
@@ -18,6 +22,19 @@ import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.util.Collection;
 
+@Name("Color Entity Glow")
+@Description({"Allows you to change the glow color of entities for specific or all players",
+        "Gets reset for players who relog",
+        "Only visible if the entity is already glowing"})
+@Examples({"command rainbow:",
+        "\ttrigger:",
+        "\t\tset {_colors::*} to pink, red, orange, yellow, lime, cyan, indigo, purple and magenta\n",
+        "\t\tset glowing of player to true",
+        "\t\tloop 100 times:",
+        "\t\t\tloop {_colors::*}:",
+        "\t\t\t\tset glow color of player to loop-value-2",
+        "\t\t\t\twait 5 ticks"})
+@Since("1.1.0")
 
 public class EffGlowColor extends Effect {
 

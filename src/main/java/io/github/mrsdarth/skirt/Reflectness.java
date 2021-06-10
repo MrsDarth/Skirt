@@ -17,8 +17,6 @@ import java.util.stream.Stream;
 
 public class Reflectness {
 
-    public static Location zeroloc = new Location(Bukkit.getServer().getWorlds().get(0),0,0,0);
-
     public static Class<?> nmsclass(String name) {
         return nmsorcraft("net.minecraft.server", name);
     }
@@ -37,17 +35,17 @@ public class Reflectness {
         return null;
     }
 
-    public static void debugfields(Class<?> theclass, Object obj) {
-        try {
-            for (Field field: theclass.getDeclaredFields()) {
-                field.setAccessible(true);
-                System.out.println(field.getName() + " = " + field.get(obj) + ", " + field.getClass());
-            }
-
-        } catch (Exception ex) {
-            ex.printStackTrace();
-        }
-    }
+//    public static void debugfields(Class<?> theclass, Object obj) {
+//        try {
+//            for (Field field: theclass.getDeclaredFields()) {
+//                field.setAccessible(true);
+//                System.out.println(field.getName() + " = " + field.get(obj) + ", " + field.getClass());
+//            }
+//
+//        } catch (Exception ex) {
+//            ex.printStackTrace();
+//        }
+//    }
 
     public static Object handle(Class<?> c, Object o) {
         try {
@@ -91,21 +89,21 @@ public class Reflectness {
     }
 
 
-    private static Class<?> craftplayer = craftclass("entity.CraftPlayer");
-    private static Class<?> craftentity = craftclass("entity.CraftEntity");
+    private static final Class<?> craftplayer = craftclass("entity.CraftPlayer");
+    private static final Class<?> craftentity = craftclass("entity.CraftEntity");
 
-    private static Class<?> nmsentity = nmsclass("Entity");
-    private static Class<?> nmsplayer = nmsclass("EntityPlayer");
-    private static Class<?> connectionclass = nmsclass("PlayerConnection");
+    private static final Class<?> nmsentity = nmsclass("Entity");
+    private static final Class<?> nmsplayer = nmsclass("EntityPlayer");
+    private static final Class<?> connectionclass = nmsclass("PlayerConnection");
 
-    private static Class<?> packetclass = nmsclass("Packet");
+    private static final Class<?> packetclass = nmsclass("Packet");
 
 
     public static void refresh(Entity e, Player target) {
         try {
             Object dw = nmsentity.getDeclaredMethod("getDataWatcher").invoke(nmsEntity(e));
-            Constructor pacc = Reflectness.nmsclass("PacketPlayOutEntityMetadata").getDeclaredConstructor(int.class, dw.getClass(), boolean.class);
-            sendpacket(target, pacc.newInstance(e.getEntityId(), dw, true));
+            Constructor<?> packet = Reflectness.nmsclass("PacketPlayOutEntityMetadata").getDeclaredConstructor(int.class, dw.getClass(), boolean.class);
+            sendpacket(target, packet.newInstance(e.getEntityId(), dw, true));
         } catch (Exception ex) {
             ex.printStackTrace();
         }
@@ -118,7 +116,7 @@ public class Reflectness {
     public static void hide(Stream<Entity> entities, Player[] players) {
         try {
             Class<?> hidepacket = nmsclass("PacketPlayOutEntityDestroy");
-            int[] ids = entities.mapToInt(e -> e.getEntityId()).toArray();
+            int[] ids = entities.mapToInt(Entity::getEntityId).toArray();
             Object packet = hidepacket.getDeclaredConstructor(int[].class).newInstance(ids);
             for (Player p: players) {
                 sendpacket(p, packet);
@@ -132,27 +130,10 @@ public class Reflectness {
         try {
             if (e instanceof Player) {
                 Player p = (Player) e;
-                Location l = p.getLocation();
-                x -= l.getX();
-                y -= l.getY();
-                z -= l.getZ();
-                yaw -= l.getYaw();
-                pitch -= l.getPitch();
                 Set<Object> flags = new HashSet<>(Arrays.asList(Reflectness.nmsclass("PacketPlayOutPosition$EnumPlayerTeleportFlags").getEnumConstants()));
-                Object pc = playerconnection(p);
-                int tpa = (1+((Integer) getfield("teleportAwait", connectionclass, pc))) % 2147483647;
-                setfield("teleportAwait", connectionclass, pc, tpa);
-                Object packet = Reflectness.nmsclass("PacketPlayOutPosition")
-                        .getDeclaredConstructor(
-                                double.class,
-                                double.class,
-                                double.class,
-                                float.class,
-                                float.class,
-                                Set.class,
-                                int.class)
-                        .newInstance(x,y,z,yaw,pitch,flags,tpa);
-                sendpacket(p, packet);
+                Method move = connectionclass.getDeclaredMethod("internalTeleport", double.class, double.class, double.class, float.class, float.class, Set.class);
+                move.setAccessible(true);
+                move.invoke(playerconnection(p), x, y, z, yaw, pitch, flags);
             } else {
                 Method setloc = nmsentity.getDeclaredMethod("setLocation", double.class, double.class, double.class, float.class, float.class);
                 setloc.invoke(nmsEntity(e), x, y, z, yaw, pitch);

@@ -6,6 +6,7 @@ import ch.njol.skript.lang.Expression;
 import ch.njol.skript.lang.SkriptParser.ParseResult;
 import ch.njol.skript.lang.util.SimpleExpression;
 
+import ch.njol.util.coll.CollectionUtils;
 import org.bukkit.event.Event;
 import ch.njol.util.Kleenean;
 import org.bukkit.util.BoundingBox;
@@ -115,7 +116,7 @@ public class ExprBoundingBoxOutline extends SimpleExpression<Vector> {
     }
 
     private Vector[] boxpoints(Vector v1, Vector v2) {
-        Vector[] vecs = new Vector[] {Vector.getMinimum(v1, v2),Vector.getMaximum(v1, v2)};
+        Vector[] vecs = CollectionUtils.array(Vector.getMinimum(v1, v2),Vector.getMaximum(v1, v2));
         Vector[] v = new Vector[8];
         int[][] mm = {{1,0,0},{0,1,0},{0,0,1},{1,1,0},{1,0,1},{0,1,1}};
         v[0] = vecs[0];
@@ -129,8 +130,9 @@ public class ExprBoundingBoxOutline extends SimpleExpression<Vector> {
     private Vector[] line(Vector v1, Vector v2, double density) {
         int points = 1 + ((int) (v1.distance(v2) * density));
         Vector vec1 = v1.clone().subtract(v2).multiply(1/((double) points));
-        Vector[] vectors = new Vector[points];
-        for (int i = 0; i < points; i++) {
+        Vector[] vectors = new Vector[points+1];
+        vectors[0] = v2;
+        for (int i = 1; i <= points; i++) {
             vectors[i] = (vec1.clone().multiply(i).add(v2));
         }
         return vectors;

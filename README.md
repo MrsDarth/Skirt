@@ -8,5 +8,5 @@ Skirt
 ### Links
 * [Wiki](https://github.com/MrsDarth/skirt/wiki)
 * [Download](https://github.com/MrsDarth/skirt/releases)
-* [Documentation](https://skripthub.net/docs/?addon=Skirt)
 
+[![SkriptHubViewTheDocs](http://skripthub.net/static/addon/ViewTheDocsButton.png)](https://skripthub.net/docs/?addon=Skirt)

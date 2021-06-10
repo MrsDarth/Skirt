@@ -29,7 +29,7 @@ import org.jetbrains.annotations.Nullable;
 public class ExprRandomBoundingBoxPoint extends PropertyExpression<BoundingBox, Vector> {
 
     static {
-        Skript.registerExpression(ExprRandomBoundingBoxPoint.class, Vector.class, ExpressionType.COMBINED,
+        Skript.registerExpression(ExprRandomBoundingBoxPoint.class, Vector.class, ExpressionType.PROPERTY,
                 "[a] random (point|vector) (of|within|from|in) %boundingbox%");
     }
 
@@ -43,11 +43,9 @@ public class ExprRandomBoundingBoxPoint extends PropertyExpression<BoundingBox, 
         return "random point in bounding box";
     }
 
-    private Expression<BoundingBox> box;
-
     @Override
     public boolean init(Expression<?>[] exprs, int i, Kleenean kleenean, SkriptParser.ParseResult parseResult) {
-        box = (Expression<BoundingBox>) exprs[0];
+        setExpr((Expression<? extends BoundingBox>) exprs[0]);
         return true;
     }
 

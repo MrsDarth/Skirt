@@ -32,7 +32,7 @@ public class ExprConvert extends SimpleExpression<Object> {
     @Nullable
     @Override
     protected Object[] get(Event event) {
-        return set.getAll(event);
+        return set.getArray(event);
     }
 
     @Override

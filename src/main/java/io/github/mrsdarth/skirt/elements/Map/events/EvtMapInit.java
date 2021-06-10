@@ -13,8 +13,12 @@ import org.jetbrains.annotations.Nullable;
 public class EvtMapInit extends SkriptEvent {
 
     static {
-        Skript.registerEvent("map initialize", EvtMapInit.class, MapInitializeEvent.class,
-                "map init[iali(z|s)e]");
+        Skript.registerEvent("Map initialize", EvtMapInit.class, MapInitializeEvent.class,
+                "map init[iali(z|s)e]")
+
+                .description("event gets called when a map is created for the first time and starts to render, eg. map from world expression or player getting a filled map for the first time")
+                .examples("on map initialize:")
+                .since("1.2.0");
     }
 
     @Override

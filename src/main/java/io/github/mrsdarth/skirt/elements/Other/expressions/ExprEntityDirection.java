@@ -60,7 +60,7 @@ public class ExprEntityDirection extends SimplePropertyExpression<Entity, Vector
     @Override
     public void change(final Event event, final @Nullable Object[] delta, final ChangeMode mode) {
         Entity[] entities = getExpr().getArray(event);
-            Vector v = (delta[0] instanceof Vector) ? (Vector) delta[0] : ((Direction) delta[0]).getDirection(Reflectness.zeroloc);
+            Vector v = (delta[0] instanceof Vector) ? (Vector) delta[0] : ((Direction) delta[0]).getDirection(ExprVecFromDir.zero());
             float
                     yaw = VectorMath.skriptYaw(VectorMath.getYaw(v)),
                     pitch = VectorMath.skriptPitch(VectorMath.getPitch(v));

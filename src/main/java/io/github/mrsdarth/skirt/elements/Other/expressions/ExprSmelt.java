@@ -34,7 +34,8 @@ public class ExprSmelt extends PropertyExpression<ItemType,ItemType> {
 
     static {
         Skript.registerExpression(ExprSmelt.class, ItemType.class, ExpressionType.PROPERTY,
-                "smelt[ed] [result of] %itemtypes%");
+                "smelt[ed] [result of] %itemtypes%",
+                "%itemtypes% smelted [result]");
     }
 
 

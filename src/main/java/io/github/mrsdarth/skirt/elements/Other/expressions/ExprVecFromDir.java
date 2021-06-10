@@ -55,11 +55,15 @@ public class ExprVecFromDir extends SimpleExpression<Object> {
     protected Vector[] get(Event e) {
         int size;
         ArrayList<Vector> vecs = new ArrayList<Vector>();
+        Location zero = zero();
         for (Direction d: dir.getArray(e)) {
-            vecs.add(d.getDirection(Reflectness.zeroloc));
+            vecs.add(d.getDirection(zero));
         }
         return vecs.toArray(new Vector[vecs.size()]);
+    }
 
+    public static Location zero() {
+        return new Location(Bukkit.getServer().getWorlds().get(0),0,0,0);
     }
 
 

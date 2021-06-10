@@ -1,6 +1,7 @@
 package io.github.mrsdarth.skirt.elements.Other.expressions;
 
 
+import ch.njol.util.coll.CollectionUtils;
 import io.papermc.paper.event.entity.EntityMoveEvent;
 import org.bukkit.event.Event;
 import org.bukkit.event.player.PlayerMoveEvent;
@@ -74,14 +75,10 @@ public class ExprFromTo extends SimpleExpression<Location> {
 
     @Override
     @Nullable
-    protected Location[] get(Event event) {
-        if (event instanceof PlayerMoveEvent) {
-            PlayerMoveEvent playermove = (PlayerMoveEvent) event;
-            return new Location[]{(from) ? playermove.getFrom() : playermove.getTo()};
-        } else {
-            EntityMoveEvent entitymove = (EntityMoveEvent) event;
-            return new Location[]{(from) ? entitymove.getFrom() : entitymove.getTo()};
-        }
+    protected Location[] get(Event e) {
+        return CollectionUtils.array((e instanceof PlayerMoveEvent) ? (from ?
+                ((PlayerMoveEvent) e).getFrom() : ((PlayerMoveEvent) e).getTo()) : (from ?
+                ((EntityMoveEvent) e).getFrom() : ((EntityMoveEvent) e).getTo()));
     }
 
     @Override
@@ -113,7 +110,7 @@ public class ExprFromTo extends SimpleExpression<Location> {
     @Override
     public Class<?>[] acceptChange(final ChangeMode mode) {
         if (mode == ChangeMode.SET)
-            return new Class[]{Location.class};
+            return CollectionUtils.array(Location.class);
         return null;
     }
 }

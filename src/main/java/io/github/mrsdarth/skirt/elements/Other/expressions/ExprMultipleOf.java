@@ -7,13 +7,17 @@ import ch.njol.skript.doc.Name;
 import ch.njol.skript.doc.Since;
 import ch.njol.skript.lang.Expression;
 import ch.njol.skript.lang.ExpressionType;
+import ch.njol.skript.lang.Literal;
 import ch.njol.skript.lang.SkriptParser;
 import ch.njol.skript.lang.util.SimpleExpression;
+import ch.njol.skript.registrations.Converters;
+import ch.njol.skript.util.Utils;
 import ch.njol.util.Kleenean;
 import org.bukkit.event.Event;
 
 import org.jetbrains.annotations.Nullable;
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -23,49 +27,82 @@ import java.util.List;
 @Examples({"set {_text::*} to 5 times of \"hi\"","send join {_text::*}","#outputs hihihihihi"})
 @Since("1.0.1")
 
-public class ExprMultipleOf extends SimpleExpression {
+public class ExprMultipleOf<T> extends SimpleExpression<T> {
 
     static {
         Skript.registerExpression(ExprMultipleOf.class, Object.class, ExpressionType.COMBINED,
-                "%number% times of %objects%");
+                "%number% time[s] of %objects%"
+        );
     }
 
+    private ExprMultipleOf<?> source;
+
     private Expression<Number> num;
-    private Expression<Object> obj;
-
     @Nullable
-    @Override
-    protected Object[] get(Event event) {
-        if (num.getSingle(event) == null || obj.getArray(event).length == 0) return null;
-        int times = num.getSingle(event).intValue();
-        List objects = Arrays.asList(obj.getArray(event));
-        ArrayList all = new ArrayList();
-        for (int i = 0; i < times; i++) {
-            all.addAll(objects);
-        }
-        return all.toArray();
+    private Expression<Object> obj;
+    private Class<? extends T>[] types;
+    private Class<T> superType;
 
+    public ExprMultipleOf() {
+        this(null, (Class<? extends T>) Object.class);
+    }
+
+    private ExprMultipleOf(ExprMultipleOf<?> source, Class<? extends T>... types) {
+        this.source = source;
+        if (source != null) {
+            this.num = source.num;
+            this.obj = source.obj;
+        }
+        this.types = types;
+        this.superType = (Class<T>) Utils.getSuperType(types);
+    }
+
+    @Override
+    public boolean init(Expression<?>[] exprs, int matchedPattern, Kleenean isDelayed, SkriptParser.ParseResult parseResult) {
+        obj = (Expression<Object>) exprs[1];
+        num = (Expression<Number>) exprs[0];
+        return true;
+    }
+
+    @Override
+    @Nullable
+    protected T[] get(Event e) {
+        Number a = num.getSingle(e);
+        if (a == null) return null;
+        List<Object> result = new ArrayList<>(), repeat = Arrays.asList(obj.getArray(e));
+        for (int i = 0; i < a.intValue(); i++) {
+            result.addAll(repeat);
+        }
+        try {
+            return Converters.convertArray(result.toArray(), types, superType);
+        } catch (ClassCastException e1) {
+            return (T[]) Array.newInstance(superType, 0);
+        }
     }
 
     @Override
     public boolean isSingle() {
-        return false;
+        return obj.isSingle() && (num instanceof Literal) && (((Literal<Number>) num).getSingle().intValue() == 1);
     }
 
     @Override
-    public Class getReturnType() {
-        return Object.class;
+    public Class<? extends T> getReturnType() {
+        return superType;
     }
 
     @Override
-    public String toString(@Nullable Event event, boolean b) {
+    public <R> Expression<? extends R> getConvertedExpression(Class<R>... to) {
+        return new ExprMultipleOf<>(this, to);
+    }
+
+    @Override
+    public Expression<?> getSource() {
+        return source == null ? this : source;
+    }
+
+    @Override
+    public String toString(@Nullable Event e, boolean debug) {
         return "multiple of object";
     }
 
-    @Override
-    public boolean init(Expression<?>[] exprs, int i, Kleenean kleenean, SkriptParser.ParseResult parseResult) {
-        num = (Expression<Number>) exprs[0];
-        obj = (Expression<Object>) exprs[1];
-        return true;
-    }
 }

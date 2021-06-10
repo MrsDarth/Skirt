@@ -2,6 +2,7 @@ package io.github.mrsdarth.skirt.elements.Other.events;
 
 import ch.njol.skript.aliases.ItemType;
 import ch.njol.util.Checker;
+import org.bukkit.block.Block;
 import org.bukkit.event.Event;
 import org.bukkit.event.player.PlayerInteractEvent;
 
@@ -15,10 +16,12 @@ import ch.njol.skript.lang.SkriptParser.ParseResult;
 import org.jetbrains.annotations.Nullable;
 
 
-public class PlayerInteract extends SkriptEvent {
+public class EvtPlayerBlockInteract extends SkriptEvent {
 
     static {
-        Skript.registerEvent("Player Interact", PlayerInteract.class, PlayerInteractEvent.class, "player [block] interact[ (with|on) %itemtypes%]")
+        Skript.registerEvent("Player Block Interact", EvtPlayerBlockInteract.class, PlayerInteractEvent.class,
+                "[player] block interact[ (with|on) %itemtypes%]")
+
                 .description("Called when a player interacts with a block or item",
                         "event-string returns the action involved:",
                         "LEFT_CLICK_AIR: Left-clicking the air",
@@ -47,10 +50,11 @@ public class PlayerInteract extends SkriptEvent {
 
     @Override
     public boolean check(final Event e) {
-        return type == null ? true : type.check(e, new Checker<ItemType>() {
+        Block b = ((PlayerInteractEvent) e).getClickedBlock();
+        return type == null || type.check(e, new Checker<ItemType>() {
             @Override
             public boolean check(ItemType itemData) {
-                return itemData.isOfType(((PlayerInteractEvent) e).getClickedBlock());
+                return itemData.isOfType(b);
             }
         });
     }
@@ -63,7 +67,7 @@ public class PlayerInteract extends SkriptEvent {
 
     @Override
     public String toString(final @Nullable Event e, final boolean debug) {
-        return "Player interact";
+        return "player block interact";
     }
 
 

@@ -12,6 +12,7 @@ import ch.njol.skript.lang.Literal;
 import ch.njol.skript.lang.SkriptParser;
 import ch.njol.skript.lang.util.SimpleExpression;
 import ch.njol.util.Kleenean;
+import ch.njol.util.coll.CollectionUtils;
 import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.entity.Entity;
@@ -40,10 +41,11 @@ public class ExprNearestEntities extends SimpleExpression<Entity> {
     @Nullable
     @Override
     protected Entity[] get(Event event) {
-        int a = (amount != null ? amount.getSingle(event) : 1).intValue();
+        Number num = amount != null ? amount.getSingle(event) : 1;
         Location l = loc.getSingle(event);
-        if (l == null) return null;
-        List<Entity> entities = Arrays.asList(EntityData.getAll(type.getAll(event),Entity.class, new World[]{l.getWorld()}));
+        if (l == null || num == null) return null;
+        int a = num.intValue();
+        List<Entity> entities = Arrays.asList(EntityData.getAll(type.getAll(event),Entity.class, CollectionUtils.array(l.getWorld())));
         Collections.sort(entities, new Comparator<Entity>() {
             @Override
             public int compare(Entity o1, Entity o2) {
