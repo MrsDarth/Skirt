@@ -284,7 +284,7 @@ public class ClassInfos {
                                 toskript(cursor.getType().name()) +
                                 " map cursor at " + cursor.getX() + ", " + cursor.getY() +
                                 " facing " + Direction.toString(VectorMath.fromYawAndPitch(VectorMath.fromSkriptYaw(22.5f * cursor.getDirection()), 0)).replaceAll(" ?(, |and )?0 meters? \\w+( ,| and)? ?", "") +
-                                (cursor.caption() != null ? "named " + cursor.getCaption() : "");
+                                (cursor.caption() != null ? " named \"" + cursor.getCaption() + "\"" : "");
                     }
 
                     @Override

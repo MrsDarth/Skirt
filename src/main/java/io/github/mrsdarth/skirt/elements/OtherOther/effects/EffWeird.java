@@ -9,6 +9,7 @@ import ch.njol.skript.lang.Effect;
 import ch.njol.skript.lang.Expression;
 import ch.njol.skript.lang.SkriptParser;
 import ch.njol.util.Kleenean;
+import ch.njol.util.coll.CollectionUtils;
 import io.github.mrsdarth.skirt.Reflectness;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Event;
@@ -33,7 +34,7 @@ public class EffWeird extends Effect {
     @Override
     protected void execute(Event event) {
         for (Player p: players.getArray(event)) {
-            Reflectness.hide(Stream.of(p), new Player[]{p});
+            Reflectness.hide(Stream.of(p), CollectionUtils.array(p));
         }
     }
 

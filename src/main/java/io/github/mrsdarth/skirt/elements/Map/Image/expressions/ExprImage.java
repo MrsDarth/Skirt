@@ -95,8 +95,8 @@ public class ExprImage extends SimpleExpression {
                 String l = file.getSingle(event);
                 if (l == null) return null;
                 try {
-                    return isfolder ? imagesFolder(new File(l)) : new BufferedImage[]{
-                            isfile ? fromFile(new File(l)) : ImageIO.read(new URL(l))};
+                    return isfolder ? imagesFolder(new File(l)) : CollectionUtils.array(
+                            isfile ? fromFile(new File(l)) : ImageIO.read(new URL(l)));
                 }
                 catch (Exception ex) {
                     return null;

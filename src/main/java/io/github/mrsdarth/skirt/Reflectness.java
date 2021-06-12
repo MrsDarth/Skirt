@@ -116,8 +116,7 @@ public class Reflectness {
     public static void hide(Stream<Entity> entities, Player[] players) {
         try {
             Class<?> hidepacket = nmsclass("PacketPlayOutEntityDestroy");
-            int[] ids = entities.mapToInt(Entity::getEntityId).toArray();
-            Object packet = hidepacket.getDeclaredConstructor(int[].class).newInstance(ids);
+            Object packet = hidepacket.getDeclaredConstructor(int[].class).newInstance(entities.mapToInt(Entity::getEntityId).toArray());
             for (Player p: players) {
                 sendpacket(p, packet);
             }

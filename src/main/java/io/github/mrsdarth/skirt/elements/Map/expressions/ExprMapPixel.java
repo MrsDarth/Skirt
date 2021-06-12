@@ -109,7 +109,7 @@ public class ExprMapPixel extends SimpleExpression<Number> {
     public void change(Event e, @Nullable Object[] delta, Changer.ChangeMode mode) {
         MapCanvas canv = ExprMapCanvas.getCanvas(e, canvas);
         if (delta == null || canv == null) return;
-        byte px = 0;
+        byte px = -1;
         if (mode == Changer.ChangeMode.SET) {
             if (delta[0] instanceof Color) {
                 org.bukkit.Color c = ((Color) delta[0]).asBukkitColor();
@@ -117,6 +117,7 @@ public class ExprMapPixel extends SimpleExpression<Number> {
             } else if (delta[0] instanceof Number) px = ((Number) delta[0]).byteValue();
         }
         if (isAll) {
+            System.out.println("pixel: " + px);
             for (int x = 0; x < 128; x++) {
                 for (int y = 0; y < 128; y++) {
                     canv.setPixel(x, y, px);

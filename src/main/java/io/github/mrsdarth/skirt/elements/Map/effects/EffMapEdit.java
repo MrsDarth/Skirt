@@ -28,12 +28,12 @@ import org.jetbrains.annotations.Nullable;
 
 public class EffMapEdit extends Effect {
 
-    private boolean remove;
+    private Renderer.Mode mode;
     private Variable<?> var;
     private Expression<MapView> map;
 
     static {
-        Skript.registerEffect(EffMapEdit.class, "[(1¦partially)] (manage|edit) [map] %map% [and store (canvas|it|)] in %objects%");
+        Skript.registerEffect(EffMapEdit.class, "[(1¦partially|2¦raw)] (manage|edit) [map] %map% [and store (canvas|it|)] in %objects%");
     }
 
     @Override
@@ -51,7 +51,7 @@ public class EffMapEdit extends Effect {
         Object localvars = Variables.removeLocals(event);
         String varname = var.getName().toString(event);
         boolean local = var.isLocal();
-        new Renderer(mapView, remove, canvas -> {
+        new Renderer(mapView, mode, canvas -> {
             VariableUtils.pasteVariables(event, localvars);
             Variables.setVariable(varname, canvas, event, local);
             continueWalk(next, event);
@@ -85,7 +85,16 @@ public class EffMapEdit extends Effect {
             var = (Variable<?>) exprs[1];
             if (!var.isList()) {
                 map = (Expression<MapView>) exprs[0];
-                remove = parseResult.mark != 1;
+                switch (parseResult.mark) {
+                    case 1:
+                        mode = Renderer.Mode.PARTIAL;
+                        break;
+                    case 2:
+                        mode = Renderer.Mode.RAW;
+                        break;
+                    default:
+                        mode = Renderer.Mode.EDIT;
+                }
                 return true;
             }
         }

@@ -94,12 +94,12 @@ public class ExprCursorProperties extends SimplePropertyExpression<MapCursor,Obj
         switch (mode) {
             case ADD:
             case REMOVE:
-                if (!type.equals(Number.class)) break;
-            case SET:
-                return CollectionUtils.array(type);
+                return (type.equals(Number.class)) ? CollectionUtils.array(Number.class) : null;
             case RESET:
             case DELETE:
-                return (pattern == 7) ? CollectionUtils.array() : null;
+                if (pattern != 7) break;
+            case SET:
+                return CollectionUtils.array(type);
         }
         return null;
     }
@@ -107,39 +107,42 @@ public class ExprCursorProperties extends SimplePropertyExpression<MapCursor,Obj
     @Override
     @SuppressWarnings("deprecation")
     public void change(Event e, @Nullable Object[] delta, Changer.ChangeMode mode) {
-        MapCursor cursor = getExpr().getSingle(e);
-        boolean add = mode == Changer.ChangeMode.ADD;
-        if ((delta[0] instanceof Number) && (add || mode == Changer.ChangeMode.REMOVE)) {
-            int change = ((Number) delta[0]).intValue() * (add ? 1 : -1);
-            Number value =
-                    (pattern == 3) ? cursor.getX() + change :
-                    (pattern == 4) ? cursor.getY() + change :
-                            (cursor.getDirection() + change) % 16;
-            change(e, CollectionUtils.array(value), Changer.ChangeMode.SET);
-        } else {
-            switch (pattern) {
-                case 1:
-                    cursor.setType((MapCursor.Type) delta[0]);
-                    break;
-                case 2:
-                    cursor.setVisible((Boolean) delta[0]);
-                    break;
-                case 3:
-                    cursor.setX(((Number) delta[0]).byteValue());
-                    break;
-                case 4:
-                    cursor.setY(((Number) delta[0]).byteValue());
-                    break;
-                case 5:
-                    Location l = ExprVecFromDir.zero();
-                    cursor.setDirection((byte) (Math.round((l.setDirection((((Direction) delta[0]).getDirection(l))).getYaw()+180) / 22.5) % 16));
-                    break;
-                case 6:
-                    cursor.setDirection(((Number) delta[0]).byteValue());
-                    break;
-                case 7:
-                    if (mode == Changer.ChangeMode.RESET || mode == Changer.ChangeMode.DELETE) cursor.setCaption(null);
-                    else cursor.setCaption((String) delta[0]);
+        for (MapCursor cursor : getExpr().getArray(e)) {
+            boolean rd = (mode == Changer.ChangeMode.RESET || mode == Changer.ChangeMode.DELETE);
+            if (cursor == null || (!rd && delta == null)) return;
+            boolean add = mode == Changer.ChangeMode.ADD;
+            if ((add || mode == Changer.ChangeMode.REMOVE) && (delta[0] instanceof Number)) {
+                int change = ((Number) delta[0]).intValue() * (add ? 1 : -1);
+                Number value =
+                        (pattern == 3) ? cursor.getX() + change :
+                                (pattern == 4) ? cursor.getY() + change :
+                                        (cursor.getDirection() + change) % 16;
+                change(e, CollectionUtils.array(value), Changer.ChangeMode.SET);
+            } else {
+                switch (pattern) {
+                    case 1:
+                        cursor.setType((MapCursor.Type) delta[0]);
+                        break;
+                    case 2:
+                        cursor.setVisible((Boolean) delta[0]);
+                        break;
+                    case 3:
+                        cursor.setX(((Number) delta[0]).byteValue());
+                        break;
+                    case 4:
+                        cursor.setY(((Number) delta[0]).byteValue());
+                        break;
+                    case 5:
+                        Location l = ExprVecFromDir.zero();
+                        cursor.setDirection((byte) (Math.round((l.setDirection((((Direction) delta[0]).getDirection(l))).getYaw() + 180) / 22.5) % 16));
+                        break;
+                    case 6:
+                        cursor.setDirection(((Number) delta[0]).byteValue());
+                        break;
+                    case 7:
+                        if (rd) cursor.setCaption(null);
+                        else cursor.setCaption((String) delta[0]);
+                }
             }
         }
     }
