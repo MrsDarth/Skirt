@@ -12,20 +12,16 @@ import ch.njol.skript.lang.Expression;
 import ch.njol.skript.lang.ExpressionType;
 import ch.njol.skript.lang.SkriptParser;
 import ch.njol.util.Kleenean;
-
 import io.github.mrsdarth.skirt.Reflectness;
-
 import org.bukkit.event.Event;
 import org.bukkit.inventory.ItemStack;
-
 import org.jetbrains.annotations.Nullable;
-
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Method;
 
 @Name("Glowing item")
-@Description({"returns a glowing item","empty enchants instead of enchanting and hiding flags"})
+@Description({"returns a glowing item", "empty enchants instead of enchanting and hiding flags"})
 @Examples("give player glinted stone")
 @Since("1.0.1")
 
@@ -78,7 +74,7 @@ public class ExprGlowing extends PropertyExpression<ItemType, ItemType> {
     protected ItemType[] get(Event event, ItemType[] itemTypes) {
         return get(itemTypes, i -> {
             ItemType result = new ItemType();
-            for (ItemStack item: i.getAll()) {
+            for (ItemStack item : i.getAll()) {
                 result.add(new ItemData(glowing(item)));
             }
             result.setAll(true);

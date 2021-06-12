@@ -1,10 +1,10 @@
 package io.github.mrsdarth.skirt;
 
-import java.io.IOException;
-
 import ch.njol.skript.Skript;
-import org.bukkit.plugin.java.JavaPlugin;
 import ch.njol.skript.SkriptAddon;
+import org.bukkit.plugin.java.JavaPlugin;
+
+import java.io.IOException;
 
 
 public class Main extends JavaPlugin {

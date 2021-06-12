@@ -1,25 +1,22 @@
 package io.github.mrsdarth.skirt.elements.Other.expressions;
 
 import ch.njol.skript.Skript;
-import ch.njol.skript.lang.ExpressionType;
+import ch.njol.skript.doc.Description;
+import ch.njol.skript.doc.Examples;
+import ch.njol.skript.doc.Name;
+import ch.njol.skript.doc.Since;
 import ch.njol.skript.lang.Expression;
+import ch.njol.skript.lang.ExpressionType;
 import ch.njol.skript.lang.SkriptParser.ParseResult;
 import ch.njol.skript.lang.util.SimpleExpression;
-
+import ch.njol.util.Kleenean;
 import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.event.Event;
-import ch.njol.util.Kleenean;
 import org.bukkit.util.Vector;
-
-import java.util.ArrayList;
-
 import org.jetbrains.annotations.Nullable;
 
-import ch.njol.skript.doc.Name;
-import ch.njol.skript.doc.Description;
-import ch.njol.skript.doc.Examples;
-import ch.njol.skript.doc.Since;
+import java.util.ArrayList;
 
 
 @Name("Vector to location")
@@ -76,11 +73,11 @@ public class ExprVecToLoc extends SimpleExpression<Location> {
             if (w == null) {
                 return null;
             }
-            for (Vector v: vecs.getArray(event)) {
+            for (Vector v : vecs.getArray(event)) {
                 locations.add(v.toLocation(w));
             }
         } else {
-            for (World w: world.getArray(event)) {
+            for (World w : world.getArray(event)) {
                 locations.add(new Location(w, 0, 0, 0));
             }
         }

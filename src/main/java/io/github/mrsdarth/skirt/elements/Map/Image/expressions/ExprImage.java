@@ -16,8 +16,7 @@ import org.bukkit.event.Event;
 import org.jetbrains.annotations.Nullable;
 
 import javax.imageio.ImageIO;
-import java.awt.Graphics2D;
-import java.awt.Image;
+import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
@@ -97,8 +96,7 @@ public class ExprImage extends SimpleExpression {
                 try {
                     return isfolder ? imagesFolder(new File(l)) : CollectionUtils.array(
                             isfile ? fromFile(new File(l)) : ImageIO.read(new URL(l)));
-                }
-                catch (Exception ex) {
+                } catch (Exception ex) {
                     return null;
                 }
         }

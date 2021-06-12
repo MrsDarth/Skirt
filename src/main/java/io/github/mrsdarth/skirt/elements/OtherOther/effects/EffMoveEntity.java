@@ -36,7 +36,7 @@ public class EffMoveEntity extends Effect {
     protected void execute(Event event) {
         Location l = loc.getSingle(event);
         if (l == null) return;
-        for (Entity e: entities.getArray(event)) {
+        for (Entity e : entities.getArray(event)) {
             Reflectness.move(e, l);
         }
     }

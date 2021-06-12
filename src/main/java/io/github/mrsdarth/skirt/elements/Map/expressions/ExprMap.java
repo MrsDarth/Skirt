@@ -12,7 +12,6 @@ import ch.njol.skript.lang.SkriptParser;
 import ch.njol.skript.lang.util.SimpleExpression;
 import ch.njol.skript.log.ErrorQuality;
 import ch.njol.util.Kleenean;
-
 import ch.njol.util.coll.CollectionUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.World;
@@ -40,16 +39,21 @@ public class ExprMap extends SimpleExpression {
     @SuppressWarnings("deprecation")
     protected MapView[] get(Event e) {
         switch (pattern) {
-            case 0: return CollectionUtils.array(((MapInitializeEvent) e).getMap());
-            case 1: if (id.getSingle(e) != null) return CollectionUtils.array(Bukkit.getMap(id.getSingle(e).intValue()));
-            case 2: if (world.getSingle(e) != null) return CollectionUtils.array(Bukkit.createMap(world.getSingle(e)));
-        } return null;
+            case 0:
+                return CollectionUtils.array(((MapInitializeEvent) e).getMap());
+            case 1:
+                if (id.getSingle(e) != null) return CollectionUtils.array(Bukkit.getMap(id.getSingle(e).intValue()));
+            case 2:
+                if (world.getSingle(e) != null) return CollectionUtils.array(Bukkit.createMap(world.getSingle(e)));
+        }
+        return null;
     }
 
     @Override
     public boolean isSingle() {
         return true;
     }
+
     @Override
     public Class getReturnType() {
         return MapView.class;
@@ -72,9 +76,13 @@ public class ExprMap extends SimpleExpression {
                 if (!ScriptLoader.isCurrentEvent(MapInitializeEvent.class)) {
                     Skript.error("event-map can only be used in map initialize event", ErrorQuality.SEMANTIC_ERROR);
                     return false;
-                } break;
-            case 1: id = (Expression<Number>) exprs[0]; break;
-            default: world = (Expression<World>) exprs[0];
+                }
+                break;
+            case 1:
+                id = (Expression<Number>) exprs[0];
+                break;
+            default:
+                world = (Expression<World>) exprs[0];
         }
         return true;
     }

@@ -39,8 +39,6 @@ public class ExprStats extends PropertyExpression<Player, Number> {
     private Expression<?> type;
 
 
-
-
     @Override
     protected Number[] get(Event event, Player[] players) {
         Statistic stat = stats.getSingle(event);
@@ -98,7 +96,7 @@ public class ExprStats extends PropertyExpression<Player, Number> {
         if (n == null || stat == null) return;
         int value = n.intValue();
         Object o = fromskript(e, stats);
-        for (Player p: getExpr().getArray(e)) {
+        for (Player p : getExpr().getArray(e)) {
             switch (mode) {
                 case ADD:
                     increment(p, stat, value, o);
@@ -121,7 +119,7 @@ public class ExprStats extends PropertyExpression<Player, Number> {
         if (o instanceof ItemType) return ((ItemType) o).getMaterial();
         else if (o instanceof EntityData) {
             Class<?> entityclass = ((EntityData) o).getType();
-            for (EntityType entityType: EntityType.values()) {
+            for (EntityType entityType : EntityType.values()) {
                 if (entityType.getEntityClass().isAssignableFrom(entityclass)) return entityType;
             }
         }

@@ -34,7 +34,7 @@ public class ExprItemMap extends PropertyExpression<MapView, ItemType> {
     protected ItemType[] get(Event event, MapView[] mapViews) {
         ItemType[] items = new ItemType[mapViews.length];
         int i = 0;
-        for (MapView map: mapViews) {
+        for (MapView map : mapViews) {
             ItemType item = new ItemType(Material.FILLED_MAP);
             MapMeta mapMeta = (MapMeta) item.getItemMeta();
             mapMeta.setMapView(map);

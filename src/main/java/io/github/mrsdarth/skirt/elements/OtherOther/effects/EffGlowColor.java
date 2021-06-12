@@ -10,7 +10,6 @@ import ch.njol.skript.lang.Expression;
 import ch.njol.skript.lang.SkriptParser;
 import ch.njol.skript.util.Color;
 import ch.njol.util.Kleenean;
-
 import io.github.mrsdarth.skirt.Reflectness;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Entity;
@@ -54,7 +53,7 @@ public class EffGlowColor extends Effect {
     protected void execute(Event event) {
         try {
             Object glow = null;
-            
+
             if (!reset) {
                 Color glowcolor = color.getSingle(event);
                 if (glowcolor == null) return;
@@ -120,21 +119,34 @@ public class EffGlowColor extends Effect {
 
     private String ecc(String color) {
         switch (color) {
-            case "light cyan": return "AQUA";
-            case "cyan": return "DARK_AQUA";
-            case "brown": return "BLUE";
-            case "blue": return "DARK_BLUE";
-            case "orange": return "GOLD";
-            case "grey": return "GRAY";
-            case "dark grey": return "DARK_GRAY";
-            case "green": return "DARK_GREEN";
-            case "light green": return "GREEN";
-            case "red": return "DARK_RED";
-            case "pink": return "RED";
-            case "magenta": return "LIGHT_PURPLE";
-            case "purple": return "DARK_PURPLE";
+            case "light cyan":
+                return "AQUA";
+            case "cyan":
+                return "DARK_AQUA";
+            case "brown":
+                return "BLUE";
+            case "blue":
+                return "DARK_BLUE";
+            case "orange":
+                return "GOLD";
+            case "grey":
+                return "GRAY";
+            case "dark grey":
+                return "DARK_GRAY";
+            case "green":
+                return "DARK_GREEN";
+            case "light green":
+                return "GREEN";
+            case "red":
+                return "DARK_RED";
+            case "pink":
+                return "RED";
+            case "magenta":
+                return "LIGHT_PURPLE";
+            case "purple":
+                return "DARK_PURPLE";
         }
-        return color.toUpperCase().replace(" ","_");
+        return color.toUpperCase().replace(" ", "_");
     }
 
 }

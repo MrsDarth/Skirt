@@ -2,22 +2,18 @@ package io.github.mrsdarth.skirt.elements.Other.expressions;
 
 
 import ch.njol.skript.Skript;
-import ch.njol.skript.lang.ExpressionType;
-
+import ch.njol.skript.doc.Description;
+import ch.njol.skript.doc.Examples;
+import ch.njol.skript.doc.Name;
+import ch.njol.skript.doc.Since;
 import ch.njol.skript.lang.Expression;
+import ch.njol.skript.lang.ExpressionType;
 import ch.njol.skript.lang.SkriptParser.ParseResult;
 import ch.njol.skript.lang.util.SimpleExpression;
 import ch.njol.skript.util.Timespan;
 import ch.njol.util.Kleenean;
-
 import org.bukkit.event.Event;
-
 import org.jetbrains.annotations.Nullable;
-
-import ch.njol.skript.doc.Name;
-import ch.njol.skript.doc.Description;
-import ch.njol.skript.doc.Examples;
-import ch.njol.skript.doc.Since;
 
 
 @Name("Timespan conversion")
@@ -50,8 +46,8 @@ public class ExprTimespan extends SimpleExpression<Number> {
     @Override
     public boolean init(Expression<?>[] exprs, int matchedPattern, Kleenean isDelayed, ParseResult parser) {
         timespans = (Expression<Timespan>) exprs[0];
-        double[] i = {1,50,1000,60000,3600000,86400000,2592000000f,31536000000f};
-        d = i[parser.mark-1];
+        double[] i = {1, 50, 1000, 60000, 3600000, 86400000, 2592000000f, 31536000000f};
+        d = i[parser.mark - 1];
         return true;
     }
 
@@ -66,8 +62,8 @@ public class ExprTimespan extends SimpleExpression<Number> {
         Timespan[] times = timespans.getArray(event);
         Number[] n = new Number[times.length];
         int index = 0;
-        for (Timespan t: times) {
-            n[index++] = ((t.getMilliSeconds())/d);
+        for (Timespan t : times) {
+            n[index++] = ((t.getMilliSeconds()) / d);
         }
         return n;
     }

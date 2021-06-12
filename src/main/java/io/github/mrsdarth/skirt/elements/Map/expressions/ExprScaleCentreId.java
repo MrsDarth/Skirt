@@ -40,10 +40,14 @@ public class ExprScaleCentreId extends SimplePropertyExpression<MapView, Number>
     @Override
     protected String getPropertyName() {
         switch (mark) {
-            case 1: return "scale";
-            case 2: return "center x";
-            case 3: return "center z";
-            default: return "map id";
+            case 1:
+                return "scale";
+            case 2:
+                return "center x";
+            case 3:
+                return "center z";
+            default:
+                return "map id";
         }
     }
 
@@ -51,10 +55,14 @@ public class ExprScaleCentreId extends SimplePropertyExpression<MapView, Number>
     @Override
     public Number convert(MapView mapView) {
         switch (mark) {
-            case 1: return CollectionUtils.indexOf(scales, mapView.getScale());
-            case 2: return mapView.getCenterX();
-            case 3: return mapView.getCenterZ();
-            default: return mapView.getId();
+            case 1:
+                return CollectionUtils.indexOf(scales, mapView.getScale());
+            case 2:
+                return mapView.getCenterX();
+            case 3:
+                return mapView.getCenterZ();
+            default:
+                return mapView.getId();
         }
     }
 
@@ -70,7 +78,7 @@ public class ExprScaleCentreId extends SimplePropertyExpression<MapView, Number>
         for (MapView m : getExpr().getArray(event)) {
             int value =
                     mark == 1 ? CollectionUtils.indexOf(scales, m.getScale()) :
-                    mark == 2 ? m.getCenterX() : m.getCenterZ();
+                            mark == 2 ? m.getCenterX() : m.getCenterZ();
             switch (mode) {
                 case ADD:
                     value += change;

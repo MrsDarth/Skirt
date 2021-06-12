@@ -11,7 +11,6 @@ import ch.njol.skript.lang.ExpressionType;
 import ch.njol.skript.lang.SkriptParser;
 import ch.njol.skript.lang.util.SimpleExpression;
 import ch.njol.util.Kleenean;
-
 import org.bukkit.World;
 import org.bukkit.entity.Entity;
 import org.bukkit.event.Event;
@@ -40,13 +39,14 @@ public class ExprBoundingBoxEntities extends SimpleExpression {
         if (w == null) return null;
         EntityData<?>[] entitytypes = types.getArray(event);
         Predicate<Entity> filter = e -> {
-            for (EntityData<?> type: entitytypes) {
+            for (EntityData<?> type : entitytypes) {
                 if (type.isInstance(e)) return true;
-            } return false;
+            }
+            return false;
         };
         ArrayList<Entity> entities = new ArrayList<Entity>();
-        for (BoundingBox box: boxes.getArray(event)) {
-            entities.addAll(w.getNearbyEntities(box,filter));
+        for (BoundingBox box : boxes.getArray(event)) {
+            entities.addAll(w.getNearbyEntities(box, filter));
         }
         return entities.toArray(new Entity[entities.size()]);
     }

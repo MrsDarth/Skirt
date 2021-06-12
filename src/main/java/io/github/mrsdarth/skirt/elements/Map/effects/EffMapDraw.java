@@ -19,7 +19,7 @@ import org.bukkit.map.MapPalette;
 import org.bukkit.map.MinecraftFont;
 import org.jetbrains.annotations.Nullable;
 
-import java.awt.Image;
+import java.awt.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -63,7 +63,7 @@ public class EffMapDraw extends Effect {
             String text = txt.getSingle(event);
             if (text != null)
                 System.out.println(mapformat(mapformathex(text)));
-                c.drawText(cx, cy, MinecraftFont.Font, mapformat(mapformathex(text)));
+            c.drawText(cx, cy, MinecraftFont.Font, mapformat(mapformathex(text)));
         }
 
     }
@@ -90,12 +90,11 @@ public class EffMapDraw extends Effect {
     }
 
 
-
     @SuppressWarnings("deprecation")
     private String mapformat(String text) {
         String p = "§(\\d(?!\\d{0,2};)|[a-fA-F])";
         return sidesplit(text, p, s -> (s.matches(p)) ? ("§" + MapPalette.matchColor(ChatColor.getByChar(
-                    s.replace("§", "").charAt(0)).getColor()) + ";") : s
+                s.replace("§", "").charAt(0)).getColor()) + ";") : s
         );
     }
 
@@ -103,7 +102,7 @@ public class EffMapDraw extends Effect {
     private String mapformathex(String text) {
         String p = "§x(§[\\da-fA-F]){6}";
         return sidesplit(text, p, s -> (s.matches(p)) ? ("§" + MapPalette.matchColor(ChatColor.of(
-                    s.replace("§", "").replace('x', '#')).getColor()) + ";") : s
+                s.replace("§", "").replace('x', '#')).getColor()) + ";") : s
         );
     }
 

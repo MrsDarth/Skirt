@@ -26,12 +26,12 @@ public class EvtPlayerEntityInteract extends SkriptEvent {
 
         EventValues.registerEventValue(PlayerInteractAtEntityEvent.class, Vector.class,
                 new Getter<Vector, PlayerInteractAtEntityEvent>() {
-            @Nullable
-            @Override
-            public Vector get(PlayerInteractAtEntityEvent e) {
-                return e.getClickedPosition();
-            }
-        }, 0);
+                    @Nullable
+                    @Override
+                    public Vector get(PlayerInteractAtEntityEvent e) {
+                        return e.getClickedPosition();
+                    }
+                }, 0);
     }
 
     private Literal<EntityData<?>> type;

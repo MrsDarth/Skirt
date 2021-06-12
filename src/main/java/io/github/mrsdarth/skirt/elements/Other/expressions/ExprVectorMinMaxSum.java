@@ -1,22 +1,19 @@
 package io.github.mrsdarth.skirt.elements.Other.expressions;
 
 import ch.njol.skript.Skript;
-import ch.njol.skript.lang.ExpressionType;
-import ch.njol.skript.lang.Expression;
-import ch.njol.skript.lang.SkriptParser.ParseResult;
-import ch.njol.skript.lang.util.SimpleExpression;
-
-import ch.njol.util.coll.CollectionUtils;
-import org.bukkit.event.Event;
-import ch.njol.util.Kleenean;
-import org.bukkit.util.Vector;
-
-import org.jetbrains.annotations.Nullable;
-
-import ch.njol.skript.doc.Name;
 import ch.njol.skript.doc.Description;
 import ch.njol.skript.doc.Examples;
+import ch.njol.skript.doc.Name;
 import ch.njol.skript.doc.Since;
+import ch.njol.skript.lang.Expression;
+import ch.njol.skript.lang.ExpressionType;
+import ch.njol.skript.lang.SkriptParser.ParseResult;
+import ch.njol.skript.lang.util.SimpleExpression;
+import ch.njol.util.Kleenean;
+import ch.njol.util.coll.CollectionUtils;
+import org.bukkit.event.Event;
+import org.bukkit.util.Vector;
+import org.jetbrains.annotations.Nullable;
 
 
 @Name("Vector Min/Max/Sum")
@@ -69,7 +66,7 @@ public class ExprVectorMinMaxSum extends SimpleExpression<Vector> {
         if (vectors[0] != null) {
             result = vectors[0].clone();
             if (mm) {
-                for (Vector v: vectors) {
+                for (Vector v : vectors) {
                     result = result.add(v);
                 }
             } else if (max) {

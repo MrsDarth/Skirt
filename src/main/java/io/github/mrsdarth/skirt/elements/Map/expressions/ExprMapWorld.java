@@ -49,7 +49,7 @@ public class ExprMapWorld extends SimplePropertyExpression<MapView, World> {
     public void change(Event e, @Nullable Object[] delta, Changer.ChangeMode mode) {
         World w = (World) delta[0];
         if (w == null) return;
-        for (MapView map: getExpr().getArray(e)) {
+        for (MapView map : getExpr().getArray(e)) {
             map.setWorld(w);
         }
     }

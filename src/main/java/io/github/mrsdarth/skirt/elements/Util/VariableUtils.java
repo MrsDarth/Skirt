@@ -1,10 +1,9 @@
 package io.github.mrsdarth.skirt.elements.Util;
 
-import java.util.Map;
-
+import ch.njol.skript.variables.Variables;
 import org.bukkit.event.Event;
 
-import ch.njol.skript.variables.Variables;
+import java.util.Map;
 
 /**
  * @author Tuke_Nuke on 28/05/2017
@@ -12,23 +11,26 @@ import ch.njol.skript.variables.Variables;
 public class VariableUtils {
 
     private static VariableUtils instance;
+
     public static VariableUtils getInstance() {
         if (instance == null)
             instance = new VariableUtils();
         return instance;
     }
 
-    private VariableUtils() {}
+    private VariableUtils() {
+    }
 
     public Map<Event, Object> map = ReflectionUtils.getField(Variables.class, null, "localVariables");
 
     /**
      * Copies variables from one event to be pasted in another.
      * It allows the section to be run using the same variables as when the GUI was created.
+     *
      * @param from The event to copy the variables from
      * @return The VariableMap wrapped in Object
      */
-    public Object copyVariables(Event from){
+    public Object copyVariables(Event from) {
         if (from != null && map.containsKey(from)) {
             Object variablesMap = map.get(from);
             if (variablesMap == null)
@@ -47,10 +49,11 @@ public class VariableUtils {
 
     /**
      * Pastes variables to an event.
-     * @param to The event that the variables should be pasted on.
+     *
+     * @param to        The event that the variables should be pasted on.
      * @param variables The object VariableMap returned in {@link #copyVariables(Event)}
      */
-    public static void pasteVariables(Event to, Object variables){
+    public static void pasteVariables(Event to, Object variables) {
         if (to != null)
             Variables.setLocalVariables(to, variables);
     }

@@ -9,9 +9,7 @@ import ch.njol.skript.lang.Effect;
 import ch.njol.skript.lang.Expression;
 import ch.njol.skript.lang.SkriptParser;
 import ch.njol.util.Kleenean;
-
 import io.github.mrsdarth.skirt.Reflectness;
-
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
@@ -19,8 +17,6 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.Event;
 import org.jetbrains.annotations.Nullable;
 
-import java.lang.reflect.Constructor;
-import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 @Name("Hide Entity")
@@ -38,10 +34,6 @@ public class EffHideEntity extends Effect {
     private Expression<Entity> entities;
     private Expression<Player> players;
     private boolean hide;
-
-
-
-
 
 
     @Override
@@ -68,21 +60,20 @@ public class EffHideEntity extends Effect {
     }
 
 
-
     private void hide(Player[] players, Entity[] entities) {
         Reflectness.hide(
                 Stream.of(entities)
-                .filter(e -> !(e instanceof Player)),
+                        .filter(e -> !(e instanceof Player)),
                 players);
     }
 
     private void unhide(Player[] players, Entity[] entities) {
-        for (Entity e: entities) {
+        for (Entity e : entities) {
             if (!(e instanceof Player)) try {
                 String l = (e instanceof LivingEntity) ? "Living" : "";
                 Object nmsentity = Reflectness.handle(Reflectness.craftclass("entity.Craft" + l + "Entity"), e);
                 Object unhidepacket = (Reflectness.nmsclass("PacketPlayOutSpawnEntity" + l).getDeclaredConstructor(Reflectness.nmsclass("Entity" + l))).newInstance(nmsentity);
-                for (Player p: players) {
+                for (Player p : players) {
                     Reflectness.sendpacket(p, unhidepacket);
                     Reflectness.refresh(e, p);
                 }

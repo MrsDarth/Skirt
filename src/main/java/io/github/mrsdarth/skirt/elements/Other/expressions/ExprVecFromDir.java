@@ -1,28 +1,23 @@
 package io.github.mrsdarth.skirt.elements.Other.expressions;
 
 import ch.njol.skript.Skript;
+import ch.njol.skript.doc.Description;
+import ch.njol.skript.doc.Examples;
+import ch.njol.skript.doc.Name;
+import ch.njol.skript.doc.Since;
 import ch.njol.skript.lang.Expression;
 import ch.njol.skript.lang.ExpressionType;
 import ch.njol.skript.lang.SkriptParser;
 import ch.njol.skript.lang.util.SimpleExpression;
 import ch.njol.skript.util.Direction;
 import ch.njol.util.Kleenean;
-
-import io.github.mrsdarth.skirt.Main;
-import io.github.mrsdarth.skirt.Reflectness;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.event.Event;
 import org.bukkit.util.Vector;
-
 import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
-
-import ch.njol.skript.doc.Name;
-import ch.njol.skript.doc.Description;
-import ch.njol.skript.doc.Examples;
-import ch.njol.skript.doc.Since;
 
 
 @Name("Vector from direction")
@@ -56,14 +51,14 @@ public class ExprVecFromDir extends SimpleExpression<Object> {
         int size;
         ArrayList<Vector> vecs = new ArrayList<Vector>();
         Location zero = zero();
-        for (Direction d: dir.getArray(e)) {
+        for (Direction d : dir.getArray(e)) {
             vecs.add(d.getDirection(zero));
         }
         return vecs.toArray(new Vector[vecs.size()]);
     }
 
     public static Location zero() {
-        return new Location(Bukkit.getServer().getWorlds().get(0),0,0,0);
+        return new Location(Bukkit.getServer().getWorlds().get(0), 0, 0, 0);
     }
 
 

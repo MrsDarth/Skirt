@@ -13,8 +13,7 @@ import ch.njol.util.Kleenean;
 import org.bukkit.event.Event;
 import org.jetbrains.annotations.Nullable;
 
-import java.awt.Image;
-import java.awt.Graphics;
+import java.awt.*;
 
 @Name("Image edit")
 @Description("Some basic image editing features")
@@ -71,7 +70,8 @@ public class EffEditImage extends Effect {
             } else {
                 g.clearRect(ox, oy, width, height);
             }
-        } catch (Exception ex) {}
+        } catch (Exception ex) {
+        }
     }
 
     @Override

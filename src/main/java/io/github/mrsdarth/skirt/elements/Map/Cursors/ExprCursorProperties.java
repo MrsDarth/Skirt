@@ -28,7 +28,7 @@ import org.jetbrains.annotations.Nullable;
 })
 @Since("1.2.0")
 
-public class ExprCursorProperties extends SimplePropertyExpression<MapCursor,Object> {
+public class ExprCursorProperties extends SimplePropertyExpression<MapCursor, Object> {
 
     static {
         register(ExprCursorProperties.class, Object.class, "cursor (1¦type|2¦visibility|3¦x|4¦y|5¦direction|6¦rotation|7¦(name|caption))", "mapcursors");
@@ -46,14 +46,22 @@ public class ExprCursorProperties extends SimplePropertyExpression<MapCursor,Obj
     @Override
     protected String getPropertyName() {
         switch (pattern) {
-            case 1: return "type";
-            case 2: return "visibility";
-            case 3: return "x";
-            case 4: return "y";
-            case 5: return "direction";
-            case 6: return "rotation";
-            case 7: return "name";
-            default: return null;
+            case 1:
+                return "type";
+            case 2:
+                return "visibility";
+            case 3:
+                return "x";
+            case 4:
+                return "y";
+            case 5:
+                return "direction";
+            case 6:
+                return "rotation";
+            case 7:
+                return "name";
+            default:
+                return null;
         }
     }
 
@@ -62,28 +70,42 @@ public class ExprCursorProperties extends SimplePropertyExpression<MapCursor,Obj
     @SuppressWarnings("deprecation")
     public Object convert(MapCursor cursor) {
         switch (pattern) {
-            case 1: return cursor.getType();
-            case 2: return cursor.isVisible();
-            case 3: return cursor.getX();
-            case 4: return cursor.getY();
-            case 5: return VectorMath.fromYawAndPitch(VectorMath.fromSkriptYaw(22.5f * cursor.getDirection()), 0);
-            case 6: return cursor.getDirection();
-            case 7: return cursor.getCaption();
-            default: return null;
+            case 1:
+                return cursor.getType();
+            case 2:
+                return cursor.isVisible();
+            case 3:
+                return cursor.getX();
+            case 4:
+                return cursor.getY();
+            case 5:
+                return VectorMath.fromYawAndPitch(VectorMath.fromSkriptYaw(22.5f * cursor.getDirection()), 0);
+            case 6:
+                return cursor.getDirection();
+            case 7:
+                return cursor.getCaption();
+            default:
+                return null;
         }
     }
 
     @Override
     public Class<?> getReturnType() {
         switch (pattern) {
-            case 1: return MapCursor.Type.class;
-            case 2: return Boolean.class;
+            case 1:
+                return MapCursor.Type.class;
+            case 2:
+                return Boolean.class;
             case 3:
             case 4:
-            case 6: return Number.class;
-            case 5: return Direction.class;
-            case 7: return String.class;
-            default: return null;
+            case 6:
+                return Number.class;
+            case 5:
+                return Direction.class;
+            case 7:
+                return String.class;
+            default:
+                return null;
         }
     }
 

@@ -53,7 +53,7 @@ public class ExprNewCursor extends SimpleExpression<MapCursor> {
             Object dir = direction.getSingle(e);
             if (dir instanceof Direction) {
                 Location l = ExprVecFromDir.zero();
-                d = (byte) (Math.round((l.setDirection((((Direction) dir).getDirection(l))).getYaw()+180) / 22.5) % 16);
+                d = (byte) (Math.round((l.setDirection((((Direction) dir).getDirection(l))).getYaw() + 180) / 22.5) % 16);
             } else if (dir instanceof Number) d = (byte) (ExprMapPixel.clamp(((Number) dir).intValue(), 0, 15));
         }
         return CollectionUtils.array(new MapCursor(x, y, d, cursortype, visible, name != null ? name.getSingle(e) : null));

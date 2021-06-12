@@ -34,7 +34,7 @@ public class ExprMapCanvas extends SimpleExpression<MapCanvas> {
     @Nullable
     @Override
     protected MapCanvas[] get(Event event) {
-        return CollectionUtils.array(getCanvas(event,null));
+        return CollectionUtils.array(getCanvas(event, null));
     }
 
     @Override

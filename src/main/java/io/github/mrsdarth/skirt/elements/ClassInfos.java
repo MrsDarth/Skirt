@@ -5,19 +5,17 @@ import ch.njol.skript.classes.Parser;
 import ch.njol.skript.classes.Serializer;
 import ch.njol.skript.lang.ParseContext;
 import ch.njol.skript.registrations.Classes;
-
 import ch.njol.skript.util.Direction;
 import ch.njol.util.StringUtils;
 import ch.njol.util.VectorMath;
 import ch.njol.yggdrasil.Fields;
+import org.bukkit.FluidCollisionMode;
 import org.bukkit.Statistic;
 import org.bukkit.map.MapCanvas;
 import org.bukkit.map.MapCursor;
 import org.bukkit.map.MapView;
 import org.bukkit.util.BoundingBox;
 import org.bukkit.util.RayTraceResult;
-import org.bukkit.FluidCollisionMode;
-
 import org.jetbrains.annotations.Nullable;
 
 import java.awt.image.BufferedImage;
@@ -114,12 +112,12 @@ public class ClassInfos {
                     @Override
                     protected BoundingBox deserialize(Fields f) throws StreamCorruptedException {
                         return new BoundingBox(
-                                f.getPrimitive("x1",double.class),
-                                f.getPrimitive("y1",double.class),
-                                f.getPrimitive("z1",double.class),
-                                f.getPrimitive("x2",double.class),
-                                f.getPrimitive("y2",double.class),
-                                f.getPrimitive("z2",double.class)
+                                f.getPrimitive("x1", double.class),
+                                f.getPrimitive("y1", double.class),
+                                f.getPrimitive("z1", double.class),
+                                f.getPrimitive("x2", double.class),
+                                f.getPrimitive("y2", double.class),
+                                f.getPrimitive("z2", double.class)
                         );
                     }
 
@@ -409,8 +407,9 @@ public class ClassInfos {
     }
 
     private static String toskript(String s) {
-        return s.replace("_"," ").toLowerCase();
+        return s.replace("_", " ").toLowerCase();
     }
+
     private static String fromskript(String s) {
         return s.replace(" ", "_").toUpperCase();
     }

@@ -30,7 +30,7 @@ import java.util.Iterator;
 @Since("1.1.0")
 
 
-public class ExprSmelt extends PropertyExpression<ItemType,ItemType> {
+public class ExprSmelt extends PropertyExpression<ItemType, ItemType> {
 
     static {
         Skript.registerExpression(ExprSmelt.class, ItemType.class, ExpressionType.PROPERTY,
@@ -42,13 +42,14 @@ public class ExprSmelt extends PropertyExpression<ItemType,ItemType> {
     private ItemStack smelted(ItemStack item) {
         Recipe recipe;
         Material type = item.getType();
-        for (Iterator<Recipe> it = Bukkit.recipeIterator(); it.hasNext();) {
+        for (Iterator<Recipe> it = Bukkit.recipeIterator(); it.hasNext(); ) {
             recipe = it.next();
             if ((recipe instanceof FurnaceRecipe)
                     &&
                     (((FurnaceRecipe) recipe).getInput().getType().equals(type)))
                 return recipe.getResult();
-        } return item;
+        }
+        return item;
     }
 
 
@@ -56,7 +57,7 @@ public class ExprSmelt extends PropertyExpression<ItemType,ItemType> {
     protected ItemType[] get(Event event, ItemType[] itemTypes) {
         return get(itemTypes, i -> {
             ItemType result = new ItemType();
-            for (ItemStack item: i.getAll()) {
+            for (ItemStack item : i.getAll()) {
                 result.add(new ItemData(smelted(item)));
             }
             result.setAll(true);

@@ -4,16 +4,8 @@ import ch.njol.skript.ScriptLoader;
 import ch.njol.skript.Skript;
 import ch.njol.skript.config.Node;
 import ch.njol.skript.config.SectionNode;
-import ch.njol.skript.lang.Condition;
-import ch.njol.skript.lang.Expression;
-import ch.njol.skript.lang.SkriptParser;
-import ch.njol.skript.lang.TriggerItem;
-import ch.njol.skript.lang.TriggerSection;
-import ch.njol.skript.log.HandlerList;
-import ch.njol.skript.log.LogHandler;
-import ch.njol.skript.log.ParseLogHandler;
-import ch.njol.skript.log.RetainingLogHandler;
-import ch.njol.skript.log.SkriptLogger;
+import ch.njol.skript.lang.*;
+import ch.njol.skript.log.*;
 import ch.njol.util.Kleenean;
 import ch.njol.util.StringUtils;
 import org.bukkit.event.Event;
@@ -159,7 +151,7 @@ public abstract class EffectSection extends Condition {
      * and then set the current event back to the previous one.
      * Useful to load a code from event X and parse as Y, allowing to use syntaxes that work on it.
      *
-     * @param name	  - The name of event (It can be anything)
+     * @param name    - The name of event (It can be anything)
      * @param setNext - Set the next trigger of this loading section, to actual next of this effect.
      * @param events  - The classes that extends {@link Event}.
      */

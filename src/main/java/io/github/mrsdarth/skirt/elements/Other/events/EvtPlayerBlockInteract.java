@@ -1,18 +1,16 @@
 package io.github.mrsdarth.skirt.elements.Other.events;
 
+import ch.njol.skript.Skript;
 import ch.njol.skript.aliases.ItemType;
+import ch.njol.skript.lang.Literal;
+import ch.njol.skript.lang.SkriptEvent;
+import ch.njol.skript.lang.SkriptParser.ParseResult;
+import ch.njol.skript.registrations.EventValues;
+import ch.njol.skript.util.Getter;
 import ch.njol.util.Checker;
 import org.bukkit.block.Block;
 import org.bukkit.event.Event;
 import org.bukkit.event.player.PlayerInteractEvent;
-
-import ch.njol.skript.util.Getter;
-import ch.njol.skript.registrations.EventValues;
-import ch.njol.skript.Skript;
-import ch.njol.skript.lang.Literal;
-import ch.njol.skript.lang.SkriptEvent;
-import ch.njol.skript.lang.SkriptParser.ParseResult;
-
 import org.jetbrains.annotations.Nullable;
 
 

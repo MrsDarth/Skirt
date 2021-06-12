@@ -1,22 +1,19 @@
 package io.github.mrsdarth.skirt.elements.BoundingBox.conditions;
 
 
-import org.bukkit.util.Vector;
-import org.bukkit.event.Event;
-import org.bukkit.util.BoundingBox;
-
 import ch.njol.skript.Skript;
+import ch.njol.skript.doc.Description;
+import ch.njol.skript.doc.Examples;
+import ch.njol.skript.doc.Name;
+import ch.njol.skript.doc.Since;
 import ch.njol.skript.lang.Condition;
 import ch.njol.skript.lang.Expression;
 import ch.njol.skript.lang.SkriptParser.ParseResult;
 import ch.njol.util.Kleenean;
-
+import org.bukkit.event.Event;
+import org.bukkit.util.BoundingBox;
+import org.bukkit.util.Vector;
 import org.jetbrains.annotations.Nullable;
-
-import ch.njol.skript.doc.Name;
-import ch.njol.skript.doc.Description;
-import ch.njol.skript.doc.Examples;
-import ch.njol.skript.doc.Since;
 
 
 @Name("Bounding Box intersect")
@@ -32,8 +29,6 @@ public class CondBoundingBoxIntersect extends Condition {
                 "[[bounding ]box ]%boundingbox% does(n't| not) (1¦fully contain[s]|2¦intersects[ with]) %boundingbox%",
                 "[[bounding ]box ]%boundingbox% (1¦contain|2¦does not contain)[s] %vectors%");
     }
-
-
 
 
     private Expression<BoundingBox> box1;
@@ -78,7 +73,7 @@ public class CondBoundingBoxIntersect extends Condition {
                     return (not != bool);
                 }
             } else {
-                for (Vector vector: v.getArray(e)) {
+                for (Vector vector : v.getArray(e)) {
                     if (!b1.contains(vector) && !not) {
                         return false;
                     }

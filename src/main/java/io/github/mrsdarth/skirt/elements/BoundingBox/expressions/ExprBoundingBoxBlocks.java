@@ -9,16 +9,14 @@ import ch.njol.skript.lang.Expression;
 import ch.njol.skript.lang.ExpressionType;
 import ch.njol.skript.lang.SkriptParser;
 import ch.njol.skript.lang.util.SimpleExpression;
-import ch.njol.util.Kleenean;
 import ch.njol.skript.util.AABB;
-
+import ch.njol.util.Kleenean;
+import com.google.common.collect.Lists;
 import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.event.Event;
 import org.bukkit.util.BoundingBox;
 import org.jetbrains.annotations.Nullable;
-
-import com.google.common.collect.Lists;
 
 import java.util.ArrayList;
 
@@ -32,7 +30,7 @@ import java.util.ArrayList;
 public class ExprBoundingBoxBlocks extends SimpleExpression {
 
     static {
-        Skript.registerExpression(ExprBoundingBoxBlocks.class,Block.class, ExpressionType.COMBINED,
+        Skript.registerExpression(ExprBoundingBoxBlocks.class, Block.class, ExpressionType.COMBINED,
                 "blocks within [[bounding] box] %boundingboxes%[ in %world%]");
     }
 
@@ -45,8 +43,8 @@ public class ExprBoundingBoxBlocks extends SimpleExpression {
         ArrayList<Block> blocks = new ArrayList<Block>();
         World world = w.getSingle(event);
         if (world == null) return null;
-        for (BoundingBox b: boxes.getArray(event)) {
-            blocks.addAll(Lists.newArrayList(new AABB(b.getMin().toLocation(world),b.getMax().toLocation(world))));
+        for (BoundingBox b : boxes.getArray(event)) {
+            blocks.addAll(Lists.newArrayList(new AABB(b.getMin().toLocation(world), b.getMax().toLocation(world))));
         }
         return blocks.toArray(new Block[blocks.size()]);
     }

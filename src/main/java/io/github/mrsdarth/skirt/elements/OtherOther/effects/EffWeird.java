@@ -33,7 +33,7 @@ public class EffWeird extends Effect {
 
     @Override
     protected void execute(Event event) {
-        for (Player p: players.getArray(event)) {
+        for (Player p : players.getArray(event)) {
             Reflectness.hide(Stream.of(p), CollectionUtils.array(p));
         }
     }

@@ -43,9 +43,12 @@ public class ExprMapStates extends SimplePropertyExpression<MapView, Boolean> {
     @Override
     protected String getPropertyName() {
         switch (pattern) {
-            case 1: return "locked state";
-            case 2: return "position tracking state";
-            case 3: return "unlimited tracking state";
+            case 1:
+                return "locked state";
+            case 2:
+                return "position tracking state";
+            case 3:
+                return "unlimited tracking state";
         }
         return null;
     }
@@ -54,9 +57,12 @@ public class ExprMapStates extends SimplePropertyExpression<MapView, Boolean> {
     @Override
     public Boolean convert(MapView mapView) {
         switch (pattern) {
-            case 1: return mapView.isLocked();
-            case 2: return mapView.isTrackingPosition();
-            case 3: return mapView.isUnlimitedTracking();
+            case 1:
+                return mapView.isLocked();
+            case 2:
+                return mapView.isTrackingPosition();
+            case 3:
+                return mapView.isUnlimitedTracking();
         }
         return null;
     }
@@ -76,7 +82,7 @@ public class ExprMapStates extends SimplePropertyExpression<MapView, Boolean> {
     public void change(Event e, @Nullable Object[] delta, Changer.ChangeMode mode) {
         Boolean b = (Boolean) delta[0];
         if (b == null) return;
-        for (MapView map: getExpr().getArray(e)) {
+        for (MapView map : getExpr().getArray(e)) {
             switch (pattern) {
                 case 1:
                     map.setLocked(b);

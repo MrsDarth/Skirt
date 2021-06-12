@@ -1,24 +1,21 @@
 package io.github.mrsdarth.skirt.elements.BoundingBox.expressions;
 
 import ch.njol.skript.Skript;
-import ch.njol.skript.lang.ExpressionType;
+import ch.njol.skript.doc.Description;
+import ch.njol.skript.doc.Examples;
+import ch.njol.skript.doc.Name;
+import ch.njol.skript.doc.Since;
 import ch.njol.skript.lang.Expression;
+import ch.njol.skript.lang.ExpressionType;
 import ch.njol.skript.lang.SkriptParser.ParseResult;
 import ch.njol.skript.lang.util.SimpleExpression;
 import ch.njol.util.Kleenean;
-
 import org.bukkit.event.Event;
 import org.bukkit.util.BoundingBox;
 import org.bukkit.util.Vector;
-
 import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
-
-import ch.njol.skript.doc.Name;
-import ch.njol.skript.doc.Description;
-import ch.njol.skript.doc.Examples;
-import ch.njol.skript.doc.Since;
 
 
 @Name("Bounding Box Points")
@@ -54,7 +51,7 @@ public class ExprBoundingBoxPoints extends SimpleExpression<Vector> {
     @Nullable
     protected Vector[] get(Event e) {
         ArrayList<Vector> vecs = new ArrayList<Vector>();
-        for (BoundingBox b: box.getArray(e)) {
+        for (BoundingBox b : box.getArray(e)) {
             vecs.add((pattern == 0) ? b.getCenter() : (mark == 1) ? b.getMax() : b.getMin());
         }
         return vecs.toArray(new Vector[vecs.size()]);

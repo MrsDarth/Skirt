@@ -2,7 +2,6 @@ package io.github.mrsdarth.skirt.elements.Other.events;
 
 import ch.njol.skript.Skript;
 import ch.njol.skript.entity.EntityData;
-import ch.njol.skript.entity.SimpleEntityData;
 import ch.njol.skript.lang.Literal;
 import ch.njol.skript.lang.SkriptEvent;
 import ch.njol.skript.lang.SkriptParser;

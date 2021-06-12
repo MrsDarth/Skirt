@@ -66,7 +66,7 @@ public class ExprMapOfItem extends SimplePropertyExpression<ItemType, MapView> {
         byte f, d = 0;
         ItemMeta itemMeta;
         if (delta[0] instanceof Number) d = ((Number) delta[0]).byteValue();
-        for (ItemType item: getExpr().getArray(e)) {
+        for (ItemType item : getExpr().getArray(e)) {
             itemMeta = item.getItemMeta();
             if (!(itemMeta instanceof MapMeta)) break;
             f = 1;

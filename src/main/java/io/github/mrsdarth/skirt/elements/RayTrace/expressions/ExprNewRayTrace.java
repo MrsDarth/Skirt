@@ -1,5 +1,15 @@
 package io.github.mrsdarth.skirt.elements.RayTrace.expressions;
 
+import ch.njol.skript.Skript;
+import ch.njol.skript.doc.Description;
+import ch.njol.skript.doc.Examples;
+import ch.njol.skript.doc.Name;
+import ch.njol.skript.doc.Since;
+import ch.njol.skript.lang.Expression;
+import ch.njol.skript.lang.ExpressionType;
+import ch.njol.skript.lang.SkriptParser.ParseResult;
+import ch.njol.skript.lang.util.SimpleExpression;
+import ch.njol.util.Kleenean;
 import ch.njol.util.coll.CollectionUtils;
 import org.bukkit.FluidCollisionMode;
 import org.bukkit.Location;
@@ -11,23 +21,10 @@ import org.bukkit.event.Event;
 import org.bukkit.util.BoundingBox;
 import org.bukkit.util.RayTraceResult;
 import org.bukkit.util.Vector;
-
-import ch.njol.skript.Skript;
-import ch.njol.skript.lang.ExpressionType;
-import ch.njol.skript.lang.Expression;
-import ch.njol.skript.lang.SkriptParser.ParseResult;
-import ch.njol.skript.lang.util.SimpleExpression;
-import ch.njol.util.Kleenean;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.function.Predicate;
-
-import org.jetbrains.annotations.Nullable;
-
-import ch.njol.skript.doc.Description;
-import ch.njol.skript.doc.Examples;
-import ch.njol.skript.doc.Name;
-import ch.njol.skript.doc.Since;
 
 @Name("Ray Trace")
 @Description("Starts a ray trace")
@@ -67,7 +64,6 @@ public class ExprNewRayTrace extends SimpleExpression<RayTraceResult> {
                 "entity ray[ ]trace [starting] from %location% using %vector%[, with max %-number%][, ray[ ]size %-number%][, filter[ing][ out]  %-entities%]",
                 "[block and entity ]ray[ ]trace [starting] from %location% using %vector%, max %number%, [fluid[collision][mode]] %fluidcollisionmode%[, (1¦(to ignore|ignoring) passable[ blocks])], ray[ ]size %number%[, filter[ing][ out]  %-entities%]");
     }
-
 
 
     @Override
@@ -158,8 +154,8 @@ public class ExprNewRayTrace extends SimpleExpression<RayTraceResult> {
     @Override
     @Nullable
     protected RayTraceResult[] get(Event event) {
-        Expression<?>[][] exprs = {{livingentities,fmode},{location,vector,fmode},{block,location,vector,fmode},{boundingbox,start,vector},{location,vector},{location,vector,max,fmode,raysize}};
-        for (Expression<?> expression: exprs[pattern]) {
+        Expression<?>[][] exprs = {{livingentities, fmode}, {location, vector, fmode}, {block, location, vector, fmode}, {boundingbox, start, vector}, {location, vector}, {location, vector, max, fmode, raysize}};
+        for (Expression<?> expression : exprs[pattern]) {
             if (expression.getSingle(event) == null) {
                 return null;
             }
@@ -173,8 +169,8 @@ public class ExprNewRayTrace extends SimpleExpression<RayTraceResult> {
         switch (pattern) {
             case 0:
                 ArrayList<RayTraceResult> rays = new ArrayList<RayTraceResult>();
-                for (LivingEntity l: livingentities.getArray(event)) {
-                    rays.add(l.rayTraceBlocks(maxd,fmode.getSingle(event)));
+                for (LivingEntity l : livingentities.getArray(event)) {
+                    rays.add(l.rayTraceBlocks(maxd, fmode.getSingle(event)));
                 }
                 return rays.toArray(new RayTraceResult[rays.size()]);
 
@@ -224,7 +220,7 @@ public class ExprNewRayTrace extends SimpleExpression<RayTraceResult> {
         return e -> {
             String uuid = e.getUniqueId().toString();
             boolean match;
-            for (Entity entity: es) {
+            for (Entity entity : es) {
                 if (entity.getUniqueId().toString().equalsIgnoreCase(uuid)) {
                     return false;
                 }

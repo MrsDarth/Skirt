@@ -1,28 +1,25 @@
 package io.github.mrsdarth.skirt.elements.BoundingBox.expressions;
 
 
-import ch.njol.util.coll.CollectionUtils;
-import org.bukkit.block.Block;
-import org.bukkit.event.Event;
-import org.bukkit.util.BoundingBox;
-import org.bukkit.util.Vector;
-import org.bukkit.entity.Entity;
-
 import ch.njol.skript.Skript;
-import ch.njol.skript.lang.ExpressionType;
+import ch.njol.skript.doc.Description;
+import ch.njol.skript.doc.Examples;
+import ch.njol.skript.doc.Name;
+import ch.njol.skript.doc.Since;
 import ch.njol.skript.lang.Expression;
+import ch.njol.skript.lang.ExpressionType;
 import ch.njol.skript.lang.SkriptParser.ParseResult;
 import ch.njol.skript.lang.util.SimpleExpression;
 import ch.njol.util.Kleenean;
-
-import java.util.ArrayList;
-
+import ch.njol.util.coll.CollectionUtils;
+import org.bukkit.block.Block;
+import org.bukkit.entity.Entity;
+import org.bukkit.event.Event;
+import org.bukkit.util.BoundingBox;
+import org.bukkit.util.Vector;
 import org.jetbrains.annotations.Nullable;
 
-import ch.njol.skript.doc.Name;
-import ch.njol.skript.doc.Description;
-import ch.njol.skript.doc.Examples;
-import ch.njol.skript.doc.Since;
+import java.util.ArrayList;
 
 
 @Name("Create Bounding Box")
@@ -52,9 +49,12 @@ public class ExprBoundingBox extends SimpleExpression<BoundingBox> {
     @Override
     public boolean isSingle() {
         switch (pattern) {
-            case 0: return entity.isSingle();
-            case 1: return block.isSingle();
-            case 4: return box.isSingle();
+            case 0:
+                return entity.isSingle();
+            case 1:
+                return block.isSingle();
+            case 4:
+                return box.isSingle();
         }
         return true;
     }
@@ -117,13 +117,13 @@ public class ExprBoundingBox extends SimpleExpression<BoundingBox> {
         switch (pattern) {
             case 0:
                 Entity[] entities = entity.getArray(event);
-                for (Entity e: entities) {
+                for (Entity e : entities) {
                     boxes.add(e.getBoundingBox());
                 }
                 return boxes.toArray(new BoundingBox[boxes.size()]);
             case 1:
                 Block[] blocks = block.getArray(event);
-                for (Block b: blocks) {
+                for (Block b : blocks) {
                     boxes.add(b.getBoundingBox());
                 }
                 return boxes.toArray(new BoundingBox[boxes.size()]);

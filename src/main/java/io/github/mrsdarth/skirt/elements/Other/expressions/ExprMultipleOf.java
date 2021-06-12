@@ -14,7 +14,6 @@ import ch.njol.skript.registrations.Converters;
 import ch.njol.skript.util.Utils;
 import ch.njol.util.Kleenean;
 import org.bukkit.event.Event;
-
 import org.jetbrains.annotations.Nullable;
 
 import java.lang.reflect.Array;
@@ -23,8 +22,8 @@ import java.util.Arrays;
 import java.util.List;
 
 @Name("Multiple of object")
-@Description({"returns x of any object","3 times of stone would return stone, stone and stone"})
-@Examples({"set {_text::*} to 5 times of \"hi\"","send join {_text::*}","#outputs hihihihihi"})
+@Description({"returns x of any object", "3 times of stone would return stone, stone and stone"})
+@Examples({"set {_text::*} to 5 times of \"hi\"", "send join {_text::*}", "#outputs hihihihihi"})
 @Since("1.0.1")
 
 public class ExprMultipleOf<T> extends SimpleExpression<T> {

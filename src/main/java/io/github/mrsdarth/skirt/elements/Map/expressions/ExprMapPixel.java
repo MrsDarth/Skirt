@@ -172,7 +172,7 @@ public class ExprMapPixel extends SimpleExpression<Number> {
     }
 
     public static int clamp(int value, int min, int max) {
-        return Math.min(max,Math.max(value, min));
+        return Math.min(max, Math.max(value, min));
     }
 
 

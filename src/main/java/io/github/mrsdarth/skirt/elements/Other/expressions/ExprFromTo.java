@@ -1,29 +1,25 @@
 package io.github.mrsdarth.skirt.elements.Other.expressions;
 
 
-import ch.njol.util.coll.CollectionUtils;
-import io.papermc.paper.event.entity.EntityMoveEvent;
-import org.bukkit.event.Event;
-import org.bukkit.event.player.PlayerMoveEvent;
-import org.bukkit.Location;
-
-
 import ch.njol.skript.ScriptLoader;
-import ch.njol.skript.log.ErrorQuality;
 import ch.njol.skript.Skript;
 import ch.njol.skript.classes.Changer.ChangeMode;
-import ch.njol.skript.lang.ExpressionType;
-import ch.njol.skript.lang.Expression;
-import ch.njol.skript.lang.SkriptParser.ParseResult;
-import ch.njol.skript.lang.util.SimpleExpression;
-import ch.njol.util.Kleenean;
-
-import org.jetbrains.annotations.Nullable;
-
-import ch.njol.skript.doc.Name;
 import ch.njol.skript.doc.Description;
 import ch.njol.skript.doc.Examples;
+import ch.njol.skript.doc.Name;
 import ch.njol.skript.doc.Since;
+import ch.njol.skript.lang.Expression;
+import ch.njol.skript.lang.ExpressionType;
+import ch.njol.skript.lang.SkriptParser.ParseResult;
+import ch.njol.skript.lang.util.SimpleExpression;
+import ch.njol.skript.log.ErrorQuality;
+import ch.njol.util.Kleenean;
+import ch.njol.util.coll.CollectionUtils;
+import io.papermc.paper.event.entity.EntityMoveEvent;
+import org.bukkit.Location;
+import org.bukkit.event.Event;
+import org.bukkit.event.player.PlayerMoveEvent;
+import org.jetbrains.annotations.Nullable;
 
 @Name("Get From/To")
 @Description("Gets the location from and location to in a player or entity move event, can be set")
@@ -82,7 +78,7 @@ public class ExprFromTo extends SimpleExpression<Location> {
     }
 
     @Override
-    public void change(Event event, Object[] delta, ChangeMode mode){
+    public void change(Event event, Object[] delta, ChangeMode mode) {
         if (delay) {
             Skript.error("Can't change getFrom/To after event already passed", ErrorQuality.SEMANTIC_ERROR);
             return;

@@ -9,10 +9,9 @@ import org.bukkit.entity.Player;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
-
 import java.util.Arrays;
-import java.util.Set;
 import java.util.HashSet;
+import java.util.Set;
 import java.util.stream.Stream;
 
 public class Reflectness {
@@ -50,7 +49,9 @@ public class Reflectness {
     public static Object handle(Class<?> c, Object o) {
         try {
             return c.getDeclaredMethod("getHandle").invoke(c.cast(o));
-        } catch (Exception ex) {return null;}
+        } catch (Exception ex) {
+            return null;
+        }
     }
 
     public static Object nmsEntity(Entity e) {
@@ -117,7 +118,7 @@ public class Reflectness {
         try {
             Class<?> hidepacket = nmsclass("PacketPlayOutEntityDestroy");
             Object packet = hidepacket.getDeclaredConstructor(int[].class).newInstance(entities.mapToInt(Entity::getEntityId).toArray());
-            for (Player p: players) {
+            for (Player p : players) {
                 sendpacket(p, packet);
             }
         } catch (Exception ex) {
@@ -137,7 +138,7 @@ public class Reflectness {
                 Method setloc = nmsentity.getDeclaredMethod("setLocation", double.class, double.class, double.class, float.class, float.class);
                 setloc.invoke(nmsEntity(e), x, y, z, yaw, pitch);
             }
-        } catch (Exception ex){
+        } catch (Exception ex) {
             ex.printStackTrace();
         }
     }
@@ -146,7 +147,7 @@ public class Reflectness {
         try {
             Object pc = playerconnection(p);
             pc.getClass().getDeclaredMethod("sendPacket", packetclass).invoke(pc, packet);
-        } catch (Exception ex){
+        } catch (Exception ex) {
             ex.printStackTrace();
         }
 

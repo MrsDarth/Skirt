@@ -1,6 +1,10 @@
 package io.github.mrsdarth.skirt.elements.Map.effects;
 
 import ch.njol.skript.Skript;
+import ch.njol.skript.doc.Description;
+import ch.njol.skript.doc.Examples;
+import ch.njol.skript.doc.Name;
+import ch.njol.skript.doc.Since;
 import ch.njol.skript.effects.Delay;
 import ch.njol.skript.lang.*;
 import ch.njol.skript.timings.SkriptTimings;
@@ -14,6 +18,17 @@ import io.github.mrsdarth.skirt.elements.Util.VariableUtils;
 import org.bukkit.event.Event;
 import org.bukkit.map.MapCanvas;
 import org.jetbrains.annotations.Nullable;
+
+@Name("Wait for render")
+@Description({
+        "waits until the specified canvas is rendered again. Renders happen almost every tick.",
+        "Useful when you want every action to be seen."})
+@Examples({
+        "loop 100 times:",
+        "\tadd 1 to cursor rotation of {_cursor}",
+        "\twait for {_canvas} to render"
+})
+@Since("1.2.0")
 
 public class EffWaitRender extends Effect {
 

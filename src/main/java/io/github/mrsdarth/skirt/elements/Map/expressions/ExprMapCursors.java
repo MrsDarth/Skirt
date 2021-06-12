@@ -44,7 +44,8 @@ public class ExprMapCursors extends SimpleExpression<MapCursor> {
         MapCursor[] cursors = new MapCursor[size];
         for (int i = 0; i < size; i++) {
             cursors[i] = collection.getCursor(i);
-        } return cursors;
+        }
+        return cursors;
 
     }
 
@@ -89,24 +90,25 @@ public class ExprMapCursors extends SimpleExpression<MapCursor> {
 
     @Override
     public void change(Event e, @Nullable Object[] delta, Changer.ChangeMode mode) {
-        MapCanvas c =  ExprMapCanvas.getCanvas(e, canvas);
+        MapCanvas c = ExprMapCanvas.getCanvas(e, canvas);
         if (c == null) return;
         switch (mode) {
             case SET:
                 MapCursorCollection collection0 = new MapCursorCollection();
-                for (Object cursor: delta) {
+                for (Object cursor : delta) {
                     if (cursor instanceof MapCursor) collection0.addCursor((MapCursor) cursor);
-                } c.setCursors(collection0);
+                }
+                c.setCursors(collection0);
                 break;
             case ADD:
                 MapCursorCollection collection1 = c.getCursors();
-                for (Object cursor: delta) {
+                for (Object cursor : delta) {
                     if (cursor instanceof MapCursor) collection1.addCursor((MapCursor) cursor);
                 }
                 break;
             case REMOVE:
                 MapCursorCollection collection2 = c.getCursors();
-                for (Object cursor: delta) {
+                for (Object cursor : delta) {
                     if (cursor instanceof MapCursor) collection2.removeCursor((MapCursor) cursor);
                 }
             default:
