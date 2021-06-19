@@ -13,6 +13,9 @@ import ch.njol.skript.lang.util.SimpleExpression;
 import ch.njol.util.Kleenean;
 import ch.njol.util.coll.CollectionUtils;
 import org.bukkit.event.Event;
+//import org.bytedeco.javacpp.Loader;
+//import org.bytedeco.javacv.FFmpegFrameGrabber;
+//import org.bytedeco.javacv.Java2DFrameConverter;
 import org.jetbrains.annotations.Nullable;
 
 import javax.imageio.ImageIO;
@@ -97,6 +100,7 @@ public class ExprImage extends SimpleExpression {
                     return isfolder ? imagesFolder(new File(l)) : CollectionUtils.array(
                             isfile ? fromFile(new File(l)) : ImageIO.read(new URL(l)));
                 } catch (Exception ex) {
+                    ex.printStackTrace();
                     return null;
                 }
         }

@@ -28,13 +28,11 @@ public class ExprVecToLoc extends SimpleExpression<Location> {
 
     static {
         Skript.registerExpression(ExprVecToLoc.class, Location.class, ExpressionType.COMBINED,
-                "%vectors% as location[s][ in %world%]"/*,
-                "[new] (zero|0|empty) location[ in %worlds%]"*/);
+                "%vectors% as location[s][ in %world%]");
     }
 
     private Expression<Vector> vecs;
     private Expression<World> world;
-    private boolean withv;
 
     @Override
     public Class<? extends Location> getReturnType() {
@@ -49,13 +47,8 @@ public class ExprVecToLoc extends SimpleExpression<Location> {
     @SuppressWarnings({"unchecked", "null"})
     @Override
     public boolean init(Expression<?>[] exprs, int matchedPattern, Kleenean isDelayed, ParseResult parser) {
-        withv = (matchedPattern == 0);
-        if (withv) {
-            vecs = (Expression<Vector>) exprs[0];
-            world = (Expression<World>) exprs[1];
-        } else {
-            world = (Expression<World>) exprs[0];
-        }
+        vecs = (Expression<Vector>) exprs[0];
+        world = (Expression<World>) exprs[1];
         return true;
     }
 
@@ -67,20 +60,14 @@ public class ExprVecToLoc extends SimpleExpression<Location> {
     @Override
     @Nullable
     protected Location[] get(Event event) {
-        ArrayList<Location> locations = new ArrayList<Location>();
-        if (withv) {
-            World w = world.getSingle(event);
-            if (w == null) {
-                return null;
-            }
-            for (Vector v : vecs.getArray(event)) {
-                locations.add(v.toLocation(w));
-            }
-        } else {
-            for (World w : world.getArray(event)) {
-                locations.add(new Location(w, 0, 0, 0));
-            }
+        World w = world.getSingle(event);
+        if (w == null) return null;
+        Vector[] vectors = vecs.getArray(event);
+        Location[] locations = new Location[vectors.length];
+        int i = 0;
+        for (Vector v: vectors) {
+            locations[i++] = v.toLocation(w);
         }
-        return locations.toArray(new Location[locations.size()]);
+        return locations;
     }
 }

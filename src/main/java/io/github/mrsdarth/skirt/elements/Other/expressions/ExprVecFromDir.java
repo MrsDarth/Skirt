@@ -48,7 +48,6 @@ public class ExprVecFromDir extends SimpleExpression<Object> {
     @Override
     @Nullable
     protected Vector[] get(Event e) {
-        int size;
         ArrayList<Vector> vecs = new ArrayList<Vector>();
         Location zero = zero();
         for (Direction d : dir.getArray(e)) {
