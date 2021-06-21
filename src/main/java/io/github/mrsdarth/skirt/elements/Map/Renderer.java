@@ -1,5 +1,6 @@
 package io.github.mrsdarth.skirt.elements.Map;
 
+import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Event;
 import org.bukkit.map.*;
@@ -30,6 +31,9 @@ public class Renderer extends MapRenderer {
         if (run != null) firstrun.put(map, run);
         if (mode != Mode.PARTIAL) clear(map, true);
         map.addRenderer(this);
+        for (Player p: Bukkit.getOnlinePlayers()) {
+            p.sendMap(map);
+        }
     }
 
     public static void onRender(MapCanvas c, Runnable run) {

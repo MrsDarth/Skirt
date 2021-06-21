@@ -13,9 +13,6 @@ import ch.njol.skript.lang.util.SimpleExpression;
 import ch.njol.util.Kleenean;
 import ch.njol.util.coll.CollectionUtils;
 import org.bukkit.event.Event;
-//import org.bytedeco.javacpp.Loader;
-//import org.bytedeco.javacv.FFmpegFrameGrabber;
-//import org.bytedeco.javacv.Java2DFrameConverter;
 import org.jetbrains.annotations.Nullable;
 
 import javax.imageio.ImageIO;
@@ -32,27 +29,24 @@ import java.util.Arrays;
 @Examples({
         "command freeop:",
         "\ttrigger:",
-        "\t\tset {_gif::*} to images from folder \"rick\"",
+        "\t\tset {_image} to image from url \"https://disforge.com/assets/icons/772869055417417768.png\"",
+        "\t\t{_image} is set",
         "\t\tset {_map} to new map from world",
-        "\t\tset player's tool to map item from {_map}",
         "\t\tedit {_map} and store canvas in {_canvas}",
-        "\t\tloop 5 times:",
-        "\t\t\tloop {_gif::*}:",
-        "\t\t\t\tdraw image (loop-value-2) at (0,0) on {_canvas}",
-        "\t\t\t\twait a tick",
-        "\t\tstop editing {_map}"
+        "\t\tdraw image {_image} at 0, 0 on {_canvas}",
+        "\t\tset player's tool to map item from {_map}"
 })
-@Since("1.2.0")
+@Since("1.2.0, 1.2.1 (gif frames)")
 
 public class ExprImage extends SimpleExpression {
 
     static {
         Skript.registerExpression(ExprImage.class, BufferedImage.class, ExpressionType.COMBINED,
-                "[new] image[s] from (1¦file [path]|2¦url) %string%",
+                "[new] image from (1¦file [path]|2¦url) %string%",
                 "images (from|in) folder %string%",
-                "%image% resized[ to[\\(][x[ ]]%number%,[ ][y[ ]]%number%[\\)]]",
-                "sub[ ]image of %image% from [\\(][x[ ]]%number%,[ ][y[ ]]%number%[\\)] to [\\(][x[ ]]%number%,[ ][y[ ]]%number%[\\)]",
-                "new [(blank|empty)] image [with dimensions [\\(][x[ ]]%number%,[ ][y[ ]]%number%[\\)]]");
+                "%images% resized[ to[\\(][x[ ]]%-number%,[ ][y[ ]]%-number%[\\)]]",
+                "sub[ ]image of %images% from [\\(][x[ ]]%number%,[ ][y[ ]]%number%[\\)] to [\\(][x[ ]]%number%,[ ][y[ ]]%number%[\\)]",
+                "new [(blank|empty)] image [with dimensions [\\(][x[ ]]%-number%,[ ][y[ ]]%-number%[\\)]]");
     }
 
     @Nullable
@@ -60,25 +54,26 @@ public class ExprImage extends SimpleExpression {
     protected BufferedImage[] get(Event event) {
         switch (pattern) {
             case 2:
-                BufferedImage image = img.getSingle(event);
-                if (image == null) return null;
-                Number x = ex == null ? 128 : ex.getSingle(event), y = ey == null ? 128 : ey.getSingle(event);
+                Number x = ex != null ? ex.getSingle(event) : 128, y = ey != null ? ey.getSingle(event) : 128;
                 if (x == null || y == null) return null;
+                BufferedImage[]
+                        bufferedImages = img.getArray(event),
+                        dimg = new BufferedImage[bufferedImages.length];
                 int width = x.intValue(), height = y.intValue();
-                BufferedImage dimg = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
-
-                Graphics2D g2d = dimg.createGraphics();
-                g2d.drawImage(image.getScaledInstance(width, height, Image.SCALE_DEFAULT), 0, 0, null);
-                g2d.dispose();
-                return CollectionUtils.array(dimg);
+                for (int i = 0; i < bufferedImages.length; i++) {
+                    dimg[i] = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
+                    Graphics2D g2d = dimg[i].createGraphics();
+                    g2d.drawImage(bufferedImages[i].getScaledInstance(width, height, Image.SCALE_DEFAULT), 0, 0, null);
+                    g2d.dispose();
+                }
+                return dimg;
             case 3:
-                BufferedImage sub = img.getSingle(event);
                 Number
                         x0 = ex.getSingle(event),
                         y0 = ey.getSingle(event),
                         x1 = ex1.getSingle(event),
                         y1 = ey1.getSingle(event);
-                if (sub == null || x0 == null || y0 == null || x1 == null || y1 == null) return null;
+                if (x0 == null || y0 == null || x1 == null || y1 == null) return null;
                 int
                         ix0 = x0.intValue(),
                         iy0 = y0.intValue(),
@@ -88,7 +83,13 @@ public class ExprImage extends SimpleExpression {
                         oy = Math.min(iy0, iy1),
                         w = Math.abs(ix0 - ix1),
                         h = Math.abs(iy0 - iy1);
-                return CollectionUtils.array(sub.getSubimage(ox, oy, w, h));
+                BufferedImage[]
+                        subs = img.getArray(event),
+                        sub = new BufferedImage[subs.length];
+                for (int i = 0; i < subs.length; i++) {
+                    sub[i] = subs[i].getSubimage(ox, oy, w, h);
+                }
+                return sub;
             case 4:
                 Number b = ex != null ? ex.getSingle(event) : 128, len = ey != null ? ey.getSingle(event) : 128;
                 if (b == null || len == null) return null;
@@ -108,7 +109,7 @@ public class ExprImage extends SimpleExpression {
 
     @Override
     public boolean isSingle() {
-        return !isfolder;
+        return (img != null) ? img.isSingle() : (!isfolder && pattern != 5);
     }
 
     @Override

@@ -4,12 +4,13 @@ import ch.njol.skript.Skript;
 import ch.njol.skript.SkriptAddon;
 import org.bukkit.plugin.java.JavaPlugin;
 
+import java.io.File;
 import java.io.IOException;
 
 
 public class Main extends JavaPlugin {
 
-    Main instance;
+    private static Main instance;
     SkriptAddon addon;
 
     public void onEnable() {
@@ -25,7 +26,24 @@ public class Main extends JavaPlugin {
         System.out.println("Skirt!");
     }
 
-    public Main getInstance() {
+    public static File cache() {
+        return new File(instance.getDataFolder(), "cache");
+    }
+
+    public void onDisable() {
+        delete(cache());
+    }
+
+    private void delete(File f) {
+        if (!f.exists()) return;
+        if (f.isDirectory()) {
+            for (File file: f.listFiles()) {
+                delete(file);
+            }
+        } f.delete();
+    }
+
+    public static Main getInstance() {
         return instance;
     }
 

@@ -27,7 +27,7 @@ public class ExprItemMap extends PropertyExpression<MapView, ItemType> {
 
     static {
         Skript.registerExpression(ExprItemMap.class, ItemType.class, ExpressionType.PROPERTY,
-                "[[filled] map] item[s] (of|from|with) %maps%");
+                "[filled] map item[s] (of|from|with) %maps%");
     }
 
     @Override

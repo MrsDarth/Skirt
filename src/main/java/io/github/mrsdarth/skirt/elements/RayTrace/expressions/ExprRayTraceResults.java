@@ -39,6 +39,7 @@ public class ExprRayTraceResults extends SimplePropertyExpression<RayTraceResult
     @Override
     public boolean init(Expression<?>[] exprs, int matchedPattern, Kleenean kleenean, ParseResult parseResult) {
         type = parseResult.mark;
+        setExpr((Expression<? extends RayTraceResult>) exprs[0]);
         return true;
     }
 

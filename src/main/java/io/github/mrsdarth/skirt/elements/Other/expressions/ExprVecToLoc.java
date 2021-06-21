@@ -16,8 +16,6 @@ import org.bukkit.event.Event;
 import org.bukkit.util.Vector;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.ArrayList;
-
 
 @Name("Vector to location")
 @Description("returns a location from a vector")
