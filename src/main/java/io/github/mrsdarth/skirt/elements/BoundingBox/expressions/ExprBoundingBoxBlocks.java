@@ -27,11 +27,11 @@ import java.util.ArrayList;
         "\tsend \"%player% is touching a block!\""})
 @Since("1.0.1")
 
-public class ExprBoundingBoxBlocks extends SimpleExpression {
+public class ExprBoundingBoxBlocks extends SimpleExpression<Block> {
 
     static {
         Skript.registerExpression(ExprBoundingBoxBlocks.class, Block.class, ExpressionType.COMBINED,
-                "blocks within [[bounding] box] %boundingboxes%[ in %world%]");
+                "blocks within [bounding[ ]]box %boundingboxes%[ in %world%]");
     }
 
     private Expression<BoundingBox> boxes;
@@ -55,7 +55,7 @@ public class ExprBoundingBoxBlocks extends SimpleExpression {
     }
 
     @Override
-    public Class getReturnType() {
+    public Class<? extends Block> getReturnType() {
         return Block.class;
     }
 

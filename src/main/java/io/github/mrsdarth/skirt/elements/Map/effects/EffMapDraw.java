@@ -62,7 +62,6 @@ public class EffMapDraw extends Effect {
         } else {
             String text = txt.getSingle(event);
             if (text != null)
-                System.out.println(mapformat(mapformathex(text)));
             c.drawText(cx, cy, MinecraftFont.Font, mapformat(mapformathex(text)));
         }
 

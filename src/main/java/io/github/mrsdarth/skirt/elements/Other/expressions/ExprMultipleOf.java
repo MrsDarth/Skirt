@@ -37,7 +37,6 @@ public class ExprMultipleOf<T> extends SimpleExpression<T> {
     private ExprMultipleOf<?> source;
 
     private Expression<Number> num;
-    @Nullable
     private Expression<Object> obj;
     private Class<? extends T>[] types;
     private Class<T> superType;
