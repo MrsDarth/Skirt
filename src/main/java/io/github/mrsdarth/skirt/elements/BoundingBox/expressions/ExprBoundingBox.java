@@ -12,6 +12,7 @@ import ch.njol.skript.lang.SkriptParser.ParseResult;
 import ch.njol.skript.lang.util.SimpleExpression;
 import ch.njol.util.Kleenean;
 import ch.njol.util.coll.CollectionUtils;
+import org.bukkit.Location;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Entity;
 import org.bukkit.event.Event;
@@ -34,8 +35,8 @@ public class ExprBoundingBox extends SimpleExpression<BoundingBox> {
         Skript.registerExpression(ExprBoundingBox.class, BoundingBox.class, ExpressionType.COMBINED,
                 "(bounding|hit)[ ]box of %entities%",
                 "(bounding|hit)[ ]box of %blocks%",
-                "[new ]bounding box (from|between) %vector% (and|to) %vector%",
-                "[new ]bounding box with centre %vector% with dimensions [x ]%number%, [y ]%number%, [z ]%number%",
+                "[new ]bounding box (from|between) %vector/location% (and|to) %vector/location%",
+                "[new ]bounding box with centre %vector/location% with dimensions [x ]%number%, [y ]%number%, [z ]%number%",
                 "%boundingboxes%[ with all directions] expanded by %number%",
                 "intersection[ box] between %boundingbox% and %boundingbox%");
     }
@@ -61,8 +62,8 @@ public class ExprBoundingBox extends SimpleExpression<BoundingBox> {
 
     private Expression<Entity> entity;
     private Expression<Block> block;
-    private Expression<Vector> vec1;
-    private Expression<Vector> vec2;
+    private Expression<?> vec1;
+    private Expression<?> vec2;
     private Expression<Number> x;
     private Expression<Number> y;
     private Expression<Number> z;
@@ -70,7 +71,6 @@ public class ExprBoundingBox extends SimpleExpression<BoundingBox> {
     private Expression<BoundingBox> box2;
     private Expression<Number> expansion;
     private int pattern;
-    private boolean bool;
 
     @SuppressWarnings("unchecked")
     @Override
@@ -84,11 +84,11 @@ public class ExprBoundingBox extends SimpleExpression<BoundingBox> {
                 block = (Expression<Block>) exprs[0];
                 break;
             case 2:
-                vec1 = (Expression<Vector>) exprs[0];
-                vec2 = (Expression<Vector>) exprs[1];
+                vec1 = exprs[0];
+                vec2 = exprs[1];
                 break;
             case 3:
-                vec1 = (Expression<Vector>) exprs[0];
+                vec1 = exprs[0];
                 x = (Expression<Number>) exprs[1];
                 y = (Expression<Number>) exprs[2];
                 z = (Expression<Number>) exprs[3];
@@ -128,19 +128,19 @@ public class ExprBoundingBox extends SimpleExpression<BoundingBox> {
                 }
                 return boxes.toArray(new BoundingBox[boxes.size()]);
             case 2:
-                Vector l1 = vec1.getSingle(event);
-                Vector l2 = vec2.getSingle(event);
+                Object l1 = vec1.getSingle(event);
+                Object l2 = vec2.getSingle(event);
                 if ((l1 != null) && (l2 != null)) {
-                    return CollectionUtils.array(BoundingBox.of(l1, l2));
+                    return CollectionUtils.array(BoundingBox.of(vector(l1), vector(l2)));
                 }
                 return null;
             case 3:
-                Vector centre = vec1.getSingle(event);
+                Object centre = vec1.getSingle(event);
                 Number xpos = x.getSingle(event);
                 Number ypos = y.getSingle(event);
                 Number zpos = z.getSingle(event);
                 if (centre != null && xpos != null && ypos != null && zpos != null) {
-                    return CollectionUtils.array(BoundingBox.of(centre, xpos.doubleValue(), ypos.doubleValue(), zpos.doubleValue()));
+                    return CollectionUtils.array(BoundingBox.of(vector(centre), xpos.doubleValue(), ypos.doubleValue(), zpos.doubleValue()));
                 }
                 return null;
             case 4:
@@ -161,6 +161,10 @@ public class ExprBoundingBox extends SimpleExpression<BoundingBox> {
                 }
         }
         return null;
+    }
+
+    private Vector vector(Object o) {
+        return o instanceof Vector ? (Vector) o : ((Location) o).toVector();
     }
 
 
