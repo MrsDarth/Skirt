@@ -1,4 +1,4 @@
-package io.github.mrsdarth.skirt.elements.Other.expressions;
+package io.github.mrsdarth.skirt.elements.Statistics;
 
 import ch.njol.skript.Skript;
 import ch.njol.skript.aliases.ItemType;

@@ -102,7 +102,7 @@ public class ExprFrameDelay extends PropertyExpression<String, Object> {
         }
     }
 
-    private File cacheImage(URL url) {
+    private static File cacheImage(URL url) {
         File file = new File(Main.cache(), url.toString().replaceAll("\\W", ""));
         if (file.exists()) return file;
         if (file.mkdirs()) {

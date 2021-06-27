@@ -1,4 +1,4 @@
-package io.github.mrsdarth.skirt.elements.RayTrace.expressions;
+package io.github.mrsdarth.skirt.elements.RayTrace;
 
 import ch.njol.skript.Skript;
 import ch.njol.skript.doc.Description;

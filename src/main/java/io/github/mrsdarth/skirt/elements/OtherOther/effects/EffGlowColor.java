@@ -11,6 +11,7 @@ import ch.njol.skript.lang.SkriptParser;
 import ch.njol.skript.util.Color;
 import ch.njol.util.Kleenean;
 import io.github.mrsdarth.skirt.Reflectness;
+import net.md_5.bungee.api.ChatColor;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
@@ -59,7 +60,9 @@ public class EffGlowColor extends Effect {
                 if (glowcolor == null) return;
                 else {
                     Class<?> enumcolor = Reflectness.nmsclass("EnumChatFormat");
-                    glow = enumcolor.getDeclaredMethod("valueOf", String.class).invoke(null, ecc(glowcolor.getName()));
+                    String color = ChatColor.of(new java.awt.Color(glowcolor.asBukkitColor().asRGB())).getName();
+                    glow = enumcolor.getDeclaredMethod("valueOf", String.class).invoke(null, color.toUpperCase());
+                    if (glow == null) return;
                 }
             }
             Class<?> teampacketclass = Reflectness.nmsclass("PacketPlayOutScoreboardTeam");
@@ -115,38 +118,6 @@ public class EffGlowColor extends Effect {
         color = (Expression<Color>) exprs[1];
         playerExpression = (Expression<Player>) exprs[reset ? 1 : 2];
         return true;
-    }
-
-    private String ecc(String color) {
-        switch (color) {
-            case "light cyan":
-                return "AQUA";
-            case "cyan":
-                return "DARK_AQUA";
-            case "brown":
-                return "BLUE";
-            case "blue":
-                return "DARK_BLUE";
-            case "orange":
-                return "GOLD";
-            case "grey":
-                return "GRAY";
-            case "dark grey":
-                return "DARK_GRAY";
-            case "green":
-                return "DARK_GREEN";
-            case "light green":
-                return "GREEN";
-            case "red":
-                return "DARK_RED";
-            case "pink":
-                return "RED";
-            case "magenta":
-                return "LIGHT_PURPLE";
-            case "purple":
-                return "DARK_PURPLE";
-        }
-        return color.toUpperCase().replace(" ", "_");
     }
 
 }

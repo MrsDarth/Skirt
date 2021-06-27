@@ -33,7 +33,7 @@ public class ExprGlowing extends PropertyExpression<ItemType, ItemType> {
     }
 
 
-    private ItemStack glowing(ItemStack item) {
+    private static ItemStack glowing(ItemStack item) {
         if (!item.getItemMeta().hasEnchants()) {
 
             try {
