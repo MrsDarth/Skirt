@@ -9,9 +9,9 @@ import ch.njol.skript.lang.Effect;
 import ch.njol.skript.lang.Expression;
 import ch.njol.skript.lang.SkriptParser;
 import ch.njol.skript.util.Color;
+import ch.njol.skript.util.SkriptColor;
 import ch.njol.util.Kleenean;
 import io.github.mrsdarth.skirt.Reflectness;
-import net.md_5.bungee.api.ChatColor;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
@@ -60,9 +60,9 @@ public class EffGlowColor extends Effect {
                 if (glowcolor == null) return;
                 else {
                     Class<?> enumcolor = Reflectness.nmsclass("EnumChatFormat");
-                    String color = ChatColor.of(new java.awt.Color(glowcolor.asBukkitColor().asRGB())).getName();
+                    if (!(glowcolor instanceof SkriptColor)) return;
+                    String color = ((SkriptColor) glowcolor).asChatColor().asBungee().getName();
                     glow = enumcolor.getDeclaredMethod("valueOf", String.class).invoke(null, color.toUpperCase());
-                    if (glow == null) return;
                 }
             }
             Class<?> teampacketclass = Reflectness.nmsclass("PacketPlayOutScoreboardTeam");

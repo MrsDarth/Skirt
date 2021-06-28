@@ -71,7 +71,7 @@ public class EffHideEntity extends Effect {
         for (Entity e : entities) {
             if (!(e instanceof Player)) try {
                 String l = (e instanceof LivingEntity) ? "Living" : "";
-                Object nmsentity = Reflectness.handle(Reflectness.craftclass("entity.Craft" + l + "Entity"), e);
+                Object nmsentity = Reflectness.getHandle(e);
                 Object unhidepacket = (Reflectness.nmsclass("PacketPlayOutSpawnEntity" + l).getDeclaredConstructor(Reflectness.nmsclass("Entity" + l))).newInstance(nmsentity);
                 for (Player p : players) {
                     Reflectness.sendpacket(p, unhidepacket);

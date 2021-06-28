@@ -46,24 +46,16 @@ public class Reflectness {
 //        }
 //    }
 
-    public static Object handle(Class<?> c, Object o) {
+    public static Object getHandle(Object o) {
         try {
-            return c.getDeclaredMethod("getHandle").invoke(c.cast(o));
+            return o.getClass().getDeclaredMethod("getHandle").invoke(o);
         } catch (Exception ex) {
             return null;
         }
     }
 
-    public static Object nmsEntity(Entity e) {
-        return handle(craftentity, e);
-    }
-
-    public static Object nmsPlayer(Player p) {
-        return handle(craftplayer, p);
-    }
-
     public static Object playerconnection(Player p) {
-        return getfield("playerConnection", nmsplayer, nmsPlayer(p));
+        return getfield("playerConnection", nmsplayer, getHandle(p));
     }
 
 
@@ -89,10 +81,6 @@ public class Reflectness {
         return null;
     }
 
-
-    private static final Class<?> craftplayer = craftclass("entity.CraftPlayer");
-    private static final Class<?> craftentity = craftclass("entity.CraftEntity");
-
     private static final Class<?> nmsentity = nmsclass("Entity");
     private static final Class<?> nmsplayer = nmsclass("EntityPlayer");
     private static final Class<?> connectionclass = nmsclass("PlayerConnection");
@@ -102,7 +90,7 @@ public class Reflectness {
 
     public static void refresh(Entity e, Player target) {
         try {
-            Object dw = nmsentity.getDeclaredMethod("getDataWatcher").invoke(nmsEntity(e));
+            Object dw = nmsentity.getDeclaredMethod("getDataWatcher").invoke(getHandle(e));
             Constructor<?> packet = Reflectness.nmsclass("PacketPlayOutEntityMetadata").getDeclaredConstructor(int.class, dw.getClass(), boolean.class);
             sendpacket(target, packet.newInstance(e.getEntityId(), dw, true));
         } catch (Exception ex) {
@@ -136,7 +124,7 @@ public class Reflectness {
                 move.invoke(playerconnection(p), x, y, z, yaw, pitch, flags);
             } else {
                 Method setloc = nmsentity.getDeclaredMethod("setLocation", double.class, double.class, double.class, float.class, float.class);
-                setloc.invoke(nmsEntity(e), x, y, z, yaw, pitch);
+                setloc.invoke(getHandle(e), x, y, z, yaw, pitch);
             }
         } catch (Exception ex) {
             ex.printStackTrace();

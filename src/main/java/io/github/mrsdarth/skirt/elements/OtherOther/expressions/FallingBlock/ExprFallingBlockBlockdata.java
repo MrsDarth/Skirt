@@ -1,4 +1,4 @@
-package io.github.mrsdarth.skirt.elements.FallingBlock;
+package io.github.mrsdarth.skirt.elements.OtherOther.expressions.FallingBlock;
 
 import ch.njol.skript.aliases.ItemType;
 import ch.njol.skript.doc.Description;
