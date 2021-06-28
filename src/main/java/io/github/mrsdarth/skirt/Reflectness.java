@@ -102,10 +102,10 @@ public class Reflectness {
         move(e, loc.getX(), loc.getY(), loc.getZ(), loc.getYaw(), loc.getPitch());
     }
 
-    public static void hide(Stream<Entity> entities, Player[] players) {
+    public static void hide(Entity[] entities, Player[] players) {
         try {
             Class<?> hidepacket = nmsclass("PacketPlayOutEntityDestroy");
-            Object packet = hidepacket.getDeclaredConstructor(int[].class).newInstance(entities.mapToInt(Entity::getEntityId).toArray());
+            Object packet = hidepacket.getDeclaredConstructor(int[].class).newInstance(Arrays.stream(entities).mapToInt(Entity::getEntityId).toArray());
             for (Player p : players) {
                 sendpacket(p, packet);
             }

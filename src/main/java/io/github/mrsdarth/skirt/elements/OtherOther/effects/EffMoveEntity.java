@@ -26,7 +26,7 @@ public class EffMoveEntity extends Effect {
 
     static {
         Skript.registerEffect(EffMoveEntity.class,
-                "(move|set location of) %entities% (to|%directions%) %location%");
+                "(move|set location of) %entities% (to|%directions%) [%location%]");
     }
 
     private Expression<Entity> entities;

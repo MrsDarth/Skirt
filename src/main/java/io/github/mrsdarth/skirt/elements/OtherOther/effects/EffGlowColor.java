@@ -11,8 +11,8 @@ import ch.njol.skript.lang.SkriptParser;
 import ch.njol.skript.util.Color;
 import ch.njol.skript.util.SkriptColor;
 import ch.njol.util.Kleenean;
+import io.github.mrsdarth.skirt.Main;
 import io.github.mrsdarth.skirt.Reflectness;
-import org.bukkit.Bukkit;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Event;
@@ -68,7 +68,7 @@ public class EffGlowColor extends Effect {
             Class<?> teampacketclass = Reflectness.nmsclass("PacketPlayOutScoreboardTeam");
             Constructor newteam = teampacketclass.getDeclaredConstructor();
 
-            Player[] players = (playerExpression != null) ? playerExpression.getArray(event) : Bukkit.getOnlinePlayers().toArray(new Player[Bukkit.getOnlinePlayers().size()]);
+            Player[] players = (playerExpression != null) ? playerExpression.getArray(event) : Main.allPlayers();
 
 
             for (Entity e : entityExpression.getArray(event)) {

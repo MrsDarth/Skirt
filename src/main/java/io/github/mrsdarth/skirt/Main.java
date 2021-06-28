@@ -21,6 +21,7 @@ import org.json.simple.parser.JSONParser;
 
 import java.io.File;
 import java.net.URL;
+import java.util.Collection;
 import java.util.Scanner;
 
 
@@ -66,10 +67,6 @@ public class Main extends JavaPlugin {
 
     }
 
-    public static File cache() {
-        return new File(instance.getDataFolder(), "cache");
-    }
-
     public void onDisable() {
         delete(cache());
     }
@@ -82,6 +79,17 @@ public class Main extends JavaPlugin {
             }
         } f.delete();
     }
+
+    public static File cache() {
+        return new File(instance.getDataFolder(), "cache");
+    }
+
+
+    public static Player[] allPlayers() {
+        Collection<? extends Player> players = Bukkit.getOnlinePlayers();
+        return players.toArray(new Player[players.size()]);
+    }
+
 
     public static Main getInstance() {
         return instance;
