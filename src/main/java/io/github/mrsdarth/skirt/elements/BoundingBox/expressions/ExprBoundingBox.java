@@ -12,6 +12,7 @@ import ch.njol.skript.lang.SkriptParser.ParseResult;
 import ch.njol.skript.lang.util.SimpleExpression;
 import ch.njol.util.Kleenean;
 import ch.njol.util.coll.CollectionUtils;
+import com.google.common.collect.Iterables;
 import org.bukkit.Location;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Entity;
@@ -120,13 +121,13 @@ public class ExprBoundingBox extends SimpleExpression<BoundingBox> {
                 for (Entity e : entities) {
                     boxes.add(e.getBoundingBox());
                 }
-                return boxes.toArray(new BoundingBox[boxes.size()]);
+                return Iterables.toArray(boxes, BoundingBox.class);
             case 1:
                 Block[] blocks = block.getArray(event);
                 for (Block b : blocks) {
                     boxes.add(b.getBoundingBox());
                 }
-                return boxes.toArray(new BoundingBox[boxes.size()]);
+                return Iterables.toArray(boxes, BoundingBox.class);
             case 2:
                 Object l1 = vec1.getSingle(event);
                 Object l2 = vec2.getSingle(event);
@@ -151,7 +152,7 @@ public class ExprBoundingBox extends SimpleExpression<BoundingBox> {
                     for (BoundingBox b : box.getArray(event)) {
                         boxes1.add(b.clone().expand(e));
                     }
-                    return boxes1.toArray(new BoundingBox[boxes1.size()]);
+                    return Iterables.toArray(boxes1, BoundingBox.class);
                 }
             case 5:
                 BoundingBox b1 = box.getSingle(event);

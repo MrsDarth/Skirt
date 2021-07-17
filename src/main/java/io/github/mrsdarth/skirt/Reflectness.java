@@ -12,7 +12,6 @@ import java.lang.reflect.Method;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
-import java.util.stream.Stream;
 
 public class Reflectness {
 
@@ -29,9 +28,8 @@ public class Reflectness {
             String ver = Bukkit.getServer().getClass().getPackage().getName().split("\\.")[3];
             return Class.forName(p + "." + ver + "." + name);
         } catch (ClassNotFoundException e) {
-            e.printStackTrace();
+            return null;
         }
-        return null;
     }
 
 //    public static void debugfields(Class<?> theclass, Object obj) {
@@ -55,24 +53,33 @@ public class Reflectness {
     }
 
     public static Object playerconnection(Player p) {
-        return getfield("playerConnection", nmsplayer, getHandle(p));
+        return getField("playerConnection", nmsplayer, getHandle(p));
     }
 
-
-    public static void setfield(String name, Class<?> theclass, Object obj, Object arg) {
+    public static void setField(Field field, Object obj, Object arg) {
         try {
-            Field field = theclass.getDeclaredField(name);
             field.setAccessible(true);
             field.set(obj, arg);
         } catch (Exception e) {
             e.printStackTrace();
         }
-
     }
 
-    public static Object getfield(String name, Class<?> theclass, Object obj) {
+    public static void setField(String name, Class<?> theclass, Object obj, Object arg) {
         try {
-            Field field = theclass.getDeclaredField(name);
+            setField(theclass.getDeclaredField(name), obj, arg);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    public static void setField(String name, Object obj, Object arg) {
+        setField(name, obj.getClass(), obj, arg);
+    }
+
+
+    public static Object getField(Field field, Object obj) {
+        try {
             field.setAccessible(true);
             return field.get(obj);
         } catch (Exception e) {
@@ -81,12 +88,25 @@ public class Reflectness {
         return null;
     }
 
+
+    public static Object getField(String name, Class<?> theclass, Object obj) {
+        try {
+            return getField(theclass.getDeclaredField(name), obj);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    public static Object getField(String name, Object obj) {
+        return getField(name, obj.getClass(), obj);
+    }
+
     private static final Class<?> nmsentity = nmsclass("Entity");
     private static final Class<?> nmsplayer = nmsclass("EntityPlayer");
     private static final Class<?> connectionclass = nmsclass("PlayerConnection");
 
     private static final Class<?> packetclass = nmsclass("Packet");
-
 
     public static void refresh(Entity e, Player target) {
         try {
@@ -96,6 +116,14 @@ public class Reflectness {
         } catch (Exception ex) {
             ex.printStackTrace();
         }
+    }
+
+    public static void refresh(Player p) {
+        try {
+            Method refresh = p.getClass().getDeclaredMethod("refreshPlayer");
+            refresh.setAccessible(true);
+            refresh.invoke(p);
+        } catch (Exception ignored) {}
     }
 
     public static void move(Entity e, Location loc) {

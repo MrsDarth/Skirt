@@ -9,7 +9,7 @@ import ch.njol.skript.lang.Effect;
 import ch.njol.skript.lang.Expression;
 import ch.njol.skript.lang.SkriptParser;
 import ch.njol.util.Kleenean;
-import io.github.mrsdarth.skirt.Main;
+import com.google.common.collect.Iterables;
 import io.github.mrsdarth.skirt.Reflectness;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Entity;
@@ -17,9 +17,6 @@ import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Event;
 import org.jetbrains.annotations.Nullable;
-
-import java.lang.reflect.Method;
-import java.util.stream.Stream;
 
 @Name("Hide Entity")
 @Description({"Hides entities for specific or all players", "will be unhidden if player relogs or goes far away", "hiding a player from themselves will do weird things"})
@@ -40,7 +37,7 @@ public class EffHideEntity extends Effect {
 
     @Override
     protected void execute(Event event) {
-        Player[] p = (players != null) ? players.getArray(event) : Main.allPlayers();
+        Player[] p = (players != null) ? players.getArray(event) : Iterables.toArray(Bukkit.getOnlinePlayers(), Player.class);
         if (hide) {
             Reflectness.hide(entities.getArray(event), p);
         } else {
@@ -66,11 +63,9 @@ public class EffHideEntity extends Effect {
     private void unhide(Entity[] entities, Player[] players) {
         for (Entity e : entities) {
             try {
-                if (e instanceof Player) {
-                    Method refresh = e.getClass().getDeclaredMethod("refreshPlayer");
-                    refresh.setAccessible(true);
-                    refresh.invoke(e);
-                } else {
+                if (e instanceof Player)
+                    Reflectness.refresh((Player) e);
+                else {
                     String l = (e instanceof LivingEntity) ? "Living" : "";
                     Object nmsentity = Reflectness.getHandle(e);
                     Object unhidepacket = (Reflectness.nmsclass("PacketPlayOutSpawnEntity" + l).getDeclaredConstructor(Reflectness.nmsclass("Entity" + l))).newInstance(nmsentity);

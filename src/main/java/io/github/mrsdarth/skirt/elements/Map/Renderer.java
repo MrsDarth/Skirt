@@ -31,13 +31,20 @@ public class Renderer extends MapRenderer {
         if (run != null) firstrun.put(map, run);
         if (mode != Mode.PARTIAL) clear(map, true);
         map.addRenderer(this);
-        for (Player p: Bukkit.getOnlinePlayers()) {
-            p.sendMap(map);
-        }
+        Bukkit.getOnlinePlayers().forEach(p -> p.sendMap(map));
+    }
+
+    @SuppressWarnings("deprecation")
+    public static MapView getMap(int id) {
+        return Bukkit.getMap(id);
     }
 
     public static void onRender(MapCanvas c, Runnable run) {
         call.put(c, run);
+    }
+
+    public static void clear(MapView map) {
+        clear(map, true);
     }
 
     public static void clear(MapView map, boolean all) {

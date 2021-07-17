@@ -11,6 +11,7 @@ import ch.njol.skript.lang.SkriptParser.ParseResult;
 import ch.njol.skript.lang.util.SimpleExpression;
 import ch.njol.util.Kleenean;
 import ch.njol.util.coll.CollectionUtils;
+import com.google.common.collect.Iterables;
 import org.bukkit.FluidCollisionMode;
 import org.bukkit.Location;
 import org.bukkit.World;
@@ -24,6 +25,8 @@ import org.bukkit.util.Vector;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.UUID;
 import java.util.function.Predicate;
 
 @Name("Ray Trace")
@@ -57,9 +60,9 @@ public class ExprNewRayTrace extends SimpleExpression<RayTraceResult> {
 
     static {
         Skript.registerExpression(ExprNewRayTrace.class, RayTraceResult.class, ExpressionType.COMBINED,
-                "ray[ ]trace[s] (of|from) %livingentities% using [fluid[collision][mode]] %fluidcollisionmode%[, with max %-number%]",
-                "block ray[ ]trace[ starting] from %location% using %vector%, [fluid[collision][mode]] %fluidcollisionmode%[, (1¦(to ignore|ignoring) passable[ blocks])][, with max %-number%]",
-                "ray[ ]trace for[ this specific] %block% [starting] from %location% using %vector%, [fluid[collision][mode]] %fluidcollisionmode%[, with max %-number%]",
+                "ray[ ]trace[s] (of|from) %livingentities% [using [fluid[collision][mode]] %-fluidcollisionmode%][, with max %-number%]",
+                "block ray[ ]trace[ starting] from %location% using %vector%[, [fluid[collision][mode]] %-fluidcollisionmode%][, (1¦(to ignore|ignoring) passable[ blocks])][, with max %-number%]",
+                "ray[ ]trace for[ this specific] %block% [starting] from %location% using %vector%[, [fluid[collision][mode]] %-fluidcollisionmode%][, with max %-number%]",
                 "ray[ ]trace for[ this specific] %boundingbox% [starting] from %vector% using %vector%[, with max %-number%]",
                 "entity ray[ ]trace [starting] from %location% using %vector%[, with max %-number%][, ray[ ]size %-number%][, filter[ing][ out]  %-entities%]",
                 "[block and entity ]ray[ ]trace [starting] from %location% using %vector%, max %number%, [fluid[collision][mode]] %fluidcollisionmode%[, (1¦(to ignore|ignoring) passable[ blocks])], ray[ ]size %number%[, filter[ing][ out]  %-entities%]");
@@ -154,46 +157,42 @@ public class ExprNewRayTrace extends SimpleExpression<RayTraceResult> {
     @Override
     @Nullable
     protected RayTraceResult[] get(Event event) {
-        Expression<?>[][] exprs = {{livingentities, fmode}, {location, vector, fmode}, {block, location, vector, fmode}, {boundingbox, start, vector}, {location, vector}, {location, vector, max, fmode, raysize}};
-        for (Expression<?> expression : exprs[pattern]) {
+        Expression<?>[][] required = {{livingentities}, {location, vector}, {block, location, vector}, {boundingbox, start, vector}, {location, vector}, {location, vector, max, raysize}};
+        for (Expression<?> expression : required[pattern]) {
             if (expression.getSingle(event) == null) {
                 return null;
             }
         }
-        Number maxn = (max != null) ? max.getSingle(event) : 100;
-        if (maxn == null) {
+        Number maxn = max != null ? max.getSingle(event) : 100;
+        FluidCollisionMode mode = fmode != null ? fmode.getSingle(event) : FluidCollisionMode.ALWAYS;
+        Predicate<Entity> predicate = entities != null ? filterOut(entities.getArray(event)) : null;
+        if (maxn == null || mode == null) {
             return null;
         }
         double maxd = maxn.doubleValue();
-        Predicate<Entity> predicate = null;
         switch (pattern) {
             case 0:
                 ArrayList<RayTraceResult> rays = new ArrayList<RayTraceResult>();
                 for (LivingEntity l : livingentities.getArray(event)) {
-                    rays.add(l.rayTraceBlocks(maxd, fmode.getSingle(event)));
+                    rays.add(l.rayTraceBlocks(maxd, mode));
                 }
-                return rays.toArray(new RayTraceResult[rays.size()]);
+                return Iterables.toArray(rays, RayTraceResult.class);
 
             case 1:
                 Location loc = location.getSingle(event);
-                return CollectionUtils.array(loc.getWorld().rayTraceBlocks(loc, vector.getSingle(event), maxd, fmode.getSingle(event), ignore));
+                return CollectionUtils.array(loc.getWorld().rayTraceBlocks(loc, vector.getSingle(event), maxd, mode, ignore));
 
             case 2:
-                return CollectionUtils.array(block.getSingle(event).rayTrace(location.getSingle(event), vector.getSingle(event), maxd, fmode.getSingle(event)));
+                return CollectionUtils.array(block.getSingle(event).rayTrace(location.getSingle(event), vector.getSingle(event), maxd, mode));
 
             case 3:
                 return CollectionUtils.array(boundingbox.getSingle(event).rayTrace(start.getSingle(event), vector.getSingle(event), maxd));
 
             case 4:
                 Double rs;
-                if (entities != null) {
-                    predicate = pred(entities.getArray(event));
-                }
                 if (raysize != null) {
                     Number n = raysize.getSingle(event);
-                    if (n == null) {
-                        return null;
-                    }
+                    if (n == null) return null;
                     rs = n.doubleValue();
                 } else {
                     rs = null;
@@ -207,26 +206,15 @@ public class ExprNewRayTrace extends SimpleExpression<RayTraceResult> {
                 return CollectionUtils.array(world.rayTraceEntities(loc1, v1, maxd, predicate));
 
             case 5:
-                if (entities != null) {
-                    predicate = pred(entities.getArray(event));
-                }
-                return CollectionUtils.array(location.getSingle(event).getWorld().rayTrace(location.getSingle(event), vector.getSingle(event), maxd, fmode.getSingle(event), ignore, raysize.getSingle(event).doubleValue(), predicate));
+                return CollectionUtils.array(location.getSingle(event).getWorld().rayTrace(location.getSingle(event), vector.getSingle(event), maxd, mode, ignore, raysize.getSingle(event).doubleValue(), predicate));
         }
         return null;
 
     }
 
-    private Predicate<Entity> pred(Entity[] es) {
-        return e -> {
-            String uuid = e.getUniqueId().toString();
-            boolean match;
-            for (Entity entity : es) {
-                if (entity.getUniqueId().toString().equalsIgnoreCase(uuid)) {
-                    return false;
-                }
-            }
-            return true;
-        };
+    private static Predicate<Entity> filterOut(Entity[] es) {
+        UUID[] filtered = Arrays.stream(es).map(Entity::getUniqueId).toArray(UUID[]::new);
+        return e -> CollectionUtils.contains(filtered,e.getUniqueId());
     }
 
 }

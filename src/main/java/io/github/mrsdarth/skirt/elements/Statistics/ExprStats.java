@@ -3,7 +3,6 @@ package io.github.mrsdarth.skirt.elements.Statistics;
 import ch.njol.skript.Skript;
 import ch.njol.skript.aliases.ItemType;
 import ch.njol.skript.classes.Changer;
-import ch.njol.skript.classes.Converter;
 import ch.njol.skript.doc.Description;
 import ch.njol.skript.doc.Examples;
 import ch.njol.skript.doc.Name;
@@ -43,18 +42,14 @@ public class ExprStats extends PropertyExpression<Player, Number> {
     protected Number[] get(Event event, Player[] players) {
         Statistic stat = stats.getSingle(event);
         if (stat == null) return null;
-        return get(players, new Converter<Player, Number>() {
-            @Nullable
-            @Override
-            public Number convert(Player player) {
-                Object o = fromskript(event, type);
-                System.out.println(o);
-                if (o == null) return null;
-                else if (o instanceof Material && isMaterial(stat)) return player.getStatistic(stat, (Material) o);
-                else if (o instanceof EntityType && isEntity(stat)) player.getStatistic(stat, (EntityType) o);
-                else if (isNone(stat)) return player.getStatistic(stat);
-                return null;
-            }
+        return get(players, player -> {
+            Object o = fromskript(event, type);
+            System.out.println(o);
+            if (o == null) return null;
+            else if (o instanceof Material && isMaterial(stat)) return player.getStatistic(stat, (Material) o);
+            else if (o instanceof EntityType && isEntity(stat)) player.getStatistic(stat, (EntityType) o);
+            else if (isNone(stat)) return player.getStatistic(stat);
+            return null;
         });
     }
 

@@ -9,8 +9,7 @@ import ch.njol.skript.lang.Effect;
 import ch.njol.skript.lang.Expression;
 import ch.njol.skript.lang.SkriptParser;
 import ch.njol.util.Kleenean;
-import io.github.mrsdarth.skirt.elements.Map.expressions.ExprMapCanvas;
-import io.github.mrsdarth.skirt.elements.Map.sections.SecEditCanvas;
+import io.github.mrsdarth.skirt.elements.Map.sections.SecMapEdit;
 import io.github.mrsdarth.skirt.elements.Util.EffectSection;
 import net.md_5.bungee.api.ChatColor;
 import org.bukkit.event.Event;
@@ -20,6 +19,7 @@ import org.bukkit.map.MinecraftFont;
 import org.jetbrains.annotations.Nullable;
 
 import java.awt.*;
+import java.awt.image.BufferedImage;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -42,14 +42,14 @@ public class EffMapDraw extends Effect {
     }
 
     private Expression<Number> x, y;
-    private Expression<Image> img;
+    private Expression<BufferedImage> img;
     private Expression<String> txt;
     private Expression<MapCanvas> canvas;
     private int pattern;
 
     @Override
     protected void execute(Event event) {
-        MapCanvas c = ExprMapCanvas.getCanvas(event, canvas);
+        MapCanvas c = SecMapEdit.getCanvas(event, canvas);
         if (c == null) return;
         Number nx = x.getSingle(event), ny = y.getSingle(event);
         if (nx == null || ny == null) return;
@@ -75,14 +75,14 @@ public class EffMapDraw extends Effect {
 
     @Override
     public boolean init(Expression<?>[] exprs, int i, Kleenean kleenean, SkriptParser.ParseResult parseResult) {
-        if (!EffectSection.isCurrentSection(SecEditCanvas.class) && (exprs[3] == null)) {
+        if (!EffectSection.isCurrentSection(SecMapEdit.class) && (exprs[3] == null)) {
             Skript.error("You can only change maps without specifying canvas within a map edit section");
             return false;
         }
         x = (Expression<Number>) exprs[1];
         y = (Expression<Number>) exprs[2];
         canvas = (Expression<MapCanvas>) exprs[3];
-        if (i == 0) img = (Expression<Image>) exprs[0];
+        if (i == 0) img = (Expression<BufferedImage>) exprs[0];
         else txt = (Expression<String>) exprs[0];
         pattern = i;
         return true;
@@ -91,25 +91,21 @@ public class EffMapDraw extends Effect {
 
     @SuppressWarnings("deprecation")
     private String mapformat(String text) {
-        String p = "§(\\d(?!\\d{0,2};)|[a-fA-F])";
-        return sidesplit(text, p, s -> (s.matches(p)) ? ("§" + MapPalette.matchColor(ChatColor.getByChar(
-                s.replace("§", "").charAt(0)).getColor()) + ";") : s
-        );
+        return sidesplit(text, "§(\\d(?!\\d{0,2};)|[a-fA-F])", s -> ("§" + MapPalette.matchColor(ChatColor.getByChar(s.replace("§", "").charAt(0)).getColor()) + ";"));
     }
 
     @SuppressWarnings("deprecation")
     private String mapformathex(String text) {
-        String p = "§x(§[\\da-fA-F]){6}";
-        return sidesplit(text, p, s -> (s.matches(p)) ? ("§" + MapPalette.matchColor(ChatColor.of(
-                s.replace("§", "").replace('x', '#')).getColor()) + ";") : s
-        );
+        return sidesplit(text, "§x(§[\\da-fA-F]){6}", s -> ("§" + MapPalette.matchColor(ChatColor.of(s.replace("§", "").replace('x', '#')).getColor()) + ";"));
     }
 
     private String sidesplit(String text, String p, Function<String, String> mapper) {
-        return Stream.of(
-                text.split("((?<=" + p + ")|(?= " + p + "))"))
-                .map(mapper)
-                .collect(Collectors.joining());
+        String[] split = (" " + text).split("((?<=" + p + ")|(?= " + p + "))");
+        split[0] = null;
+        int size = split.length;
+        for (int i = 1; i < size; i++)
+            if (i % 2 != 0) split[i] = mapper.apply(split[i]);
+        return String.join("", split).substring(1);
     }
 
 }

@@ -13,6 +13,7 @@ import ch.njol.skript.lang.util.SimpleExpression;
 import ch.njol.skript.log.ErrorQuality;
 import ch.njol.util.Kleenean;
 import ch.njol.util.coll.CollectionUtils;
+import io.github.mrsdarth.skirt.elements.Map.Renderer;
 import org.bukkit.Bukkit;
 import org.bukkit.World;
 import org.bukkit.event.Event;
@@ -30,21 +31,20 @@ public class ExprMap extends SimpleExpression {
     static {
         Skript.registerExpression(ExprMap.class, MapView.class, ExpressionType.COMBINED,
                 "[the] [event-]map",
-                "map from id %number%",
+                "map [from id] %number%",
                 "[create] [new] map from [world] %world%");
     }
 
     @Nullable
     @Override
-    @SuppressWarnings("deprecation")
     protected MapView[] get(Event e) {
         switch (pattern) {
             case 0:
                 return CollectionUtils.array(((MapInitializeEvent) e).getMap());
             case 1:
-                if (id.getSingle(e) != null) return CollectionUtils.array(Bukkit.getMap(id.getSingle(e).intValue()));
+                return (id.getSingle(e) != null) ? CollectionUtils.array(Renderer.getMap(id.getSingle(e).intValue())) : null;
             case 2:
-                if (world.getSingle(e) != null) return CollectionUtils.array(Bukkit.createMap(world.getSingle(e)));
+                return (world.getSingle(e) != null) ? CollectionUtils.array(Bukkit.createMap(world.getSingle(e))) : null;
         }
         return null;
     }

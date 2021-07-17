@@ -14,6 +14,7 @@ import org.bukkit.event.Event;
 import org.jetbrains.annotations.Nullable;
 
 import java.awt.*;
+import java.awt.image.BufferedImage;
 
 @Name("Image edit")
 @Description("Some basic image editing features")
@@ -49,8 +50,7 @@ public class EffEditImage extends Effect {
                     width = Math.abs(x1 - x2),
                     height = Math.abs(y1 - y2);
             if (!clear) {
-                Color skcolor = skriptcolor.getSingle(event);
-                g.setColor(new java.awt.Color(skcolor.asBukkitColor().asRGB()));
+                g.setColor(new java.awt.Color(skriptcolor.getSingle(event).asBukkitColor().asRGB()));
                 switch (shape) {
                     case 1:
                         if (outline)
@@ -71,6 +71,7 @@ public class EffEditImage extends Effect {
                 g.clearRect(ox, oy, width, height);
             }
         } catch (Exception ex) {
+            ex.printStackTrace();
         }
     }
 
@@ -83,7 +84,7 @@ public class EffEditImage extends Effect {
     private int shape;
     private boolean outline;
     private Expression<Number> X1, Y1, X2, Y2;
-    private Expression<Image> imageExpression, img2;
+    private Expression<BufferedImage> imageExpression, img2;
     private boolean clear;
     private boolean drawimage;
 
@@ -91,10 +92,10 @@ public class EffEditImage extends Effect {
     public boolean init(Expression<?>[] exprs, int i, Kleenean kleenean, SkriptParser.ParseResult parseResult) {
         drawimage = i == 2;
         if (drawimage) {
-            img2 = (Expression<Image>) exprs[0];
+            img2 = (Expression<BufferedImage>) exprs[0];
             X1 = (Expression<Number>) exprs[1];
             Y1 = (Expression<Number>) exprs[2];
-            imageExpression = (Expression<Image>) exprs[3];
+            imageExpression = (Expression<BufferedImage>) exprs[3];
         } else {
             clear = i == 1;
             if (!clear) {
@@ -106,7 +107,7 @@ public class EffEditImage extends Effect {
             Y1 = (Expression<Number>) exprs[2 - i];
             X2 = (Expression<Number>) exprs[3 - i];
             Y2 = (Expression<Number>) exprs[4 - i];
-            imageExpression = (Expression<Image>) exprs[5 - i];
+            imageExpression = (Expression<BufferedImage>) exprs[5 - i];
         }
         return true;
     }

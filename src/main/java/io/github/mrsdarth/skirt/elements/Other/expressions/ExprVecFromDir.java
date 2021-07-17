@@ -11,6 +11,7 @@ import ch.njol.skript.lang.SkriptParser;
 import ch.njol.skript.lang.util.SimpleExpression;
 import ch.njol.skript.util.Direction;
 import ch.njol.util.Kleenean;
+import com.google.common.collect.Iterables;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.event.Event;
@@ -53,7 +54,7 @@ public class ExprVecFromDir extends SimpleExpression<Object> {
         for (Direction d : dir.getArray(e)) {
             vecs.add(d.getDirection(zero));
         }
-        return vecs.toArray(new Vector[vecs.size()]);
+        return Iterables.toArray(vecs, Vector.class);
     }
 
     public static Location zero() {

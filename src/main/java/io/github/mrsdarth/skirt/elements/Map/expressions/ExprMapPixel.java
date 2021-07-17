@@ -13,7 +13,7 @@ import ch.njol.skript.lang.util.SimpleExpression;
 import ch.njol.skript.util.Color;
 import ch.njol.util.Kleenean;
 import ch.njol.util.coll.CollectionUtils;
-import io.github.mrsdarth.skirt.elements.Map.sections.SecEditCanvas;
+import io.github.mrsdarth.skirt.elements.Map.sections.SecMapEdit;
 import io.github.mrsdarth.skirt.elements.Util.EffectSection;
 import org.bukkit.event.Event;
 import org.bukkit.map.MapCanvas;
@@ -46,7 +46,7 @@ public class ExprMapPixel extends SimpleExpression<Number> {
     @Nullable
     @Override
     protected Number[] get(Event e) {
-        MapCanvas canv = ExprMapCanvas.getCanvas(e, canvas);
+        MapCanvas canv = SecMapEdit.getCanvas(e, canvas);
         if (canv != null && isSingle) {
             Number
                     x = ex1.getSingle(e),
@@ -74,7 +74,7 @@ public class ExprMapPixel extends SimpleExpression<Number> {
     @Override
     public boolean init(Expression<?>[] exprs, int i, Kleenean kleenean, SkriptParser.ParseResult parseResult) {
         canvas = (Expression<MapCanvas>) exprs[exprs.length - 1];
-        if (!EffectSection.isCurrentSection(SecEditCanvas.class) && canvas == null) {
+        if (!EffectSection.isCurrentSection(SecMapEdit.class) && canvas == null) {
             Skript.error("Cannot use pixels outside a map edit section without specifying canvas");
             return false;
         }
@@ -107,7 +107,7 @@ public class ExprMapPixel extends SimpleExpression<Number> {
     @Override
     @SuppressWarnings("deprecation")
     public void change(Event e, @Nullable Object[] delta, Changer.ChangeMode mode) {
-        MapCanvas canv = ExprMapCanvas.getCanvas(e, canvas);
+        MapCanvas canv = SecMapEdit.getCanvas(e, canvas);
         if (delta == null || canv == null) return;
         byte px = -1;
         if (mode == Changer.ChangeMode.SET) {

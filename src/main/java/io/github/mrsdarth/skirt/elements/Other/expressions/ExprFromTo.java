@@ -12,7 +12,6 @@ import ch.njol.skript.lang.Expression;
 import ch.njol.skript.lang.ExpressionType;
 import ch.njol.skript.lang.SkriptParser.ParseResult;
 import ch.njol.skript.lang.util.SimpleExpression;
-import ch.njol.skript.log.ErrorQuality;
 import ch.njol.util.Kleenean;
 import ch.njol.util.coll.CollectionUtils;
 import io.papermc.paper.event.entity.EntityMoveEvent;
@@ -47,18 +46,17 @@ public class ExprFromTo extends SimpleExpression<Location> {
     }
 
     private boolean from, delay;
-    private final String[] ft = {"From", "To"};
+    private Class<? extends Event> entitymove = Skript.classExists("io.papermc.paper.event.entity.EntityMoveEvent") ? EntityMoveEvent.class : null;
 
     @SuppressWarnings("unchecked")
     @Override
     public boolean init(Expression<?>[] exprs, int matchedPattern, Kleenean isDelayed, ParseResult parser) {
-        if (ScriptLoader.isCurrentEvent(PlayerMoveEvent.class) || ScriptLoader.isCurrentEvent(EntityMoveEvent.class)) {
-            delay = isDelayed == Kleenean.TRUE;
-            int mark = parser.mark;
-            from = (mark == 1);
+        if (ScriptLoader.isCurrentEvent(PlayerMoveEvent.class,entitymove)) {
+            delay = isDelayed.isTrue();
+            from = parser.mark == 1;
             return true;
         } else {
-            Skript.error("Location From/To can only be used in a player or entity move event", ErrorQuality.SEMANTIC_ERROR);
+            Skript.error("Location From/To can only be used in a player or entity move event");
             return false;
         }
 
@@ -66,7 +64,7 @@ public class ExprFromTo extends SimpleExpression<Location> {
 
     @Override
     public String toString(@Nullable Event event, boolean debug) {
-        return ("get From/To");
+        return "get " + (from ? "From" : "To");
     }
 
     @Override
@@ -79,10 +77,6 @@ public class ExprFromTo extends SimpleExpression<Location> {
 
     @Override
     public void change(Event event, Object[] delta, ChangeMode mode) {
-        if (delay) {
-            Skript.error("Can't change getFrom/To after event already passed", ErrorQuality.SEMANTIC_ERROR);
-            return;
-        }
         if (delta != null) {
             Location loc = (Location) delta[0];
             if (event instanceof PlayerMoveEvent) {
@@ -105,7 +99,9 @@ public class ExprFromTo extends SimpleExpression<Location> {
 
     @Override
     public Class<?>[] acceptChange(final ChangeMode mode) {
-        if (mode == ChangeMode.SET)
+        if (delay) {
+            Skript.error("Can't change getFrom/To after event already passed");
+        } else if (mode == ChangeMode.SET)
             return CollectionUtils.array(Location.class);
         return null;
     }

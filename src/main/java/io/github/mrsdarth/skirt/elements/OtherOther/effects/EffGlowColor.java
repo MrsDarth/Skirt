@@ -11,8 +11,9 @@ import ch.njol.skript.lang.SkriptParser;
 import ch.njol.skript.util.Color;
 import ch.njol.skript.util.SkriptColor;
 import ch.njol.util.Kleenean;
-import io.github.mrsdarth.skirt.Main;
+import com.google.common.collect.Iterables;
 import io.github.mrsdarth.skirt.Reflectness;
+import org.bukkit.Bukkit;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Event;
@@ -68,7 +69,7 @@ public class EffGlowColor extends Effect {
             Class<?> teampacketclass = Reflectness.nmsclass("PacketPlayOutScoreboardTeam");
             Constructor newteam = teampacketclass.getDeclaredConstructor();
 
-            Player[] players = (playerExpression != null) ? playerExpression.getArray(event) : Main.allPlayers();
+            Player[] players = (playerExpression != null) ? playerExpression.getArray(event) : Iterables.toArray(Bukkit.getOnlinePlayers(), Player.class);
 
 
             for (Entity e : entityExpression.getArray(event)) {
@@ -77,21 +78,13 @@ public class EffGlowColor extends Effect {
 
                 Object removepacket = newteam.newInstance(), createpacket = newteam.newInstance();
 
-                Field teamname = teampacketclass.getDeclaredField("a");
-                Field mode = teampacketclass.getDeclaredField("i");
-                mode.setAccessible(true);
-                teamname.setAccessible(true);
-                mode.set(removepacket, 1);
-                teamname.set(removepacket, name);
+                Reflectness.setField("i", teampacketclass, removepacket, 1);
+                Reflectness.setField("a", teampacketclass, removepacket, name);
 
                 if (!reset) {
-                    Field entries = teampacketclass.getDeclaredField("h");
-                    Field color = teampacketclass.getDeclaredField("g");
-                    entries.setAccessible(true);
-                    color.setAccessible(true);
-                    teamname.set(createpacket, name);
-                    color.set(createpacket, glow);
-                    ((Collection<String>) entries.get(createpacket)).add(((e instanceof Player) ? e.getName() : e.getUniqueId()).toString());
+                    Reflectness.setField("a", teampacketclass, createpacket, name);
+                    Reflectness.setField("g", teampacketclass, createpacket, glow);
+                    ((Collection<String>) Reflectness.getField("h", teampacketclass, createpacket)).add(((e instanceof Player) ? e.getName() : e.getUniqueId()).toString());
                 }
 
                 for (Player p : players) {

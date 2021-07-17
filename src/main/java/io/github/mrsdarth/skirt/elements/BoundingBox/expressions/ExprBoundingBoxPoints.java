@@ -10,6 +10,7 @@ import ch.njol.skript.lang.ExpressionType;
 import ch.njol.skript.lang.SkriptParser.ParseResult;
 import ch.njol.skript.lang.util.SimpleExpression;
 import ch.njol.util.Kleenean;
+import com.google.common.collect.Iterables;
 import org.bukkit.event.Event;
 import org.bukkit.util.BoundingBox;
 import org.bukkit.util.Vector;
@@ -54,7 +55,7 @@ public class ExprBoundingBoxPoints extends SimpleExpression<Vector> {
         for (BoundingBox b : box.getArray(e)) {
             vecs.add((pattern == 0) ? b.getCenter() : (mark == 1) ? b.getMax() : b.getMin());
         }
-        return vecs.toArray(new Vector[vecs.size()]);
+        return Iterables.toArray(vecs, Vector.class);
 
     }
 

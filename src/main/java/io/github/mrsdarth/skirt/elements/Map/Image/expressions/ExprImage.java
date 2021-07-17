@@ -12,6 +12,7 @@ import ch.njol.skript.lang.SkriptParser;
 import ch.njol.skript.lang.util.SimpleExpression;
 import ch.njol.util.Kleenean;
 import ch.njol.util.coll.CollectionUtils;
+import com.google.common.collect.Iterables;
 import org.bukkit.event.Event;
 import org.jetbrains.annotations.Nullable;
 
@@ -79,27 +80,28 @@ public class ExprImage extends SimpleExpression {
                         iy0 = y0.intValue(),
                         ix1 = x1.intValue(),
                         iy1 = y1.intValue(),
-                        ox = Math.min(ix0, ix1),
-                        oy = Math.min(iy0, iy1),
+                        ox = Math.max(0, Math.min(ix0, ix1)),
+                        oy = Math.max(0, Math.min(iy0, iy1)),
                         w = Math.abs(ix0 - ix1),
                         h = Math.abs(iy0 - iy1);
                 BufferedImage[]
                         subs = img.getArray(event),
                         sub = new BufferedImage[subs.length];
                 for (int i = 0; i < subs.length; i++) {
-                    sub[i] = subs[i].getSubimage(ox, oy, w, h);
+                    BufferedImage sub1 = subs[i];
+                    int lengthH = Math.min(w, sub1.getWidth() - ox), lengthV = Math.min(h, sub1.getHeight() - oy);
+                    sub[i] = (lengthH > 0 && lengthV > 0) ? sub1.getSubimage(ox, oy, lengthH, lengthV) : null;
                 }
                 return sub;
             case 4:
                 Number b = ex != null ? ex.getSingle(event) : 128, len = ey != null ? ey.getSingle(event) : 128;
-                if (b == null || len == null) return null;
+                if (b == null || len == null || b.intValue() <= 0 || len.intValue() <= 0) return null;
                 return CollectionUtils.array(new BufferedImage(b.intValue(), len.intValue(), BufferedImage.TYPE_INT_RGB));
             default:
                 String l = file.getSingle(event);
                 if (l == null) return null;
                 try {
-                    return isfolder ? imagesFolder(new File(l)) : CollectionUtils.array(
-                            isfile ? fromFile(new File(l)) : ImageIO.read(new URL(l)));
+                    return isfolder ? imagesFolder(new File(l)) : CollectionUtils.array(isfile ? fromFile(new File(l)) : ImageIO.read(new URL(l)));
                 } catch (Exception ex) {
                     ex.printStackTrace();
                     return null;
@@ -119,7 +121,7 @@ public class ExprImage extends SimpleExpression {
 
     @Override
     public String toString(@Nullable Event event, boolean b) {
-        return "image from file/url";
+        return "image";
     }
 
     private Expression<String> file;
@@ -173,6 +175,6 @@ public class ExprImage extends SimpleExpression {
                 imagelist.add(fromFile(file));
             }
         }
-        return imagelist.toArray(new BufferedImage[imagelist.size()]);
+        return Iterables.toArray(imagelist, BufferedImage.class);
     }
 }

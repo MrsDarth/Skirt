@@ -11,6 +11,7 @@ import ch.njol.skript.lang.ExpressionType;
 import ch.njol.skript.lang.SkriptParser;
 import ch.njol.skript.lang.util.SimpleExpression;
 import ch.njol.util.Kleenean;
+import com.google.common.collect.Iterables;
 import org.bukkit.World;
 import org.bukkit.entity.Entity;
 import org.bukkit.event.Event;
@@ -18,7 +19,7 @@ import org.bukkit.util.BoundingBox;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
-import java.util.function.Predicate;
+import java.util.stream.Stream;
 
 @Name("Bounding Box Entities")
 @Description("gets entities within a bounding box")
@@ -29,7 +30,7 @@ public class ExprBoundingBoxEntities extends SimpleExpression {
 
     static {
         Skript.registerExpression(ExprBoundingBoxEntities.class, Entity.class, ExpressionType.COMBINED,
-                "[all] %entitydatas% within [[bounding] box] %boundingboxes%[ in %world%]");
+                "[all] %entitydatas% within [bounding] box %boundingboxes%[ in %world%]");
     }
 
     @Nullable
@@ -37,18 +38,12 @@ public class ExprBoundingBoxEntities extends SimpleExpression {
     protected Entity[] get(Event event) {
         World w = world.getSingle(event);
         if (w == null) return null;
-        EntityData<?>[] entitytypes = types.getArray(event);
-        Predicate<Entity> filter = e -> {
-            for (EntityData<?> type : entitytypes) {
-                if (type.isInstance(e)) return true;
-            }
-            return false;
-        };
+        Stream<? extends EntityData> entitytypes = types.stream(event);
         ArrayList<Entity> entities = new ArrayList<Entity>();
         for (BoundingBox box : boxes.getArray(event)) {
-            entities.addAll(w.getNearbyEntities(box, filter));
+            entities.addAll(w.getNearbyEntities(box, e -> entitytypes.anyMatch(type -> type.isInstance(e))));
         }
-        return entities.toArray(new Entity[entities.size()]);
+        return Iterables.toArray(entities, Entity.class);
     }
 
     @Override

@@ -9,7 +9,7 @@ import java.lang.reflect.Method;
 /**
  * Just a simple reflection class, just to not depend on Skript 2.2+ (I think it is the only thing I use from it)
  *
- * @author
+ * @author Tuke_Nuke
  */
 public class ReflectionUtils {
 

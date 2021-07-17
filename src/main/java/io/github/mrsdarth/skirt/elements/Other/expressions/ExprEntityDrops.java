@@ -11,6 +11,7 @@ import ch.njol.skript.lang.ExpressionType;
 import ch.njol.skript.lang.SkriptParser;
 import ch.njol.skript.lang.util.SimpleExpression;
 import ch.njol.util.Kleenean;
+import org.bukkit.block.Block;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.HumanEntity;
 import org.bukkit.entity.Player;
@@ -37,11 +38,11 @@ public class ExprEntityDrops extends SimpleExpression<ItemType> {
 
     static {
         Skript.registerExpression(ExprEntityDrops.class, ItemType.class, ExpressionType.COMBINED,
-                "[%-number%] (entity|mob|generate[d]) drops of %entities%[ (with|using) [attacker] %-player%]");
+                "[%-number%] (entity|mob|generate[d]) drops of %entities/blocks%[ (with|using) [attacker] %-player%]");
     }
 
     private Expression<Number> amount;
-    private Expression<Entity> entity;
+    private Expression<?> lootable;
     private Expression<Player> attacker;
 
     @Nullable
@@ -52,10 +53,13 @@ public class ExprEntityDrops extends SimpleExpression<ItemType> {
         int it = repeat.intValue();
         ArrayList<ItemStack> items = new ArrayList<>();
         HumanEntity killer = attacker != null ? attacker.getSingle(event) : null;
-        for (Entity e: entity.getArray(event)) {
+        for (Object e: lootable.getArray(event)) {
             if (!(e instanceof Lootable && ((Lootable) e).hasLootTable())) continue;
             LootTable lootTable = ((Lootable) e).getLootTable();
-            LootContext lootContext = new LootContext.Builder(e.getLocation()).killer(killer).lootedEntity(e).build();
+            LootContext lootContext = new LootContext.Builder((e instanceof Block ? ((Block) e).getLocation() : ((Entity) e).getLocation()))
+                    .killer(killer)
+                    .lootedEntity((e instanceof Entity) ? ((Entity) e) : null)
+                    .build();
             for (int i = 0; i < it; i++) {
                 items.addAll(lootTable.populateLoot(new Random(), lootContext));
             }
@@ -81,7 +85,7 @@ public class ExprEntityDrops extends SimpleExpression<ItemType> {
     @Override
     public boolean init(Expression<?>[] exprs, int i, Kleenean kleenean, SkriptParser.ParseResult parseResult) {
         amount = (Expression<Number>) exprs[0];
-        entity = (Expression<Entity>) exprs[1];
+        lootable = exprs[1];
         attacker = (Expression<Player>) exprs[2];
         return true;
     }

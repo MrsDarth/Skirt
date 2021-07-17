@@ -10,8 +10,7 @@ import ch.njol.skript.lang.Expression;
 import ch.njol.skript.lang.SkriptParser;
 import ch.njol.util.Kleenean;
 import io.github.mrsdarth.skirt.elements.Map.Renderer;
-import io.github.mrsdarth.skirt.elements.Map.expressions.ExprMapCanvas;
-import io.github.mrsdarth.skirt.elements.Map.sections.SecEditCanvas;
+import io.github.mrsdarth.skirt.elements.Map.sections.SecMapEdit;
 import io.github.mrsdarth.skirt.elements.Util.EffectSection;
 import org.bukkit.event.Event;
 import org.bukkit.map.MapView;
@@ -31,7 +30,7 @@ public class EffStopEdit extends Effect {
 
     @Override
     protected void execute(Event e) {
-        MapView map = mapView != null ? mapView.getSingle(e) : ExprMapCanvas.getCanvas(e, null).getMapView();
+        MapView map = mapView != null ? mapView.getSingle(e) : SecMapEdit.getCanvas(e, null).getMapView();
         if (map != null) {
             Renderer.clear(map, false);
         }
@@ -47,7 +46,7 @@ public class EffStopEdit extends Effect {
     @Override
     public boolean init(Expression<?>[] expressions, int i, Kleenean kleenean, SkriptParser.ParseResult parseResult) {
         mapView = (Expression<MapView>) expressions[0];
-        if (mapView == null && !EffectSection.isCurrentSection(SecEditCanvas.class)) {
+        if (mapView == null && !EffectSection.isCurrentSection(SecMapEdit.class)) {
             Skript.error("You cannot have stop edit without specifying map outside an edit section");
             return false;
         }

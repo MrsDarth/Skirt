@@ -27,7 +27,12 @@ public class ExprScaleCentreId extends SimplePropertyExpression<MapView, Number>
         register(ExprScaleCentreId.class, Number.class, "(1¦[map] (scale|zoom)|cent(er|re) (2¦x|3¦z)|4¦map id)", "maps");
     }
 
-    private MapView.Scale[] scales = MapView.Scale.values();
+    @SuppressWarnings("deprecation")
+    public static byte scale(MapView map) {
+        return map.getScale().getValue();
+    }
+
+    private static MapView.Scale[] scales = MapView.Scale.values();
     private int mark;
 
     @Override
@@ -56,7 +61,7 @@ public class ExprScaleCentreId extends SimplePropertyExpression<MapView, Number>
     public Number convert(MapView mapView) {
         switch (mark) {
             case 1:
-                return CollectionUtils.indexOf(scales, mapView.getScale());
+                return scale(mapView);
             case 2:
                 return mapView.getCenterX();
             case 3:
@@ -77,7 +82,7 @@ public class ExprScaleCentreId extends SimplePropertyExpression<MapView, Number>
         int change = ((Number) delta[0]).intValue();
         for (MapView m : getExpr().getArray(event)) {
             int value =
-                    mark == 1 ? CollectionUtils.indexOf(scales, m.getScale()) :
+                    mark == 1 ? scale(m) :
                             mark == 2 ? m.getCenterX() : m.getCenterZ();
             switch (mode) {
                 case ADD:

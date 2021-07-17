@@ -11,30 +11,31 @@ import ch.njol.skript.lang.SkriptParser;
 import ch.njol.skript.lang.util.SimpleExpression;
 import ch.njol.util.Kleenean;
 import ch.njol.util.coll.CollectionUtils;
-import io.github.mrsdarth.skirt.elements.Map.Renderer;
-import io.github.mrsdarth.skirt.elements.Map.sections.SecEditCanvas;
-import io.github.mrsdarth.skirt.elements.Util.EffectSection;
+import io.github.mrsdarth.skirt.elements.Map.sections.SecMapEdit;
 import org.bukkit.event.Event;
 import org.bukkit.map.MapCanvas;
 import org.jetbrains.annotations.Nullable;
 
-@Name("Map Canvas")
-@Description("returns the canvas in a canvas edit section. Quite a useless expression since you do not need to specify canvases in there")
-@Examples({"edit canvas {_canvas}:",
-        "\tsend \"%map canvas%\""})
-@Since("1.2.0")
+@Name("Last Edited Canvas")
+@Description("returns the last edited map after or within a map edit section")
+@Examples({
+        "edit map 0",
+        "set all pixels on last edited canvas to black"
+})
+@Since("1.2.3")
 
-public class ExprMapCanvas extends SimpleExpression<MapCanvas> {
+public class ExprLastEdited extends SimpleExpression<MapCanvas> {
 
     static {
-        Skript.registerExpression(ExprMapCanvas.class, MapCanvas.class, ExpressionType.SIMPLE,
-                "[the] map canvas");
+        Skript.registerExpression(ExprLastEdited.class, MapCanvas.class, ExpressionType.SIMPLE,
+                "[the] [last edited] [map] canvas");
     }
 
     @Nullable
     @Override
     protected MapCanvas[] get(Event event) {
-        return CollectionUtils.array(getCanvas(event, null));
+        MapCanvas c = SecMapEdit.getCanvas(event, null);
+        return CollectionUtils.array(c != null ? c : SecMapEdit.canvas);
     }
 
     @Override
@@ -49,20 +50,11 @@ public class ExprMapCanvas extends SimpleExpression<MapCanvas> {
 
     @Override
     public String toString(@Nullable Event event, boolean b) {
-        return "map canvas";
+        return "last edited map canvas";
     }
 
     @Override
     public boolean init(Expression<?>[] expressions, int i, Kleenean kleenean, SkriptParser.ParseResult parseResult) {
-        if (EffectSection.isCurrentSection(SecEditCanvas.class)) {
-            Skript.error("Cannot use map canvas expression outside an edit section");
-            return false;
-        }
         return true;
     }
-
-    public static MapCanvas getCanvas(Event e, @Nullable Expression<MapCanvas> canvas) {
-        return (canvas != null) ? canvas.getSingle(e) : Renderer.getCanvas(e);
-    }
-
 }

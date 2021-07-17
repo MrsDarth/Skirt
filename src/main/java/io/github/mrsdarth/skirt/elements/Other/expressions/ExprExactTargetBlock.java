@@ -10,6 +10,7 @@ import ch.njol.skript.lang.ExpressionType;
 import ch.njol.skript.lang.SkriptParser.ParseResult;
 import ch.njol.skript.lang.util.SimpleExpression;
 import ch.njol.util.Kleenean;
+import com.google.common.collect.Iterables;
 import org.bukkit.block.Block;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.event.Event;
@@ -69,6 +70,6 @@ public class ExprExactTargetBlock extends SimpleExpression<Block> {
                 blocks.add(p.getTargetBlockExact(d1.intValue()));
             }
         }
-        return blocks.toArray(new Block[blocks.size()]);
+        return Iterables.toArray(blocks, Block.class);
     }
 }

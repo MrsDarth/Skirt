@@ -46,10 +46,10 @@ import java.nio.file.Files;
 })
 @Since("1.2.1")
 
-public class ExprFrameDelay extends PropertyExpression<String, Object> {
+public class ExprGif extends PropertyExpression<String, Object> {
 
     static {
-        Skript.registerExpression(ExprFrameDelay.class, Object.class, ExpressionType.PROPERTY,
+        Skript.registerExpression(ExprGif.class, Object.class, ExpressionType.PROPERTY,
                 "[all] frames of gif from (1¦file [path]|2¦url) %string%",
                 "frame delay of gif from (1¦file [path]|2¦url) %string%");
     }

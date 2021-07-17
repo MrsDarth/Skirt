@@ -11,6 +11,7 @@ import ch.njol.skript.lang.SkriptParser;
 import ch.njol.skript.lang.util.SimpleExpression;
 import ch.njol.skript.util.AABB;
 import ch.njol.util.Kleenean;
+import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
 import org.bukkit.World;
 import org.bukkit.block.Block;
@@ -40,13 +41,13 @@ public class ExprBoundingBoxBlocks extends SimpleExpression<Block> {
     @Nullable
     @Override
     protected Block[] get(Event event) {
-        ArrayList<Block> blocks = new ArrayList<Block>();
+        ArrayList<Block> blocks = new ArrayList<>();
         World world = w.getSingle(event);
         if (world == null) return null;
         for (BoundingBox b : boxes.getArray(event)) {
-            blocks.addAll(Lists.newArrayList(new AABB(b.getMin().toLocation(world), b.getMax().toLocation(world))));
+            blocks.addAll(Lists.newArrayList(new AABB(world, b.getMin(), b.getMax())));
         }
-        return blocks.toArray(new Block[blocks.size()]);
+        return Iterables.toArray(blocks, Block.class);
     }
 
     @Override

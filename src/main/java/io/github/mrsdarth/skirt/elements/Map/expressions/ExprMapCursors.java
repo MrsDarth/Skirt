@@ -12,7 +12,7 @@ import ch.njol.skript.lang.SkriptParser;
 import ch.njol.skript.lang.util.SimpleExpression;
 import ch.njol.util.Kleenean;
 import ch.njol.util.coll.CollectionUtils;
-import io.github.mrsdarth.skirt.elements.Map.sections.SecEditCanvas;
+import io.github.mrsdarth.skirt.elements.Map.sections.SecMapEdit;
 import io.github.mrsdarth.skirt.elements.Util.EffectSection;
 import org.bukkit.event.Event;
 import org.bukkit.map.MapCanvas;
@@ -37,7 +37,7 @@ public class ExprMapCursors extends SimpleExpression<MapCursor> {
     @Nullable
     @Override
     protected MapCursor[] get(Event event) {
-        MapCanvas c = ExprMapCanvas.getCanvas(event, canvas);
+        MapCanvas c = SecMapEdit.getCanvas(event, canvas);
         if (c == null) return null;
         MapCursorCollection collection = c.getCursors();
         int size = collection.size();
@@ -66,7 +66,7 @@ public class ExprMapCursors extends SimpleExpression<MapCursor> {
 
     @Override
     public boolean init(Expression<?>[] exprs, int i, Kleenean kleenean, SkriptParser.ParseResult parseResult) {
-        if (!EffectSection.isCurrentSection(SecEditCanvas.class) && exprs[0] == null) {
+        if (!EffectSection.isCurrentSection(SecMapEdit.class) && exprs[0] == null) {
             Skript.error("You can only use map cursors without specifying canvas within a map edit section");
             return false;
         }
@@ -90,7 +90,7 @@ public class ExprMapCursors extends SimpleExpression<MapCursor> {
 
     @Override
     public void change(Event e, @Nullable Object[] delta, Changer.ChangeMode mode) {
-        MapCanvas c = ExprMapCanvas.getCanvas(e, canvas);
+        MapCanvas c = SecMapEdit.getCanvas(e, canvas);
         if (c == null) return;
         switch (mode) {
             case SET:

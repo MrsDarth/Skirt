@@ -1,5 +1,6 @@
 package io.github.mrsdarth.skirt.elements;
 
+import ch.njol.skript.classes.Changer;
 import ch.njol.skript.classes.ClassInfo;
 import ch.njol.skript.classes.Parser;
 import ch.njol.skript.classes.Serializer;
@@ -8,7 +9,11 @@ import ch.njol.skript.registrations.Classes;
 import ch.njol.skript.util.Direction;
 import ch.njol.util.StringUtils;
 import ch.njol.util.VectorMath;
+import ch.njol.util.coll.CollectionUtils;
 import ch.njol.yggdrasil.Fields;
+import io.github.mrsdarth.skirt.elements.Map.MapStates.MapState;
+import io.github.mrsdarth.skirt.elements.Map.Renderer;
+import org.bukkit.Bukkit;
 import org.bukkit.FluidCollisionMode;
 import org.bukkit.Statistic;
 import org.bukkit.map.MapCanvas;
@@ -19,7 +24,9 @@ import org.bukkit.util.RayTraceResult;
 import org.jetbrains.annotations.Nullable;
 
 import java.awt.image.BufferedImage;
+import java.io.NotSerializableException;
 import java.io.StreamCorruptedException;
+import java.util.Arrays;
 
 
 public class ClassInfos {
@@ -221,6 +228,44 @@ public class ClassInfos {
                     public String getVariableNamePattern() {
                         return "map;\\d+";
                     }
+                }).changer(new Changer<MapView>() {
+                    @Nullable
+                    @Override
+                    public Class<?>[] acceptChange(ChangeMode changeMode) {
+                        return changeMode == ChangeMode.DELETE ? CollectionUtils.array() : null;
+                    }
+
+                    @Override
+                    public void change(MapView[] mapViews, @Nullable Object[] objects, ChangeMode changeMode) {
+                        Arrays.stream(mapViews).forEach(Renderer::clear);
+                    }
+                }).serializer(new Serializer<MapView>() {
+                    @Override
+                    public Fields serialize(MapView mapView) throws NotSerializableException {
+                        Fields f = new Fields();
+                        f.putPrimitive("id", mapView.getId());
+                        return f;
+                    }
+
+                    @Override
+                    protected MapView deserialize(Fields fields) throws StreamCorruptedException, NotSerializableException {
+                        return Renderer.getMap(fields.getPrimitive("id",int.class));
+                    }
+
+                    @Override
+                    public void deserialize(MapView mapView, Fields fields) throws StreamCorruptedException, NotSerializableException {
+                        assert false;
+                    }
+
+                    @Override
+                    public boolean mustSyncDeserialization() {
+                        return false;
+                    }
+
+                    @Override
+                    protected boolean canBeInstantiated() {
+                        return false;
+                    }
                 })
 
         );
@@ -397,6 +442,39 @@ public class ClassInfos {
                     @Override
                     public String toVariableNameString(Statistic statistic) {
                         return toskript(statistic.toString());
+                    }
+
+                    @Override
+                    public String getVariableNamePattern() {
+                        return ".+";
+                    }
+                }));
+        Classes.registerClass(new ClassInfo<>(MapState.class, "mapstate")
+                .user("map ?states?")
+                .name("Map State")
+                .description("Represents a capture of a map (like taking a screenshot) that can be sent to players to display. Useful for showing multiple images on a single map, much faster than draw image on map effect")
+                .since("1.2.3")
+                .parser(new Parser<MapState>() {
+
+                    @Nullable
+                    @Override
+                    public MapState parse(String s, ParseContext context) {
+                        return null;
+                    }
+
+                    @Override
+                    public boolean canParse(ParseContext context) {
+                        return false;
+                    }
+
+                    @Override
+                    public String toString(MapState mapState, int i) {
+                        return mapState.toString();
+                    }
+
+                    @Override
+                    public String toVariableNameString(MapState mapState) {
+                        return "mapstate;" + mapState.hashCode();
                     }
 
                     @Override

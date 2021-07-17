@@ -2,7 +2,7 @@ name: Skirt
 authors:
   - Mrs Darth
 description: I like skirt
-version: 1.2.2
+version: 1.2.3
 main: io.github.mrsdarth.skirt.Main
 depend:
   - Skript

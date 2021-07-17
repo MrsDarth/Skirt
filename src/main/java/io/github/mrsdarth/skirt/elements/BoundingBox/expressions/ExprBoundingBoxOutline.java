@@ -11,6 +11,7 @@ import ch.njol.skript.lang.SkriptParser.ParseResult;
 import ch.njol.skript.lang.util.SimpleExpression;
 import ch.njol.util.Kleenean;
 import ch.njol.util.coll.CollectionUtils;
+import com.google.common.collect.Iterables;
 import org.bukkit.event.Event;
 import org.bukkit.util.BoundingBox;
 import org.bukkit.util.Vector;
@@ -90,7 +91,7 @@ public class ExprBoundingBoxOutline extends SimpleExpression<Vector> {
                 for (BoundingBox box : boxlist) {
                     vlist.addAll(Arrays.asList(boxoutline(box, d)));
                 }
-                return vlist.toArray(new Vector[vlist.size()]);
+                return Iterables.toArray(vlist, Vector.class);
             } else {
                 Vector v1 = vector1.getSingle(event);
                 Vector v2 = vector2.getSingle(event);
@@ -109,7 +110,7 @@ public class ExprBoundingBoxOutline extends SimpleExpression<Vector> {
         for (int[] i : ints) {
             vectors.addAll(Arrays.asList(line(box[i[0]], box[i[1]], d)));
         }
-        return vectors.toArray(new Vector[vectors.size()]);
+        return Iterables.toArray(vectors, Vector.class);
     }
 
     private Vector[] boxpoints(Vector v1, Vector v2) {

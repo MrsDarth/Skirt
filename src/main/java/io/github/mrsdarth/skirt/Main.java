@@ -2,6 +2,8 @@ package io.github.mrsdarth.skirt;
 
 import ch.njol.skript.Skript;
 import ch.njol.skript.SkriptAddon;
+import ch.njol.skript.expressions.ExprRelationalVariable;
+import ch.njol.skript.lang.ExpressionType;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.TextComponent;
 import net.kyori.adventure.text.event.ClickEvent;
@@ -21,7 +23,6 @@ import org.json.simple.parser.JSONParser;
 
 import java.io.File;
 import java.net.URL;
-import java.util.Collection;
 import java.util.Scanner;
 
 
@@ -30,6 +31,7 @@ public class Main extends JavaPlugin {
     private static Main instance;
     SkriptAddon addon;
 
+    @Override
     public void onEnable() {
         instance = this;
         addon = Skript.registerAddon(this);
@@ -64,9 +66,9 @@ public class Main extends JavaPlugin {
                         }, this);
             }
         } catch (Exception ignored) {}
-
     }
 
+    @Override
     public void onDisable() {
         delete(cache());
     }
@@ -83,13 +85,6 @@ public class Main extends JavaPlugin {
     public static File cache() {
         return new File(instance.getDataFolder(), "cache");
     }
-
-
-    public static Player[] allPlayers() {
-        Collection<? extends Player> players = Bukkit.getOnlinePlayers();
-        return players.toArray(new Player[players.size()]);
-    }
-
 
     public static Main getInstance() {
         return instance;

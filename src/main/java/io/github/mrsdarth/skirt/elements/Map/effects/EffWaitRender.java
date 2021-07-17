@@ -6,15 +6,15 @@ import ch.njol.skript.doc.Examples;
 import ch.njol.skript.doc.Name;
 import ch.njol.skript.doc.Since;
 import ch.njol.skript.effects.Delay;
-import ch.njol.skript.lang.*;
-import ch.njol.skript.timings.SkriptTimings;
+import ch.njol.skript.lang.Effect;
+import ch.njol.skript.lang.Expression;
+import ch.njol.skript.lang.SkriptParser;
+import ch.njol.skript.lang.TriggerItem;
 import ch.njol.skript.variables.Variables;
 import ch.njol.util.Kleenean;
 import io.github.mrsdarth.skirt.elements.Map.Renderer;
-import io.github.mrsdarth.skirt.elements.Map.expressions.ExprMapCanvas;
-import io.github.mrsdarth.skirt.elements.Map.sections.SecEditCanvas;
+import io.github.mrsdarth.skirt.elements.Map.sections.SecMapEdit;
 import io.github.mrsdarth.skirt.elements.Util.EffectSection;
-import io.github.mrsdarth.skirt.elements.Util.VariableUtils;
 import org.bukkit.event.Event;
 import org.bukkit.map.MapCanvas;
 import org.jetbrains.annotations.Nullable;
@@ -48,32 +48,18 @@ public class EffWaitRender extends Effect {
     @Override
     protected TriggerItem walk(Event event) {
         debug(event, true);
-        MapCanvas canvas = ExprMapCanvas.getCanvas(event, mapCanvas);
+        MapCanvas canvas = SecMapEdit.getCanvas(event, mapCanvas);
         TriggerItem next = getNext();
         Delay.addDelayedEvent(event);
         if (canvas == null) return next;
         Object localvars = Variables.removeLocals(event);
         Renderer.onRender(canvas, () -> {
-            VariableUtils.pasteVariables(event, localvars);
-            continueWalk(next, event);
+            if (localvars != null) Variables.setLocalVariables(event, localvars);
+            if (next != null) TriggerItem.walk(next, event);
         });
         return null;
     }
 
-    private void continueWalk(@Nullable TriggerItem next, Event event) {
-        Object timing = null;
-        if (next != null) {
-            if (SkriptTimings.enabled()) {
-                Trigger trigger = getTrigger();
-                if (trigger != null) {
-                    timing = SkriptTimings.start(trigger.getDebugLabel());
-                }
-            }
-            TriggerItem.walk(next, event);
-        }
-        Variables.removeLocals(event);
-        SkriptTimings.stop(timing);
-    }
 
     @Override
     public String toString(@Nullable Event event, boolean b) {
@@ -82,7 +68,7 @@ public class EffWaitRender extends Effect {
 
     @Override
     public boolean init(Expression<?>[] exprs, int i, Kleenean kleenean, SkriptParser.ParseResult parseResult) {
-        if (!EffectSection.isCurrentSection(SecEditCanvas.class) && exprs[0] == null) {
+        if (!EffectSection.isCurrentSection(SecMapEdit.class) && exprs[0] == null) {
             Skript.error("You need to specify a map canvas when outside a canvas edit section");
             return false;
         }
