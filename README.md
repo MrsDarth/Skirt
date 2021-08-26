@@ -1,9 +1,17 @@
 # Skirt
 Skirt
 
+### Main features
+* Bounding box
+* Raytrace
+* Maps
+* Images
+* Other entity misc feautures (direction, move, animation)
+
 ### Requires
-* [Paper](https://papermc.io) or [Spigot](https://www.spigotmc.org)
+* [Paper](https://papermc.io) highly recommend to use paper instead of spigot 
 * [Skript](https://github.com/SkriptLang/Skript)
+* [ProtocolLib](https://www.spigotmc.org/resources/protocollib.1997/)
 
 ### Links
 * [Wiki](https://github.com/MrsDarth/skirt/wiki)
