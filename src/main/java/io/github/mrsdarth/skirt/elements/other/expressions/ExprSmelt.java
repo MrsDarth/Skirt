@@ -61,9 +61,6 @@ public class ExprSmelt extends SimplePropertyExpression<ItemType, ItemType> {
     @Nullable
     @Override
     public ItemType convert(ItemType itemType) {
-        ItemType smelted = new ItemType();
-        smelted.setAll(true);
-        itemType.getAll().forEach(i -> smelted.add(new ItemData(smelted(i))));
-        return smelted;
+        return new ItemType(smelted(itemType.getRandom()));
     }
 }
