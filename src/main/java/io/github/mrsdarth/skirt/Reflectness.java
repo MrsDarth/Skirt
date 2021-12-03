@@ -1,60 +1,35 @@
 package io.github.mrsdarth.skirt;
 
 
-import org.bukkit.Bukkit;
-import org.bukkit.Location;
-import org.bukkit.entity.Entity;
-import org.bukkit.entity.Player;
+import com.google.common.collect.HashBasedTable;
+import com.google.common.collect.Table;
 
+import java.lang.reflect.Array;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.Set;
 
 public class Reflectness {
 
-    public static Class<?> nmsclass(String name) {
-        return nmsorcraft("net.minecraft.server", name);
+
+    @SuppressWarnings("unchecked")
+    public static <T> T[] newArray(Class<T> tClass, int length) {
+        return (T[]) Array.newInstance(tClass, length);
     }
 
-    public static Class<?> craftclass(String name) {
-        return nmsorcraft("org.bukkit.craftbukkit", name);
-    }
 
-    public static Class<?> nmsorcraft(String p, String name) {
+    public static Class<?> classForName(String className) {
         try {
-            String ver = Bukkit.getServer().getClass().getPackage().getName().split("\\.")[3];
-            return Class.forName(p + "." + ver + "." + name);
+            return Class.forName(className);
         } catch (ClassNotFoundException e) {
             return null;
         }
     }
 
-//    public static void debugfields(Class<?> theclass, Object obj) {
-//        try {
-//            for (Field field: theclass.getDeclaredFields()) {
-//                field.setAccessible(true);
-//                System.out.println(field.getName() + " = " + field.get(obj) + ", " + field.getClass());
-//            }
-//
-//        } catch (Exception ex) {
-//            ex.printStackTrace();
-//        }
-//    }
-
-    public static Object getHandle(Object o) {
-        try {
-            return o.getClass().getDeclaredMethod("getHandle").invoke(o);
-        } catch (Exception ex) {
-            return null;
-        }
+    public static boolean classExists(String className) {
+        return classForName(className) != null;
     }
 
-    public static Object playerconnection(Player p) {
-        return getField("playerConnection", nmsplayer, getHandle(p));
-    }
 
     public static void setField(Field field, Object obj, Object arg) {
         try {
@@ -65,108 +40,88 @@ public class Reflectness {
         }
     }
 
-    public static void setField(String name, Class<?> theclass, Object obj, Object arg) {
-        try {
-            setField(theclass.getDeclaredField(name), obj, arg);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+    public static <T> void setField(String name, Class<? extends T> theClass, T obj, Object arg) {
+        Field field = getField(name, theClass);
+        if (field != null) setField(field, obj, arg);
     }
 
-    public static void setField(String name, Object obj, Object arg) {
+    public static <T> void setField(String name, T obj, T arg) {
         setField(name, obj.getClass(), obj, arg);
     }
 
 
     public static Object getField(Field field, Object obj) {
-        try {
-            field.setAccessible(true);
-            return field.get(obj);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+        if (field.trySetAccessible())
+            try { return field.get(obj); }
+            catch (Exception ignore) {}
         return null;
     }
 
 
-    public static Object getField(String name, Class<?> theclass, Object obj) {
-        try {
-            return getField(theclass.getDeclaredField(name), obj);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return null;
+    public static <T> Object getField(String name, Class<? extends T> theClass, T obj) {
+        Field field = getField(name, theClass);
+        return field == null ? null : getField(field, obj);
     }
 
     public static Object getField(String name, Object obj) {
         return getField(name, obj.getClass(), obj);
     }
 
-    private static final Class<?> nmsentity = nmsclass("Entity");
-    private static final Class<?> nmsplayer = nmsclass("EntityPlayer");
-    private static final Class<?> connectionclass = nmsclass("PlayerConnection");
+    private static final Table<Class<?>, String, Field> FIELDS = HashBasedTable.create();
 
-    private static final Class<?> packetclass = nmsclass("Packet");
+    public static Field getField(String name, Class<?> theClass) {
+        Field field = FIELDS.get(theClass, name);
+        if (field == null)
+            try {
+                Field getField = theClass.getDeclaredField(name);
+                FIELDS.put(theClass, name, getField);
+                return getField;
+            } catch (Exception ex) {
+                ex.printStackTrace();
+                return null;
+            }
+        return field;
+    }
 
-    public static void refresh(Entity e, Player target) {
+    public static Method getMethod(Class<?> theClass, String name, Class<?>...args) {
         try {
-            Object dw = nmsentity.getDeclaredMethod("getDataWatcher").invoke(getHandle(e));
-            Constructor<?> packet = Reflectness.nmsclass("PacketPlayOutEntityMetadata").getDeclaredConstructor(int.class, dw.getClass(), boolean.class);
-            sendpacket(target, packet.newInstance(e.getEntityId(), dw, true));
+            Method method = theClass.getDeclaredMethod(name, args);
+            method.setAccessible(true);
+            return method;
         } catch (Exception ex) {
             ex.printStackTrace();
+            return null;
         }
     }
 
-    public static void refresh(Player p) {
+    public static Object invoke(Method method, Object obj, Object... args) {
         try {
-            Method refresh = p.getClass().getDeclaredMethod("refreshPlayer");
-            refresh.setAccessible(true);
-            refresh.invoke(p);
-        } catch (Exception ignored) {}
-    }
-
-    public static void move(Entity e, Location loc) {
-        move(e, loc.getX(), loc.getY(), loc.getZ(), loc.getYaw(), loc.getPitch());
-    }
-
-    public static void hide(Entity[] entities, Player[] players) {
-        try {
-            Class<?> hidepacket = nmsclass("PacketPlayOutEntityDestroy");
-            Object packet = hidepacket.getDeclaredConstructor(int[].class).newInstance(Arrays.stream(entities).mapToInt(Entity::getEntityId).toArray());
-            for (Player p : players) {
-                sendpacket(p, packet);
+            if (method != null) {
+                method.setAccessible(true);
+                return method.invoke(obj, args);
             }
         } catch (Exception ex) {
             ex.printStackTrace();
         }
+        return null;
     }
 
-    public static void move(Entity e, double x, double y, double z, float yaw, float pitch) {
+    public static <T> Constructor<T> getConstructor(Class<T> theClass, Class<?>... args) {
         try {
-            if (e instanceof Player) {
-                Player p = (Player) e;
-                Set<Object> flags = new HashSet<>(Arrays.asList(Reflectness.nmsclass("PacketPlayOutPosition$EnumPlayerTeleportFlags").getEnumConstants()));
-                Method move = connectionclass.getDeclaredMethod("internalTeleport", double.class, double.class, double.class, float.class, float.class, Set.class);
-                move.setAccessible(true);
-                move.invoke(playerconnection(p), x, y, z, yaw, pitch, flags);
-            } else {
-                Method setloc = nmsentity.getDeclaredMethod("setLocation", double.class, double.class, double.class, float.class, float.class);
-                setloc.invoke(getHandle(e), x, y, z, yaw, pitch);
-            }
+            return theClass.getDeclaredConstructor(args);
         } catch (Exception ex) {
             ex.printStackTrace();
         }
+        return null;
     }
 
-    public static void sendpacket(Player p, Object packet) {
+    public static <T> T newInstance(Constructor<T> constructor, Object... args) {
         try {
-            Object pc = playerconnection(p);
-            pc.getClass().getDeclaredMethod("sendPacket", packetclass).invoke(pc, packet);
+            return constructor.newInstance(args);
         } catch (Exception ex) {
             ex.printStackTrace();
         }
-
+        return null;
     }
 
 

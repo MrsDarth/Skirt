@@ -1,123 +1,54 @@
 package io.github.mrsdarth.skirt.elements;
 
-import ch.njol.skript.classes.Changer;
 import ch.njol.skript.classes.ClassInfo;
+import ch.njol.skript.classes.EnumSerializer;
 import ch.njol.skript.classes.Parser;
 import ch.njol.skript.classes.Serializer;
 import ch.njol.skript.lang.ParseContext;
 import ch.njol.skript.registrations.Classes;
 import ch.njol.skript.util.Direction;
-import ch.njol.util.StringUtils;
+import ch.njol.skript.util.EnumUtils;
+import ch.njol.skript.util.Utils;
 import ch.njol.util.VectorMath;
-import ch.njol.util.coll.CollectionUtils;
 import ch.njol.yggdrasil.Fields;
-import io.github.mrsdarth.skirt.elements.Map.MapStates.MapState;
-import io.github.mrsdarth.skirt.elements.Map.Renderer;
-import org.bukkit.Bukkit;
+import io.github.mrsdarth.skirt.Reflectness;
+import io.github.mrsdarth.skirt.elements.direction.SkirtDirection;
+import io.github.mrsdarth.skirt.elements.map.Maps;
 import org.bukkit.FluidCollisionMode;
 import org.bukkit.Statistic;
+import org.bukkit.craftbukkit.libs.org.apache.commons.lang3.StringUtils;
 import org.bukkit.map.MapCanvas;
 import org.bukkit.map.MapCursor;
 import org.bukkit.map.MapView;
 import org.bukkit.util.BoundingBox;
 import org.bukkit.util.RayTraceResult;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.awt.image.BufferedImage;
 import java.io.NotSerializableException;
 import java.io.StreamCorruptedException;
-import java.util.Arrays;
 
 
 public class ClassInfos {
     static {
-        Classes.registerClass(new ClassInfo<>(RayTraceResult.class, "raytraceresult")
-                .user("ray ?trace( ?result)?s?")
-                .name("Ray Trace Result")
-                .description("Represent the raytrace")
-                .since("1.0.0")
-                .parser(new Parser<RayTraceResult>() {
 
-                    @Override
-                    @Nullable
-                    public RayTraceResult parse(String input, ParseContext context) {
-                        return null;
-                    }
-
-                    @Override
-                    public boolean canParse(ParseContext context) {
-                        return false;
-                    }
-
-                    @Override
-                    public String toString(RayTraceResult ray, int i) {
-                        return ray.toString();
-                    }
-
-                    @Override
-                    public String toVariableNameString(RayTraceResult ray) {
-                        return ("raytrace;" + ray.hashCode());
-                    }
-
-                    @Override
-                    public String getVariableNamePattern() {
-                        return "raytrace;-?\\d+";
-                    }
-                })
-        );
+        //Bounding Box
 
         Classes.registerClass(new ClassInfo<>(BoundingBox.class, "boundingbox")
                 .user("bounding ?box(es)?")
                 .name("Bounding Box")
                 .description("Represents a bounding box between 2 points")
                 .since("1.0.0")
-                .parser(new Parser<BoundingBox>() {
-
+                .parser(new SimpleParser<>() {
                     @Override
-                    @Nullable
-                    public BoundingBox parse(String input, ParseContext context) {
-                        return null;
-                    }
-
-                    @Override
-                    public boolean canParse(ParseContext context) {
-                        return false;
-                    }
-
-                    @Override
-                    public String toString(BoundingBox box, int i) {
+                    public @NotNull String toVariableNameString(BoundingBox box) {
                         return box.toString();
                     }
-
+                })
+                .serializer(new SimpleSerializer<>() {
                     @Override
-                    public String toVariableNameString(BoundingBox box) {
-                        return ("box;" + box.toString());
-                    }
-
-                    @Override
-                    public String getVariableNamePattern() {
-                        return "box;(.*)";
-                    }
-                }).serializer(new Serializer<BoundingBox>() {
-                    @Override
-                    public Fields serialize(BoundingBox b) {
-                        Fields f = new Fields();
-                        f.putPrimitive("x1", b.getMinX());
-                        f.putPrimitive("y1", b.getMinY());
-                        f.putPrimitive("z1", b.getMinZ());
-                        f.putPrimitive("x2", b.getMaxX());
-                        f.putPrimitive("y2", b.getMaxY());
-                        f.putPrimitive("z2", b.getMaxZ());
-                        return f;
-                    }
-
-                    @Override
-                    public void deserialize(BoundingBox b, Fields fields) {
-                        assert false;
-                    }
-
-                    @Override
-                    protected BoundingBox deserialize(Fields f) throws StreamCorruptedException {
+                    protected BoundingBox deserialize(@NotNull Fields f) throws StreamCorruptedException {
                         return new BoundingBox(
                                 f.getPrimitive("x1", double.class),
                                 f.getPrimitive("y1", double.class),
@@ -129,368 +60,221 @@ public class ClassInfos {
                     }
 
                     @Override
-                    public boolean mustSyncDeserialization() {
-                        return false;
+                    public @NotNull Fields serialize(BoundingBox box) {
+                        Fields f = new Fields();
+                        f.putPrimitive("x1", box.getMinX());
+                        f.putPrimitive("y1", box.getMinY());
+                        f.putPrimitive("z1", box.getMinZ());
+                        f.putPrimitive("x2", box.getMaxX());
+                        f.putPrimitive("y2", box.getMaxY());
+                        f.putPrimitive("z2", box.getMaxZ());
+                        return f;
                     }
+                })
+                .cloner(BoundingBox::clone)
+        );
 
+
+        // RayTrace
+
+
+        Classes.registerClass(new ClassInfo<>(RayTraceResult.class, "raytraceresult")
+                .user("ray ?trace( ?result)?s?")
+                .name("Ray Trace Result")
+                .description("Represent the raytrace")
+                .since("1.0.0")
+                .parser(new SimpleParser<>() {
                     @Override
-                    protected boolean canBeInstantiated() {
-                        return false;
+                    public @NotNull String toVariableNameString(RayTraceResult rayTraceResult) {
+                        return rayTraceResult.toString();
                     }
                 })
         );
 
-        Classes.registerClass(new ClassInfo<>(FluidCollisionMode.class, "fluidcollisionmode")
-                .user("fluidcollisionmodes?")
+
+        Classes.registerClass(new EnumClassInfo<>(FluidCollisionMode.class, "fluidcollisionmode", "fluid collision modes")
+                .user("fluid ?collision ?modes?")
                 .name("FluidCollisionMode")
-                .description("Represents the fluid collision mode in a raytrace",
-                        "always - collide with all fluids",
-                        "never - ignore fluids",
-                        "source_only - collide with source fluid blocks only")
-                .usage("always, never, source_only")
+                .description("Represents the fluid collision mode in a raytrace", "always - collide with all fluids", "never - ignore fluids", "source_only - collide with source fluid blocks only")
                 .since("1.0.0")
-                .parser(new Parser<FluidCollisionMode>() {
+        );
 
-                    @Nullable
-                    @Override
-                    public FluidCollisionMode parse(String s, ParseContext context) {
-                        try {
-                            return FluidCollisionMode.valueOf(s.toUpperCase());
-                        } catch (Exception e) {
-                            return null;
-                        }
-                    }
 
-                    @Override
-                    public boolean canParse(ParseContext context) {
-                        return true;
-                    }
+        // Map
 
-                    @Override
-                    public String toString(FluidCollisionMode f, int flags) {
-                        return f.toString();
-                    }
 
-                    @Override
-                    public String toVariableNameString(FluidCollisionMode f) {
-                        return ("fluidcollisionmode;" + f.toString());
-                    }
-
-                    @Override
-                    public String getVariableNamePattern() {
-                        return "fluidcollisionmode;(always|never|source_only)";
-                    }
-                }));
         Classes.registerClass(new ClassInfo<>(MapView.class, "map")
                 .user("maps?")
                 .name("Map")
-                .description("represents a map view")
+                .description("represents a map view with an id")
                 .since("1.2.0")
-                .parser(new Parser<MapView>() {
+                .parser(new SimpleParser<>() {
                     @Override
-                    public String toString(MapView mapView, int i) {
-                        return mapView.toString();
-                    }
-
-                    @Override
-                    public String toVariableNameString(MapView mapView) {
-                        return null;
-                    }
-
-                    @Override
-                    public String getVariableNamePattern() {
-                        return null;
-                    }
-                }).parser(new Parser<MapView>() {
-                    @Override
-                    @Nullable
-                    public MapView parse(String input, ParseContext context) {
-                        return null;
-                    }
-
-                    @Override
-                    public boolean canParse(ParseContext context) {
-                        return false;
-                    }
-
-
-                    @Override
-                    public String toString(MapView mapView, int i) {
-                        return toVariableNameString(mapView);
-                    }
-
-                    @Override
-                    public String toVariableNameString(MapView mapView) {
-                        return "map;" + mapView.getId();
-                    }
-
-                    @Override
-                    public String getVariableNamePattern() {
-                        return "map;\\d+";
-                    }
-                }).changer(new Changer<MapView>() {
-                    @Nullable
-                    @Override
-                    public Class<?>[] acceptChange(ChangeMode changeMode) {
-                        return changeMode == ChangeMode.DELETE ? CollectionUtils.array() : null;
-                    }
-
-                    @Override
-                    public void change(MapView[] mapViews, @Nullable Object[] objects, ChangeMode changeMode) {
-                        Arrays.stream(mapViews).forEach(Renderer::clear);
-                    }
-                }).serializer(new Serializer<MapView>() {
-                    @Override
-                    public Fields serialize(MapView mapView) throws NotSerializableException {
-                        Fields f = new Fields();
-                        f.putPrimitive("id", mapView.getId());
-                        return f;
-                    }
-
-                    @Override
-                    protected MapView deserialize(Fields fields) throws StreamCorruptedException, NotSerializableException {
-                        return Renderer.getMap(fields.getPrimitive("id",int.class));
-                    }
-
-                    @Override
-                    public void deserialize(MapView mapView, Fields fields) throws StreamCorruptedException, NotSerializableException {
-                        assert false;
-                    }
-
-                    @Override
-                    public boolean mustSyncDeserialization() {
-                        return false;
-                    }
-
-                    @Override
-                    protected boolean canBeInstantiated() {
-                        return false;
+                    public @NotNull String toVariableNameString(MapView map) {
+                        return "map " + map.getId();
                     }
                 })
+                .serializer(new SimpleSerializer<>() {
+                    @Override
+                    protected MapView deserialize(@NotNull Fields fields) throws StreamCorruptedException {
+                        int id = fields.getPrimitive("id", int.class);
+                        MapView map = Maps.getMaps().get(id);
+                        if (map == null)
+                            throw new StreamCorruptedException("Missing Map");
+                        return map;
+                    }
 
+                    @Override
+                    public @NotNull Fields serialize(MapView map) {
+                        Fields fields = new Fields();
+                        fields.putPrimitive("id", map.getId());
+                        return fields;
+                    }
+                })
         );
-        Classes.registerClass(new ClassInfo<>(BufferedImage.class, "image")
-                .user("images?")
-                .name("Image")
-                .description("represents an image. Can be displayed on maps")
+
+        // dumb
+        String[][] plurals = (String[][]) Reflectness.getField("plurals", Utils.class, null);
+        if (plurals == null)
+            throw new IllegalStateException();
+        plurals[15] = new String[]{"canvas", "canvases"};
+
+        Classes.registerClass(new ClassInfo<>(MapCanvas.class, "mapcanvas")
+                .user("map ?canvas(es)?")
+                .name("Map Canvas")
+                .description("the canvas of a map, this is what allows you to set pixels on")
                 .since("1.2.0")
-                .parser(new Parser<BufferedImage>() {
-
-                    @Nullable
+                .parser(new SimpleParser<>() {
                     @Override
-                    public BufferedImage parse(String s, ParseContext context) {
-                        return null;
+                    public @NotNull String toVariableNameString(MapCanvas canvas) {
+                        return canvas.toString() + "[map " + canvas.getMapView().getId() + "]";
                     }
+                })
+        );
 
-                    @Override
-                    public boolean canParse(ParseContext context) {
-                        return false;
-                    }
 
-                    @Override
-                    public String toString(BufferedImage image, int i) {
-                        return image.toString();
-                    }
-
-                    @Override
-                    public String toVariableNameString(BufferedImage image) {
-                        return "image;" + image.hashCode();
-                    }
-
-                    @Override
-                    public String getVariableNamePattern() {
-                        return "image;\\d+";
-                    }
-                }));
         Classes.registerClass(new ClassInfo<>(MapCursor.class, "mapcursor")
                 .user("map ?cursors?")
                 .name("Map Cursor")
                 .description("represents a cursor in a map")
                 .since("1.2.0")
-                .parser(new Parser<MapCursor>() {
-
-                    @Nullable
-                    @Override
-                    public MapCursor parse(String s, ParseContext context) {
-                        return null;
-                    }
-
-                    @Override
-                    public boolean canParse(ParseContext context) {
-                        return false;
-                    }
-
-                    @Override
+                .parser(new SimpleParser<>() {
                     @SuppressWarnings("deprecation")
-                    public String toString(MapCursor cursor, int i) {
-                        return (cursor.isVisible() ? "" : "in") + "visible " +
-                                toskript(cursor.getType().name()) +
-                                " map cursor at " + cursor.getX() + ", " + cursor.getY() +
-                                " facing " + Direction.toString(VectorMath.fromYawAndPitch(VectorMath.fromSkriptYaw(22.5f * cursor.getDirection()), 0)).replaceAll(" ?(, |and )?0 meters? \\w+( ,| and)? ?", "") +
-                                (cursor.caption() != null ? " named \"" + cursor.getCaption() + "\"" : "");
-                    }
-
                     @Override
-                    public String toVariableNameString(MapCursor mapCursor) {
-                        return "cursor;" + mapCursor.hashCode();
+                    public @NotNull String toVariableNameString(MapCursor cursor) {
+                        return (cursor.isVisible() ? "" : "in") + "visible " + Classes.toString(cursor.getType()) + " map cursor at (" + cursor.getX() + ", " + cursor.getY() + ") facing " + Direction.toString(VectorMath.fromYawAndPitch(VectorMath.fromSkriptYaw(22.5f * cursor.getDirection()), 0)).replaceAll(" ?(, |and )?0 meters? \\w+( ,| and)? ?", "") + (cursor.caption() == null ? "" : " named \"" + cursor.getCaption() + "\"");
                     }
+                })
+        );
 
-                    @Override
-                    public String getVariableNamePattern() {
-                        return "cursor;\\d+";
-                    }
-                }));
-        Classes.registerClass(new ClassInfo<>(MapCursor.Type.class, "mapcursortype")
+
+        Classes.registerClass(new EnumClassInfo<>(MapCursor.Type.class, "mapcursortype", "map cursor types")
                 .user("map ?cursor ?types?")
                 .name("Map Cursor Type")
                 .description("represents the type of a map cursor")
                 .since("1.2.0")
-                .usage(toskript(StringUtils.join(MapCursor.Type.values(), ", ")))
-                .parser(new Parser<MapCursor.Type>() {
+        );
 
-                    @Nullable
-                    @Override
-                    public MapCursor.Type parse(String s, ParseContext context) {
-                        try {
-                            return MapCursor.Type.valueOf(fromskript(s));
-                        } catch (Exception ex) {
-                            return null;
-                        }
-                    }
 
-                    @Override
-                    public boolean canParse(ParseContext context) {
-                        return true;
-                    }
+        // Image
 
-                    @Override
-                    public String toString(MapCursor.Type type, int i) {
-                        return toVariableNameString(type);
-                    }
 
-                    @Override
-                    public String toVariableNameString(MapCursor.Type type) {
-                        return toskript(type.name());
-                    }
-
-                    @Override
-                    public String getVariableNamePattern() {
-                        return ".+";
-                    }
-                }));
-        Classes.registerClass(new ClassInfo<>(MapCanvas.class, "mapcanv")
-                .user("map ?canvs?")
-                .name("Map Canvas")
-                .description("the canvas of a map, this is what allows you to set pixels on")
+        Classes.registerClass(new ClassInfo<>(BufferedImage.class, "image")
+                .user("images?")
+                .name("Image")
+                .description("represents an image. Can be used to send as chat message, upload skins or be displayed on maps")
                 .since("1.2.0")
-                .parser(new Parser<MapCanvas>() {
-
-                    @Nullable
+                .parser(new SimpleParser<>() {
                     @Override
-                    public MapCanvas parse(String s, ParseContext context) {
-                        return null;
+                    public @NotNull String toVariableNameString(BufferedImage image) {
+                        return "image@" + image.hashCode() + "[" + image.getWidth() + "x" + image.getHeight() + "]";
                     }
+                })
+        );
 
-                    @Override
-                    public boolean canParse(ParseContext context) {
-                        return false;
-                    }
 
-                    @Override
-                    public String toString(MapCanvas mapCanvas, int i) {
-                        return mapCanvas.toString();
-                    }
+        // Statistic
 
-                    @Override
-                    public String toVariableNameString(MapCanvas mapCanvas) {
-                        return "mapcanvas;" + mapCanvas.hashCode();
-                    }
 
-                    @Override
-                    public String getVariableNamePattern() {
-                        return "mapcanvas;\\d+";
-                    }
-                }));
-        Classes.registerClass(new ClassInfo<>(Statistic.class, "statistic")
+        Classes.registerClass(new EnumClassInfo<>(Statistic.class, "statistic", "statistics")
                 .user("stat(istic)?s?")
                 .name("Statistic")
                 .description("represents a player statistic")
                 .since("1.2.0")
-                .usage(toskript(StringUtils.join(Statistic.values(), ", ")))
-                .parser(new Parser<Statistic>() {
+        );
 
-                    @Nullable
-                    @Override
-                    public Statistic parse(String s, ParseContext context) {
-                        try {
-                            return Statistic.valueOf(fromskript(s));
-                        } catch (Exception ex) {
-                            return null;
-                        }
-                    }
-
-                    @Override
-                    public boolean canParse(ParseContext context) {
-                        return true;
-                    }
-
-                    @Override
-                    public String toString(Statistic statistic, int i) {
-                        return toVariableNameString(statistic);
-                    }
-
-                    @Override
-                    public String toVariableNameString(Statistic statistic) {
-                        return toskript(statistic.toString());
-                    }
-
-                    @Override
-                    public String getVariableNamePattern() {
-                        return ".+";
-                    }
-                }));
-        Classes.registerClass(new ClassInfo<>(MapState.class, "mapstate")
-                .user("map ?states?")
-                .name("Map State")
-                .description("Represents a capture of a map (like taking a screenshot) that can be sent to players to display. Useful for showing multiple images on a single map, much faster than draw image on map effect")
-                .since("1.2.3")
-                .parser(new Parser<MapState>() {
-
-                    @Nullable
-                    @Override
-                    public MapState parse(String s, ParseContext context) {
-                        return null;
-                    }
-
-                    @Override
-                    public boolean canParse(ParseContext context) {
-                        return false;
-                    }
-
-                    @Override
-                    public String toString(MapState mapState, int i) {
-                        return mapState.toString();
-                    }
-
-                    @Override
-                    public String toVariableNameString(MapState mapState) {
-                        return "mapstate;" + mapState.hashCode();
-                    }
-
-                    @Override
-                    public String getVariableNamePattern() {
-                        return ".+";
-                    }
-                }));
     }
 
-    private static String toskript(String s) {
-        return s.replace("_", " ").toLowerCase();
+    private static abstract class SimpleParser<T> extends Parser<T> {
+        @Override
+        public T parse(@NotNull String s, @NotNull ParseContext context) {
+            return null;
+        }
+        @Override
+        public boolean canParse(@NotNull ParseContext context) {
+            return false;
+        }
+        @Override
+        public @NotNull String toString(T o, int flags) {
+            return toVariableNameString(o);
+        }
+        @Override
+        public @NotNull String getVariableNamePattern() {
+            return ".*";
+        }
     }
 
-    private static String fromskript(String s) {
-        return s.replace(" ", "_").toUpperCase();
+    private static abstract class SimpleSerializer<T> extends Serializer<T> {
+        @Override
+        protected boolean canBeInstantiated() {
+            return false;
+        }
+        @Override
+        public void deserialize(T o, @NotNull Fields fields) {
+
+        }
+        @Override
+        public boolean mustSyncDeserialization() {
+            return true;
+        }
+        protected abstract T deserialize(@NotNull Fields fields) throws StreamCorruptedException, NotSerializableException;
     }
+
+    private static class EnumClassInfo<T extends Enum<T>> extends ClassInfo<T> {
+
+        public EnumClassInfo(Class<T> c, String codeName, String l) {
+            super(c, codeName);
+            EnumUtils<T> enumUtils = new EnumUtils<>(c, l);
+            usage(enumUtils.getAllNames());
+            parser(new EnumParser<>(enumUtils));
+            serializer(new EnumSerializer<>(c));
+        }
+
+        private static class EnumParser<T extends Enum<T>> extends Parser<T> {
+            private final EnumUtils<T> enumUtils;
+            public EnumParser(EnumUtils<T> enumUtils) {
+                this.enumUtils = enumUtils;
+            }
+            @Override
+            public @Nullable
+            T parse(@NotNull String string, @NotNull ParseContext context) {
+                return enumUtils.parse(string);
+            }
+            @Override
+            public @NotNull String toString(T t, int flags) {
+                return enumUtils.toString(t, flags);
+            }
+            @Override
+            public @NotNull String toVariableNameString(T t) {
+                return t.name();
+            }
+            @Override
+            public @NotNull String getVariableNamePattern() {
+                return ".*";
+            }
+        }
+    }
+
 
 }
 
