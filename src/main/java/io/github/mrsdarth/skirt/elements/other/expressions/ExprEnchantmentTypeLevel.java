@@ -1,4 +1,4 @@
-package io.github.mrsdarth.skirt.paper.elements;
+package io.github.mrsdarth.skirt.elements.other.expressions;
 
 import ch.njol.skript.expressions.base.SimplePropertyExpression;
 import ch.njol.skript.util.EnchantmentType;
