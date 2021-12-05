@@ -28,7 +28,7 @@ public class EffSaveSkin extends AsyncEffect {
     private int pattern;
 
     static {
-        Skript.registerEffect(EffSaveSkin.class, "load skin from ((file [path]|1¦url) %string%|2¦%image%|3¦%offlineplayer%) [in]to %object%");
+        Skript.registerEffect(EffSaveSkin.class, "load skin from ((file [path]|1¦url) %-string%|2¦%-image%|3¦%-offlineplayer%) [in]to %object%");
     }
 
     @Override
