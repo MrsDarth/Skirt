@@ -19,9 +19,7 @@ import org.jetbrains.annotations.NotNull;
 
 @Name("Vector from direction")
 @Description("Converts a skript direction to a vector, useful if you want to manipulate a direction")
-@Examples({"set {_v} to vector from direction (facing of player)",
-        "loop 360 times:",
-        "\tadd 1 to vector yaw of {_v}"})
+@Examples("set {_v} to vector from direction (facing of player)")
 @Since("1.0.0")
 
 public class ExprVecFromDir extends PropertyExpression<Direction, Vector> {

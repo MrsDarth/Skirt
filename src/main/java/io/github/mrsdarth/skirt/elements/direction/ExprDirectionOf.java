@@ -23,9 +23,8 @@ import java.util.Optional;
 
 
 @Name("Entity Direction")
-@Description("Returns the direction of an entity as a vector, similar to vector from entity's yaw and pitch. Can be set")
-@Examples({"add 10 to vector yaw of player's direction",
-        "# rotates the player by 10"})
+@Description("Returns the direction of an entity or location as a vector, similar to vector from location's yaw and pitch. Can be set")
+@Examples("add 10 to yaw of player's direction # rotates the player by 10")
 @Since("1.0.0")
 
 public class ExprDirectionOf extends SimplePropertyExpression<Object, Vector> {

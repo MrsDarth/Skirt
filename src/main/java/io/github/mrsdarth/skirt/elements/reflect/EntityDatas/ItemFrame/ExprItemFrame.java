@@ -1,6 +1,7 @@
 package io.github.mrsdarth.skirt.elements.reflect.EntityDatas.ItemFrame;
 
 import ch.njol.skript.Skript;
+import ch.njol.skript.doc.*;
 import ch.njol.skript.entity.EntityData;
 import ch.njol.skript.entity.SimpleEntityData;
 import ch.njol.skript.lang.Expression;
@@ -27,6 +28,12 @@ import org.jetbrains.annotations.Nullable;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Method;
+
+@Name("Forced Item Frame")
+@Description("returns an entity type allowing u to spawn an item frame without needing a block next to the spawn location")
+@Examples("spawn forced item frame facing up")
+@Since("2.0.0")
+@RequiredPlugins("ProtocolLib")
 
 @SuppressWarnings("unchecked")
 public class ExprItemFrame extends SimpleExpression<EntityData> {

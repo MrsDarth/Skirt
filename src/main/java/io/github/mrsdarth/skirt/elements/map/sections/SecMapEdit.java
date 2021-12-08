@@ -13,6 +13,7 @@ import ch.njol.skript.lang.TriggerItem;
 import ch.njol.skript.lang.Variable;
 import ch.njol.skript.variables.Variables;
 import ch.njol.util.Kleenean;
+import io.github.mrsdarth.skirt.Skirtness;
 import io.github.mrsdarth.skirt.elements.map.SkirtRenderer;
 import org.bukkit.event.Event;
 import org.bukkit.map.MapCanvas;
@@ -24,16 +25,12 @@ import java.util.List;
 import java.util.concurrent.CompletableFuture;
 
 @Name("Map Edit")
-@Description({
-        "start editing a map. the %objects% at the end is to store the map canvas to use for editing.",
-        "partially edit prevents deleting the orginal map renderers",
-        "this effect is a delayed effect and will wait until the specified map begins to render",
-        "map begins rendering when it is visible to a player eg. in their inventory or in an item frame"
-})
-@Examples({
-        "edit new map from world:",
-        "\tset pixel at 1, 1 to green"
-})
+@Description({"start editing a map. the %objects% at the end is to store the map canvas to use for editing.",
+        "specifying partially adds layer of map canvas above the others instead of overwriting them",
+        "if there is no section it will be a delayed effect and will wait until the specified map begins to render",
+        "map begins rendering when it is visible to a player eg. in their inventory or in an item frame"})
+@Examples({"edit map of player's tool:",
+        "\tset all pixels to green"})
 @Since("1.2.0")
 
 public class SecMapEdit extends EffectSection {
@@ -86,7 +83,7 @@ public class SecMapEdit extends EffectSection {
         if (hasSection()) {
             futureCanvas.thenAccept(canvas -> {
                 lastCanvas = this.canvas = canvas;
-                setVariable(e, canvas);
+                Skirtness.setVariable(variable, e, canvas);
                 if (first != null) walk(first, e);
             });
             return next;
@@ -95,16 +92,11 @@ public class SecMapEdit extends EffectSection {
             futureCanvas.thenAccept(canvas -> {
                 lastCanvas = this.canvas = canvas;
                 Variables.setLocalVariables(e, locals);
-                setVariable(e, canvas);
+                Skirtness.setVariable(variable, e, canvas);
                 if (next != null) walk(next, e);
             });
             return null;
         }
-    }
-
-    private void setVariable(Event event, Object object) {
-        if (variable != null)
-            Variables.setVariable(variable.getName().toString(event), object, event, variable.isLocal());
     }
 
     @Override

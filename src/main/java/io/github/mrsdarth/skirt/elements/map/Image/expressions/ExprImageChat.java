@@ -1,6 +1,10 @@
 package io.github.mrsdarth.skirt.elements.map.Image.expressions;
 
 import ch.njol.skript.Skript;
+import ch.njol.skript.doc.Description;
+import ch.njol.skript.doc.Examples;
+import ch.njol.skript.doc.Name;
+import ch.njol.skript.doc.Since;
 import ch.njol.skript.expressions.base.PropertyExpression;
 import ch.njol.skript.lang.Expression;
 import ch.njol.skript.lang.ExpressionType;
@@ -13,6 +17,11 @@ import org.jetbrains.annotations.Nullable;
 
 import java.awt.*;
 import java.awt.image.BufferedImage;
+
+@Name("Image to color text")
+@Description("turns image pixels to hex color to display in chat")
+@Examples({"on join:", "\tload image from skin player's skin into {_image}", "\tsend {_image} as chat message"})
+@Since("2.0.0")
 
 public class ExprImageChat extends PropertyExpression<BufferedImage, String> {
 

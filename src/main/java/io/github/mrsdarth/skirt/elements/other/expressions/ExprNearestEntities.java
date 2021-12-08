@@ -22,7 +22,7 @@ import java.util.Comparator;
 
 @Name("Nearest Entities")
 @Description("get the nearest x entities to a location sorted")
-@Examples("give diamond to nearest player from {prize}")
+@Examples("give diamond to nearest player from spawn")
 @Since("1.1.0")
 
 public class ExprNearestEntities extends SimpleExpression<Entity> {
@@ -50,7 +50,7 @@ public class ExprNearestEntities extends SimpleExpression<Entity> {
                         if (type.isInstance(entity)) return true;
                     return false;
                 })
-                .sorted(Comparator.comparingDouble(entity -> entity.getLocation().distanceSquared(location)))
+                .sorted(Comparator.comparingDouble(entity -> location.distanceSquared(entity.getLocation())))
                 .limit(limit)
                 .toArray(Entity[]::new);
     }

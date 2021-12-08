@@ -10,6 +10,7 @@ import ch.njol.skript.lang.Expression;
 import ch.njol.skript.lang.ExpressionType;
 import ch.njol.skript.lang.SkriptParser.ParseResult;
 import ch.njol.util.Kleenean;
+import io.github.mrsdarth.skirt.Skirtness;
 import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.event.Event;
@@ -53,8 +54,6 @@ public class ExprVecToLoc extends PropertyExpression<Vector, Location> {
 
     @Override
     protected Location @Nullable [] get(@NotNull Event event, Vector @NotNull [] vectors) {
-        World world = this.worldExpr.getSingle(event);
-        if (world == null) return null;
-        return get(vectors, v -> v.toLocation(world));
+        return Skirtness.getSingle(worldExpr, event).map(world -> get(vectors, vector -> vector.toLocation(world))).orElse(null);
     }
 }

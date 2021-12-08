@@ -19,13 +19,11 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 @Name("Item Frame Properties")
-@Description({
-        "Get or set an item frame's:",
+@Description({"Get or set an item frame's:",
         "rotation - the rotation of the item in the frame",
         "facing - the direction of the item frame itself",
         "fixed state - whether the item frame can be destroyed by regular means",
-        "visibility - whether players can see the item frame"
-})
+        "visibility - whether players can see the item frame"})
 @Examples("set item frame rotation of ")
 @Since("1.2.2")
 

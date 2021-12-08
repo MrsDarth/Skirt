@@ -1,11 +1,11 @@
 package io.github.mrsdarth.skirt.paper.elements.skins;
 
 import ch.njol.skript.Skript;
+import ch.njol.skript.doc.*;
 import ch.njol.skript.lang.Expression;
 import ch.njol.skript.lang.SkriptParser;
 import ch.njol.skript.lang.Variable;
 import ch.njol.skript.util.AsyncEffect;
-import ch.njol.skript.variables.Variables;
 import ch.njol.util.Kleenean;
 import io.github.mrsdarth.skirt.Skirtness;
 import org.bukkit.OfflinePlayer;
@@ -16,6 +16,12 @@ import org.jetbrains.annotations.Nullable;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.util.Optional;
+
+@Name("Generate Skin")
+@Description("creates a skin from an image or loads from an offline player and saves to a variable")
+@Examples("load skin from \"notch\" parsed as offline player to {_skin}")
+@Since("2.0.0")
+@RequiredPlugins("Paper")
 
 public class EffSaveSkin extends AsyncEffect {
 
@@ -40,7 +46,7 @@ public class EffSaveSkin extends AsyncEffect {
                 case 2 -> Skirtness.getSingle(imageExpr, e).map(Skins::getSkin);
                 case 3 -> Skirtness.getSingle(offlinePlayerExpr, e).map(Skins::getSkin);
                 default -> Optional.empty();
-            }).ifPresent(skin -> Variables.setVariable(variable.getName().toString(e), skin, e, variable.isLocal()));
+            }).ifPresent(skin -> Skirtness.setVariable(variable, e, skin));
         } catch (Exception ex) {
             ex.printStackTrace();
         }
@@ -63,14 +69,17 @@ public class EffSaveSkin extends AsyncEffect {
     @SuppressWarnings("unchecked")
     @Override
     public boolean init(Expression<?> @NotNull [] exprs, int matchedPattern, @NotNull Kleenean isDelayed, SkriptParser.@NotNull ParseResult parseResult) {
-        if (!(exprs[3] instanceof Variable<?> variable)) return false;
-        this.variable = variable;
-        pattern = parseResult.mark;
-        switch (pattern) {
-            case 0, 1 -> stringExpr = (Expression<String>) exprs[0];
-            case 2 -> imageExpr = (Expression<BufferedImage>) exprs[1];
-            case 3 -> offlinePlayerExpr = (Expression<OfflinePlayer>) exprs[2];
+        if (exprs[3] instanceof Variable<?> variable) {
+            this.variable = variable;
+            pattern = parseResult.mark;
+            switch (pattern) {
+                case 0, 1 -> stringExpr = (Expression<String>) exprs[0];
+                case 2 -> imageExpr = (Expression<BufferedImage>) exprs[1];
+                case 3 -> offlinePlayerExpr = (Expression<OfflinePlayer>) exprs[2];
+            }
+            return true;
         }
-        return true;
+        Skript.error("object needs to be a variable");
+        return false;
     }
 }

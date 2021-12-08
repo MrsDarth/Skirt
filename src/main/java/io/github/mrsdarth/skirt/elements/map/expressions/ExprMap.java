@@ -21,7 +21,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 @Name("Map")
-@Description("returns a map in a map initialise event, from an id or newly created from a world")
+@Description("used to get a map from an id or a newly created map from specified world")
 @Examples("set {_map} to map from player's world")
 @Since("1.2.0")
 

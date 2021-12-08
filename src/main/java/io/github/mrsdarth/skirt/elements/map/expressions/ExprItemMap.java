@@ -18,7 +18,7 @@ import org.jetbrains.annotations.Nullable;
 
 @Name("Item from map")
 @Description("returns a filled map item with the specified map")
-@Examples("give player item with map from id 0")
+@Examples("give player map item with map from id 0")
 @Since("1.2.0")
 
 public class ExprItemMap extends SimplePropertyExpression<MapView, ItemType> {

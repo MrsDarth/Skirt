@@ -21,7 +21,7 @@ import java.awt.image.BufferedImage;
 
 @Name("Map Draw")
 @Description({
-        "draw text or images on a map.",
+        "draw text or image on a map.",
         "for draw text, map colors are in the format §<number>; however you can still use hex and regular color codes and it will convert for you",
         "for draw image, only part of the image will be displayed if it goes over the 128 pixel size. You can use the image expression to resize"
 })
@@ -32,7 +32,7 @@ public class EffMapDraw extends Effect {
 
     static {
         Skript.registerEffect(EffMapDraw.class,
-                "draw image %image% at " + Maps.coordPattern(false) + " [on %-mapcanv%]",
+                "draw image %image% [at " + Maps.coordPattern(true) + "] [on %-mapcanv%]",
                 "draw text %string% at " + Maps.coordPattern(false) + " [on %-mapcanv%]");
     }
 
@@ -48,7 +48,7 @@ public class EffMapDraw extends Effect {
     @Override
     protected void execute(@NotNull Event e) {
         MapCanvas canvas = canvasExpr == null ? mapEditSection.getCanvas() : canvasExpr.getSingle(e);
-        Number x = numberExpr1.getSingle(e), y = numberExpr2.getSingle(e);
+        Number x = numberExpr1 == null ? 0 : numberExpr1.getSingle(e), y = numberExpr2 == null ? 0 : numberExpr2.getSingle(e);
         if (canvas == null || x == null || y == null) return;
         if (drawImage) {
             BufferedImage image = imageExpr.getSingle(e);

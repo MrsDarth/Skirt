@@ -12,6 +12,7 @@ import ch.njol.skript.lang.SkriptParser.ParseResult;
 import ch.njol.util.Kleenean;
 import ch.njol.util.coll.CollectionUtils;
 import io.github.mrsdarth.skirt.Skirtness;
+import org.apache.commons.lang.ArrayUtils;
 import org.bukkit.event.Event;
 import org.bukkit.map.MapView;
 import org.jetbrains.annotations.NotNull;
@@ -19,7 +20,7 @@ import org.jetbrains.annotations.Nullable;
 
 @Name("Map Scale / Center / Id")
 @Description("returns the scale, center x or z location, or id of a map")
-@Examples("set center x of map of player's tool to x location of player")
+@Examples("set scale of map of player's tool to 0")
 @Since("1.2.0")
 
 
@@ -73,7 +74,7 @@ public class ExprScaleCentreId extends SimplePropertyExpression<MapView, Long> {
     @Override
     public void change(@NotNull Event event, Object @Nullable [] delta, @NotNull ChangeMode mode) {
         Number old = getSingle(event);
-        if (delta == null || delta.length == 0 || old == null || !(delta[0] instanceof Number change)) return;
+        if (ArrayUtils.isEmpty(delta) || old == null || !(delta[0] instanceof Number change)) return;
         int value = change.intValue(), oldValue = old.intValue();
         for (MapView map : getExpr().getArray(event)) {
             int newValue = switch (mode) {

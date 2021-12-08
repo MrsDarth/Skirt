@@ -9,6 +9,7 @@ import ch.njol.skript.lang.Expression;
 import ch.njol.skript.lang.ExpressionType;
 import ch.njol.skript.lang.SkriptParser.ParseResult;
 import ch.njol.skript.lang.util.SimpleExpression;
+import ch.njol.skript.registrations.Converters;
 import ch.njol.util.Kleenean;
 import io.github.mrsdarth.skirt.Skirtness;
 import org.bukkit.Location;
@@ -25,17 +26,8 @@ import java.util.stream.Stream;
 
 
 @Name("Bounding Box outline")
-@Description("Returns a list of vectors in the shape of a bounding box, or between locations")
-@Examples({"command /blockshape:",
-        "\ttrigger:",
-        "",
-        "\t\tset {_box} to bounding box of (exact target block)",
-        "\t\tset {_vectors::*} to box outline of {_box} with density 5",
-        "\t\tset {_locations::*} to {_vectors::*} as locations",
-        "",
-        "\t\tloop 10 times:",
-        "\t\t\tplay happy villager at {_locations::*}",
-        "\t\t\twait 2 ticks"})
+@Description("Returns a list of vectors in the outline or corner of a bounding box and line between vectors or locations")
+@Examples("play red dust at location line between {pos1} and {pos2}")
 @Since("1.0.0")
 
 public class ExprBoundingBoxOutline extends SimpleExpression<Object> {
@@ -45,7 +37,7 @@ public class ExprBoundingBoxOutline extends SimpleExpression<Object> {
                 "[vector] box outline of %boundingboxes% [with density %-number%]",
                 "vector line between %vector% and %vector% [with density %-number%]",
                 "location line between %location% and %location% [with density %-number%]",
-                "[all] [outline] points of %boundingboxes%");
+                "[all] [corner] points of %boundingboxes%");
     }
 
     private Expression<BoundingBox> boxExpr;
@@ -74,10 +66,7 @@ public class ExprBoundingBoxOutline extends SimpleExpression<Object> {
                 Location pos1 = locationExpr1.getSingle(e), pos2 = locationExpr2.getSingle(e);
                 if (number.isEmpty() || pos1 == null || pos2 == null) yield null;
                 World world = pos1.getWorld();
-                yield world.equals(pos2.getWorld()) ?
-                        Arrays.stream(getLine(pos1.toVector(), pos2.toVector(), number.get().doubleValue()))
-                        .map(vector -> vector.toLocation(world))
-                        .toArray(Location[]::new) : null;
+                yield world.equals(pos2.getWorld()) ? Converters.convert(getLine(pos1.toVector(), pos2.toVector(), number.get().doubleValue()), Location.class, vector -> vector.toLocation(world)) : null;
             }
             case 3 -> Arrays.stream(boxExpr.getArray(e))
                     .map(ExprBoundingBoxOutline::getPoints)

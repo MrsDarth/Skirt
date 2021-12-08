@@ -19,9 +19,7 @@ import org.jetbrains.annotations.Nullable;
 
 @Name("Bounding Box Points")
 @Description("Get the upper, lower or centre point of a bounding box")
-@Examples({"set {_l1} to (upper corner of {_box}) as location",
-        "set {_l2} to (lower corner of {_box}) as location",
-        "set blocks within {_l1} and {_l2} to air"})
+@Examples("teleport player to centre of {_box} as location")
 @Since("1.0.0")
 
 public class ExprBoundingBoxPoints extends SimplePropertyExpression<BoundingBox, Vector> {

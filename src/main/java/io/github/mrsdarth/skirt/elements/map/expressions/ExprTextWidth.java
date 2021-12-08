@@ -10,7 +10,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 @Name("Text width")
-@Description("returns the width of a text in pixels")
+@Description("returns the width of a text in pixels. returns nothing if there is invalid character")
 @Examples("set {_w} to text width of message")
 @Since("1.2.2")
 

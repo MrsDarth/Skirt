@@ -21,7 +21,6 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.List;
 
 @Name("Bounding Box Entities")
 @Description("gets entities within a bounding box")
@@ -43,9 +42,13 @@ public class ExprBoundingBoxEntities extends SimpleExpression<Entity> {
     protected @Nullable
     Entity[] get(@NotNull Event e) {
         return Skirtness.getSingle(worldExpr, e).map(world -> {
-            List<EntityData<?>> entityData = Arrays.asList(entityDataExpr.getArray(e));
+            EntityData<?>[] entityData = entityDataExpr.getAll(e);
             return Arrays.stream(boxExpr.getArray(e))
-                    .map(box -> world.getNearbyEntities(box, entity -> entityData.stream().anyMatch(type -> type.isInstance(entity))))
+                    .map(box -> world.getNearbyEntities(box, entity -> {
+                        for (EntityData<?> type: entityData)
+                            if (type.isInstance(entity)) return true;
+                        return false;
+                    }))
                     .flatMap(Collection::stream)
                     .toArray(Entity[]::new);
         }).orElse(null);

@@ -20,6 +20,8 @@ import org.bukkit.util.Vector;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.Optional;
+
 
 @Name("Ray Trace Results")
 @Description("The results of a ray trace")
@@ -61,16 +63,8 @@ public class ExprRayTraceResults extends SimplePropertyExpression<RayTraceResult
         return switch (pattern) {
             case 0 -> ray.getHitBlock();
             case 1 -> ray.getHitPosition();
-            case 2 -> {
-                Block block = ray.getHitBlock();
-                Entity entity = ray.getHitEntity();
-                World world = block == null ? entity == null ? null : entity.getWorld() : block.getWorld();
-                yield world == null ? null : ray.getHitPosition().toLocation(world);
-            }
-            case 3 -> {
-                BlockFace face = ray.getHitBlockFace();
-                yield face == null ? null : new Direction(face, 1);
-            }
+            case 2 -> Optional.ofNullable(ray.getHitBlock()).map(Block::getWorld).or(() -> Optional.ofNullable(ray.getHitEntity()).map(Entity::getWorld)).map(world -> ray.getHitPosition().toLocation(world)).orElse(null);
+            case 3 -> Optional.ofNullable(ray.getHitBlockFace()).map(face -> new Direction(face, 1)).orElse(null);
             case 4 -> ray.getHitEntity();
             default -> null;
         };

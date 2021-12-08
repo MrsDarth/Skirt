@@ -4,19 +4,11 @@ package io.github.mrsdarth.skirt;
 import com.google.common.collect.HashBasedTable;
 import com.google.common.collect.Table;
 
-import java.lang.reflect.Array;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 
 public class Reflectness {
-
-
-    @SuppressWarnings("unchecked")
-    public static <T> T[] newArray(Class<T> tClass, int length) {
-        return (T[]) Array.newInstance(tClass, length);
-    }
-
 
     public static Class<?> classForName(String className) {
         try {

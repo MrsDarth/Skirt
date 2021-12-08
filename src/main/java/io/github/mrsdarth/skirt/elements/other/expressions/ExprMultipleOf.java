@@ -10,14 +10,17 @@ import ch.njol.skript.lang.Expression;
 import ch.njol.skript.lang.ExpressionType;
 import ch.njol.skript.lang.SkriptParser.ParseResult;
 import ch.njol.util.Kleenean;
-import io.github.mrsdarth.skirt.Reflectness;
+import ch.njol.util.coll.iterator.ArrayIterator;
 import org.bukkit.event.Event;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.Arrays;
+import java.util.Iterator;
+
 @Name("Multiple of object")
 @Description({"returns x of any object", "3 times of stone would return stone, stone and stone"})
-@Examples({"set {_text::*} to 5 times of \"hi\"", "send join {_text::*}", "#outputs hihihihihi"})
+@Examples("send join 5 times of \"skirt\" # skirtskirtskirtskirtskirt")
 @Since("1.0.1")
 
 @SuppressWarnings("unchecked")
@@ -25,7 +28,8 @@ public class ExprMultipleOf<T> extends WrapperExpression<T> {
 
     static {
         Skript.registerExpression(ExprMultipleOf.class, Object.class, ExpressionType.COMBINED,
-                "%number% time[s] of %objects%"
+                "%number% times of %objects%",
+                "%objects% repeated %number% times"
         );
     }
 
@@ -33,12 +37,25 @@ public class ExprMultipleOf<T> extends WrapperExpression<T> {
 
     @Override
     protected T[] get(@NotNull Event e) {
-        Number repeat = numberExpr.getSingle(e);
-        if (repeat == null) return null;
-        T[] array = super.getArray(e), newArray = Reflectness.newArray(getReturnType(), repeat.intValue() * array.length);
-        for (int i = 0; i < repeat.intValue(); i++)
-            System.arraycopy(array, 0, newArray, i * array.length, array.length);
+        int repeat;
+        Number number = numberExpr.getSingle(e);
+        if (number == null || (repeat = number.intValue()) < 1) return null;
+        T[] array = super.getArray(e), newArray;
+        if (repeat == 1) return array;
+        if (array.length == 1) {
+            newArray = Arrays.copyOf(array, repeat);
+            Arrays.fill(newArray, 1, repeat, array[0]);
+        } else {
+            newArray = Arrays.copyOf(array, repeat * array.length);
+            for (int i = 1; i < repeat; i++)
+                System.arraycopy(array, 0, newArray, i * array.length, array.length);
+        }
         return newArray;
+    }
+
+    @Override
+    public @Nullable Iterator<? extends T> iterator(@NotNull Event e) {
+        return new ArrayIterator<>(get(e));
     }
 
     @Override
@@ -53,8 +70,8 @@ public class ExprMultipleOf<T> extends WrapperExpression<T> {
 
     @Override
     public boolean init(Expression<?> @NotNull [] exprs, int matchedPattern, @NotNull Kleenean isDelayed, @NotNull ParseResult parseResult) {
-        numberExpr = (Expression<Number>) exprs[0];
-        setExpr((Expression<? extends T>) exprs[1]);
+        numberExpr = (Expression<Number>) exprs[matchedPattern];
+        setExpr((Expression<? extends T>) exprs[matchedPattern ^ 1]);
         return true;
     }
 }

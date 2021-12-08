@@ -1,10 +1,7 @@
 package io.github.mrsdarth.skirt.elements.reflect.effects;
 
 import ch.njol.skript.Skript;
-import ch.njol.skript.doc.Description;
-import ch.njol.skript.doc.Examples;
-import ch.njol.skript.doc.Name;
-import ch.njol.skript.doc.Since;
+import ch.njol.skript.doc.*;
 import ch.njol.skript.lang.Effect;
 import ch.njol.skript.lang.Expression;
 import ch.njol.skript.lang.SkriptParser.ParseResult;
@@ -37,8 +34,9 @@ import java.util.Set;
 @Name("Move entity")
 @Description({"Similar to teleporting but keeps their momentum and works even if there are passengers on the entity",
         "the location must be in the same world as the entity"})
-@Examples("move player 10 above player")
+@Examples("move player 10 above")
 @Since("1.1.0")
+@RequiredPlugins("ProtocolLib")
 
 @SuppressWarnings("unchecked")
 public class EffMoveEntity extends Effect {
@@ -52,7 +50,7 @@ public class EffMoveEntity extends Effect {
                 if (StringUtils.contains(method.getName(), "internalTeleport", false)) {
                     TELEPORT_PLAYER = method;
                     for (Type type : method.getGenericParameterTypes())
-                        if (type instanceof ParameterizedType flagSetParam && flagSetParam.getActualTypeArguments()[0] instanceof Class flagsClass) {
+                        if (type instanceof ParameterizedType flagSetParam && flagSetParam.getActualTypeArguments()[0] instanceof Class flagsClass && flagsClass.isEnum()) {
                             FLAGS = EnumSet.allOf(flagsClass);
                             return true;
                         }
@@ -61,12 +59,7 @@ public class EffMoveEntity extends Effect {
     }
 
     private static boolean findEntityMethod() {
-        if (Skirtness.hasNBT()) return true;
-        if (Skirtness.hasProtocolLib()) {
-            TELEPORT_ENTITY = Reflectness.getMethod(MinecraftReflection.getEntityClass(), "setLocation", double.class, double.class, double.class, float.class, float.class);
-            return TELEPORT_ENTITY != null;
-        }
-        return false;
+        return Skirtness.hasNBT() || (TELEPORT_ENTITY = Reflectness.getMethod(MinecraftReflection.getEntityClass(), "setLocation", double.class, double.class, double.class, float.class, float.class)) != null;
     }
 
     static {

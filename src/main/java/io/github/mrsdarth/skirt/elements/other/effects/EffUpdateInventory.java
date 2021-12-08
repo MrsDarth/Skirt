@@ -11,6 +11,7 @@ import ch.njol.skript.lang.SkriptParser;
 import ch.njol.util.Kleenean;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Event;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 
@@ -25,22 +26,23 @@ public class EffUpdateInventory extends Effect {
         Skript.registerEffect(EffUpdateInventory.class, "update inventor(y|ies) (of|for) %players%", "update %players%'[s] inventor(y|ies)");
     }
 
-    private Expression<Player> players;
+    private Expression<Player> playerExpr;
 
     @Override
-    protected void execute(Event event) {
-        for (Player p : players.getArray(event))
-            p.updateInventory();
+    protected void execute(@NotNull Event e) {
+        for (Player player: playerExpr.getArray(e))
+            player.updateInventory();
     }
 
     @Override
-    public String toString(@Nullable Event event, boolean b) {
-        return "update inventory";
+    public @NotNull String toString(@Nullable Event e, boolean debug) {
+        return "update inventory of " + playerExpr.toString(e, debug);
     }
 
+    @SuppressWarnings("unchecked")
     @Override
-    public boolean init(Expression<?>[] exprs, int i, Kleenean kleenean, SkriptParser.ParseResult parseResult) {
-        players = (Expression<Player>) exprs[0];
+    public boolean init(Expression<?> @NotNull [] exprs, int matchedPattern, @NotNull Kleenean isDelayed, SkriptParser.@NotNull ParseResult parseResult) {
+        playerExpr = (Expression<Player>) exprs[0];
         return true;
     }
 }

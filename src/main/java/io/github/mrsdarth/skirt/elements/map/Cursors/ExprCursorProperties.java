@@ -20,12 +20,9 @@ import org.jetbrains.annotations.Nullable;
 
 @Name("Map Cursor Properties")
 @Description("the properties of a map cursor, can be changed")
-@Examples({
-        "set {_cursor} to new white pointer map cursor",
+@Examples({"set {_cursor} to new white pointer map cursor",
         "add {_cursor} to map cursors of {canvas}",
-        "loop 100 times:",
-        "\tadd 1 to cursor rotation of {_cursor}"
-})
+        "add 1 to cursor rotation of {_cursor}"})
 @Since("1.2.0")
 
 public class ExprCursorProperties extends SimplePropertyExpression<MapCursor, Object> {

@@ -27,11 +27,9 @@ import java.util.stream.IntStream;
 
 @Name("Drops of entity")
 @Description("generates the drops of an entity with an optional attacker. This takes into account the looting of the player's tool and luck potion effect")
-@Examples({
-        "on death:",
+@Examples({"on death:",
         "\tname of victim = \"5x creeper\"",
-        "\tdrop 5 mob drops of victim with attacker"
-})
+        "\tdrop 5 mob drops of victim using attacker"})
 @Since("1.2.2")
 
 public class ExprEntityDrops extends SimpleExpression<ItemType> {

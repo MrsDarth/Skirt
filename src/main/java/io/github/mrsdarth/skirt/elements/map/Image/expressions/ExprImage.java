@@ -28,17 +28,8 @@ import java.util.Collection;
 
 @Name("Image")
 @Description("get an image from a file, url, folder")
-@Examples({
-        "command freeop:",
-        "\ttrigger:",
-        "\t\tset {_image} to image from url \"https://disforge.com/assets/icons/772869055417417768.png\"",
-        "\t\t{_image} is set",
-        "\t\tset {_map} to new map from world",
-        "\t\tedit {_map} and store canvas in {_canvas}",
-        "\t\tdraw image {_image} at 0, 0 on {_canvas}",
-        "\t\tset player's tool to map item from {_map}"
-})
-@Since("1.2.0, 1.2.1 (gif frames)")
+@Examples({"set {_image} to image from url \"...\"", "draw image {_image} on {map canvas}"})
+@Since("1.2.0")
 
 public class ExprImage extends SimpleExpression<BufferedImage> {
 

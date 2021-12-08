@@ -16,8 +16,8 @@ import org.bukkit.util.Vector;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.File;
-import java.util.HashMap;
 import java.util.Map;
+import java.util.WeakHashMap;
 import java.util.function.UnaryOperator;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -63,14 +63,15 @@ public class Maps {
         return colorTable.computeIfAbsent(rgb, i -> MapPalette.matchColor(new Color(i, true)));
     }
 
-    public static void refreshColorTable() {
+    public static void checkClearColorTable() {
         if (colorTable.size() > 0xFF) colorTable.clear();
     }
 
 
 
 
-    private static final Map<MapCanvas, byte[]> BUFFERS = new HashMap<>();
+
+    private static final Map<MapCanvas, byte[]> BUFFERS = new WeakHashMap<>();
 
     public static byte[] getBuffer(MapCanvas canvas) {
         return BUFFERS.computeIfAbsent(canvas, c -> (byte[]) Reflectness.getField("buffer", c));
@@ -89,8 +90,10 @@ public class Maps {
         for (int x = startX; x < endX; x++)
             for (int y = startY; y < endY; y++)
                 setPixel.setPixel(x, y, matchColor(image.getRGB(x, y)));
+        checkClearColorTable();
     }
 
+    @FunctionalInterface
     public interface PixelPosAndColor {
         void setPixel(int x, int y, byte color);
     }

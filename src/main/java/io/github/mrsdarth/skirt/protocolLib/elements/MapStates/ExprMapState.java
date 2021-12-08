@@ -1,10 +1,7 @@
 package io.github.mrsdarth.skirt.protocolLib.elements.MapStates;
 
 import ch.njol.skript.Skript;
-import ch.njol.skript.doc.Description;
-import ch.njol.skript.doc.Examples;
-import ch.njol.skript.doc.Name;
-import ch.njol.skript.doc.Since;
+import ch.njol.skript.doc.*;
 import ch.njol.skript.lang.Expression;
 import ch.njol.skript.lang.ExpressionType;
 import ch.njol.skript.lang.SkriptParser;
@@ -22,8 +19,9 @@ import java.awt.image.BufferedImage;
 
 @Name("Map State")
 @Description("returns a map state that can be sent to a player")
-@Examples("set {_map states::*} to (frames of gif from file \"gifs/gif.gif\") at 0, 0 on map of player's tool")
+@Examples({})
 @Since("1.2.3")
+@RequiredPlugins("ProtocolLib")
 
 public class ExprMapState extends SimpleExpression<MapState> {
 

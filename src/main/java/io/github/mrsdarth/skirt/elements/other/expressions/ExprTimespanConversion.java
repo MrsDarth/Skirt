@@ -19,12 +19,12 @@ import org.jetbrains.annotations.Nullable;
 
 @Name("Timespan conversion")
 @Description("returns a timespan in milliseconds ,ticks, seconds, minutes, hours, days, months or years")
-@Examples("send \"&acompleted in %{_time} in milliseconds% ms")
+@Examples("send \"completed in %{_time} in milliseconds% ms")
 @Since("1.0.1")
 
 public class ExprTimespanConversion extends PropertyExpression<Timespan, Number> {
 
-    private static final double[] DIVISORS = new double[] {1, 50, 1000, 60000, 3600000, 86400000, 2592000000d, 31536000000d};
+    private static final double[] DIVISORS = new double[] { 1, 50, 1000, 60000, 3600000, 86400000, 2592000000d, 31536000000d };
 
     static {
         Skript.registerExpression(ExprTimespanConversion.class, Number.class, ExpressionType.COMBINED,

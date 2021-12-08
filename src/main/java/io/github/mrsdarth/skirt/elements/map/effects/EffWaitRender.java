@@ -20,11 +20,9 @@ import org.jetbrains.annotations.Nullable;
 @Description({
         "waits until the specified canvas is rendered again. Renders happen almost every tick.",
         "Useful when you want every action to be seen."})
-@Examples({
-        "loop 100 times:",
+@Examples({"loop 100 times:",
         "\tadd 1 to cursor rotation of {_cursor}",
-        "\twait for {_canvas} to render"
-})
+        "\twait for {_canvas} to render"})
 @Since("1.2.0")
 
 public class EffWaitRender extends AsyncEffect {

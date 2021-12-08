@@ -2,6 +2,7 @@ package io.github.mrsdarth.skirt.paper.elements.skins;
 
 import ch.njol.skript.aliases.ItemType;
 import ch.njol.skript.classes.Changer;
+import ch.njol.skript.doc.*;
 import ch.njol.skript.expressions.base.SimplePropertyExpression;
 import ch.njol.util.coll.CollectionUtils;
 import com.destroystokyo.paper.profile.PlayerProfile;
@@ -19,6 +20,12 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.concurrent.CompletableFuture;
 import java.util.function.Consumer;
+
+@Name("Skin of")
+@Description("gets a skin from a player or skull")
+@Examples("set skin of player to random player of all players")
+@Since("2.0.0")
+@RequiredPlugins("Paper")
 
 public class ExprSkin extends SimplePropertyExpression<Object, ProfileProperty> {
 

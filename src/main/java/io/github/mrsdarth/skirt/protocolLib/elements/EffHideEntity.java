@@ -1,10 +1,7 @@
 package io.github.mrsdarth.skirt.protocolLib.elements;
 
 import ch.njol.skript.Skript;
-import ch.njol.skript.doc.Description;
-import ch.njol.skript.doc.Examples;
-import ch.njol.skript.doc.Name;
-import ch.njol.skript.doc.Since;
+import ch.njol.skript.doc.*;
 import ch.njol.skript.lang.Effect;
 import ch.njol.skript.lang.Expression;
 import ch.njol.skript.lang.SkriptParser.ParseResult;
@@ -27,6 +24,7 @@ import java.util.stream.IntStream;
 @Description({"Hides entities for specific or all players", "will be unhidden if player relogs or goes far away", "hiding a player from themselves will do weird things"})
 @Examples("hide entities (all mobs) from player")
 @Since("1.0.1")
+@RequiredPlugins("ProtocolLib")
 
 public class EffHideEntity extends Effect {
 

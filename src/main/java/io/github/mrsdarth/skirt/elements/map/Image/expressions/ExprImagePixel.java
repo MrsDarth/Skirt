@@ -2,6 +2,10 @@ package io.github.mrsdarth.skirt.elements.map.Image.expressions;
 
 import ch.njol.skript.Skript;
 import ch.njol.skript.classes.Changer;
+import ch.njol.skript.doc.Description;
+import ch.njol.skript.doc.Examples;
+import ch.njol.skript.doc.Name;
+import ch.njol.skript.doc.Since;
 import ch.njol.skript.expressions.base.PropertyExpression;
 import ch.njol.skript.lang.Expression;
 import ch.njol.skript.lang.ExpressionType;
@@ -17,11 +21,16 @@ import org.jetbrains.annotations.Nullable;
 
 import java.awt.image.BufferedImage;
 
+@Name("Image pixel")
+@Description("get or set a pixel on an image to a color")
+@Examples("set image pixel at (0, 0) on {_image} to black")
+@Since("2.0.0")
+
 public class ExprImagePixel extends PropertyExpression<BufferedImage, Color> {
 
     static {
         Skript.registerExpression(ExprImagePixel.class, Color.class, ExpressionType.PROPERTY,
-                "(image pixel|color) at " + Maps.coordPattern(false) + " (on|of) %image%");
+                "image (pixel|color) at " + Maps.coordPattern(false) + " (on|of) %image%");
     }
 
     private Expression<Number> numberExpr1, numberExpr2;

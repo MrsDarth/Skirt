@@ -2,7 +2,6 @@ package io.github.mrsdarth.skirt.elements.map.Image.effects;
 
 import ch.njol.skript.Skript;
 import ch.njol.skript.doc.Description;
-import ch.njol.skript.doc.Examples;
 import ch.njol.skript.doc.Name;
 import ch.njol.skript.doc.Since;
 import ch.njol.skript.lang.Expression;
@@ -33,8 +32,8 @@ import java.net.http.HttpResponse;
 import java.util.Optional;
 
 @Name("Gif")
-@Description({"saves a gif to a variable, saving to `{_gif::*}` will result in {_gif::*} containing the images and {_gif::delay::*} containing the delays (timespan)"})
-@Examples({})
+@Description("saves a gif to a variable, saving to `{_gif::*}` will result in {_gif::*} containing the images and {_gif::delay::*} containing the delays (timespan)")
+//@Examples("")
 @Since("2.0.0")
 
 public class EffSaveGif extends AsyncEffect {

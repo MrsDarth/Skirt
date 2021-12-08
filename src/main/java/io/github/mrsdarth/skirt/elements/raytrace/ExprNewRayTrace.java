@@ -31,29 +31,7 @@ import java.util.Arrays;
 
 @Name("Ray Trace")
 @Description("Starts a ray trace")
-@Examples({"# Gun example",
-        "on right click with stick:",
-        "",
-        "# the maximum range of the bullet",
-        "\tset {_max} to 200",
-        "",
-        "# the start position of where the gun fires from",
-        "\tset {_start} to head location of player",
-        "",
-        "# casting ray for both blocks and entities so it stops at either, remember to filter out player so the player does not shoot themself",
-        "\tset {_ray} to ray trace from {_start} using (vector direction of player), max {_max}, never, to ignore passable blocks, ray size 0.1, filter out player",
-        "",
-        "# the end position will be the hit position of the ray, and if it is not set default it to the max distance in front of the start position",
-        "\tset {_end} to (hit position of {_ray}) ? vector of (location {_max} in front of {_start})",
-        "",
-        "# get the line between the start and the end to display particles at",
-        "\tset {_line::*} to ((vector line between (vector of {_start}) and {_end} with density 3) as locations)",
-        "",
-        "# display particles to show the line",
-        "\tplay red dust at {_line::*}",
-        "",
-        "# finally we damage the hit entity, no need to check if it isn't set because if its not, then it just wont damage. You can alternatively damage entities in radius of {_end}",
-        "\tdamage hit entity of {_ray} by 5"})
+@Examples({})
 @Since("1.0.0")
 
 public class ExprNewRayTrace extends SimpleExpression<RayTraceResult> {

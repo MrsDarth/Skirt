@@ -7,16 +7,13 @@ import ch.njol.skript.classes.Serializer;
 import ch.njol.skript.lang.ParseContext;
 import ch.njol.skript.registrations.Classes;
 import ch.njol.skript.util.Direction;
-import ch.njol.skript.util.EnumUtils;
 import ch.njol.skript.util.Utils;
 import ch.njol.util.VectorMath;
 import ch.njol.yggdrasil.Fields;
 import io.github.mrsdarth.skirt.Reflectness;
-import io.github.mrsdarth.skirt.elements.direction.SkirtDirection;
 import io.github.mrsdarth.skirt.elements.map.Maps;
 import org.bukkit.FluidCollisionMode;
 import org.bukkit.Statistic;
-import org.bukkit.craftbukkit.libs.org.apache.commons.lang3.StringUtils;
 import org.bukkit.map.MapCanvas;
 import org.bukkit.map.MapCursor;
 import org.bukkit.map.MapView;
@@ -28,9 +25,12 @@ import org.jetbrains.annotations.Nullable;
 import java.awt.image.BufferedImage;
 import java.io.NotSerializableException;
 import java.io.StreamCorruptedException;
+import java.util.Arrays;
+import java.util.stream.Collectors;
 
 
 public class ClassInfos {
+
     static {
 
         //Bounding Box
@@ -92,7 +92,7 @@ public class ClassInfos {
         );
 
 
-        Classes.registerClass(new EnumClassInfo<>(FluidCollisionMode.class, "fluidcollisionmode", "fluid collision modes")
+        Classes.registerClass(new EnumClassInfo<>(FluidCollisionMode.class, "fluidcollisionmode")
                 .user("fluid ?collision ?modes?")
                 .name("FluidCollisionMode")
                 .description("Represents the fluid collision mode in a raytrace", "always - collide with all fluids", "never - ignore fluids", "source_only - collide with source fluid blocks only")
@@ -168,7 +168,7 @@ public class ClassInfos {
         );
 
 
-        Classes.registerClass(new EnumClassInfo<>(MapCursor.Type.class, "mapcursortype", "map cursor types")
+        Classes.registerClass(new EnumClassInfo<>(MapCursor.Type.class, "mapcursortype")
                 .user("map ?cursor ?types?")
                 .name("Map Cursor Type")
                 .description("represents the type of a map cursor")
@@ -196,7 +196,7 @@ public class ClassInfos {
         // Statistic
 
 
-        Classes.registerClass(new EnumClassInfo<>(Statistic.class, "statistic", "statistics")
+        Classes.registerClass(new EnumClassInfo<>(Statistic.class, "statistic")
                 .user("stat(istic)?s?")
                 .name("Statistic")
                 .description("represents a player statistic")
@@ -242,27 +242,34 @@ public class ClassInfos {
 
     private static class EnumClassInfo<T extends Enum<T>> extends ClassInfo<T> {
 
-        public EnumClassInfo(Class<T> c, String codeName, String l) {
+        public EnumClassInfo(Class<T> c, String codeName) {
             super(c, codeName);
-            EnumUtils<T> enumUtils = new EnumUtils<>(c, l);
-            usage(enumUtils.getAllNames());
-            parser(new EnumParser<>(enumUtils));
+            usage(Arrays.stream(c.getEnumConstants()).map(this::toSkript).collect(Collectors.joining(", ")));
+            parser(new EnumParser(c));
             serializer(new EnumSerializer<>(c));
         }
 
-        private static class EnumParser<T extends Enum<T>> extends Parser<T> {
-            private final EnumUtils<T> enumUtils;
-            public EnumParser(EnumUtils<T> enumUtils) {
-                this.enumUtils = enumUtils;
+        private String toSkript(T t) {
+            return t.name().toLowerCase().replace('_', ' ');
+        }
+
+        private class EnumParser extends Parser<T> {
+            private final Class<T> enumClass;
+            public EnumParser(Class<T> enumClass) {
+                this.enumClass = enumClass;
             }
             @Override
             public @Nullable
             T parse(@NotNull String string, @NotNull ParseContext context) {
-                return enumUtils.parse(string);
+                try {
+                    return Enum.valueOf(enumClass, string.toUpperCase().replace(' ', '_'));
+                } catch (Exception ex) {
+                    return null;
+                }
             }
             @Override
             public @NotNull String toString(T t, int flags) {
-                return enumUtils.toString(t, flags);
+                return toSkript(t);
             }
             @Override
             public @NotNull String toVariableNameString(T t) {

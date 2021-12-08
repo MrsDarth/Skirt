@@ -28,7 +28,7 @@ import java.util.Collection;
 
 @Name("Create Bounding Box")
 @Description("Creates a bounding box, bounding box of block may not be accurate for blocks like stairs, however collision shape returns a list of bounding boxes representing the exact shape, read [this](https://github.com/MrsDarth/skirt/wiki/BoundingBox) for more info.")
-@Examples({"set {_box} to new bounding box with centre vector(0,0,0) with dimensions 1, 2, 3",
+@Examples({"set {_box} to new bounding box with centre vector 0, 0, 0 with dimensions 1, 2, 3",
         "# creates a bounding box between vector 1, 2, 3 and vector -1, -2, -3"})
 @Since("1.0.0")
 
@@ -39,8 +39,8 @@ public class ExprBoundingBox extends SimpleExpression<BoundingBox> {
                 "(bounding|hit)[ ]box of %entities%",
                 "(bounding|hit)[ ]box of %blocks%",
                 "collision shape of %blocks%",
-                "[new ]bounding box (from|between|within) %vector/location% (and|to) %vector/location%",
-                "[new ]bounding box (with centre|at) %vector/location% [with dimensions] [x] %number%, [y] %number%, [z] %number%",
+                "[new] bounding box (from|between|within) %vector/location% (and|to) %vector/location%",
+                "[new] bounding box (with centre|at) %vector/location% [with dimensions] [x] %number%, [y] %number%, [z] %number%",
                 "%boundingboxes% [with all directions] expanded by %number%",
                 "intersection [box] (between|of) %boundingbox% and %boundingbox%");
     }

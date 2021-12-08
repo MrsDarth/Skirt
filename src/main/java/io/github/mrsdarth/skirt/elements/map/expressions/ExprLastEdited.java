@@ -19,10 +19,7 @@ import org.jetbrains.annotations.Nullable;
 
 @Name("Last Edited Canvas")
 @Description("returns the last edited map after or within a map edit section")
-@Examples({
-        "edit map 0",
-        "set all pixels on last edited canvas to black"
-})
+@Examples({"edit map 0", "set all pixels on last edited canvas to black"})
 @Since("1.2.3")
 
 public class ExprLastEdited extends SimpleExpression<MapCanvas> {

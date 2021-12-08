@@ -19,10 +19,10 @@ import org.bukkit.event.player.PlayerMoveEvent;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-@Name("Get From/To")
-@Description("Gets the location from and location to in a player or entity move event, can be set")
+@Name("Movement location")
+@Description("Gets the location from and location to in a player move event, can be set")
 @Examples({"on player move:",
-        "\tsend \"%player% moved from %getFrom% to %getTo%\" to {staff::*}"})
+        "\tsend \"%player% moved from %past move location% to %future move location%\" to {staff::*}"})
 @Since("1.0.0")
 
 public class ExprFromTo extends SimpleExpression<Location> {

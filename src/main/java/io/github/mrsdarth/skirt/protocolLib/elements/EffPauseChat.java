@@ -1,6 +1,7 @@
 package io.github.mrsdarth.skirt.protocolLib.elements;
 
 import ch.njol.skript.Skript;
+import ch.njol.skript.doc.*;
 import ch.njol.skript.lang.Effect;
 import ch.njol.skript.lang.Expression;
 import ch.njol.skript.lang.SkriptParser.ParseResult;
@@ -21,13 +22,17 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 
+@Name("Pause Chat")
+@Description("prevents a player from receiving chat messages from the server")
+@Examples("pause chat for player")
+@Since("2.0.0")
+@RequiredPlugins("ProtocolLib")
 
 public class EffPauseChat extends Effect {
 
     private static final Set<Player> PAUSED_PLAYERS = Collections.synchronizedSet(new HashSet<>());
 
     static {
-
         PLib.addListener(new PacketAdapter(JavaPlugin.getPlugin(Skirt.class), PacketType.Play.Server.CHAT) {
             @Override
             public void onPacketSending(PacketEvent event) {

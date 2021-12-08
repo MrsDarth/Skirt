@@ -17,10 +17,8 @@ import org.jetbrains.annotations.Nullable;
 
 @Name("Map of Item")
 @Description("the map of an item")
-@Examples({
-        "set map of player's tool to new map from world of player",
-        "set map of {_item} to 0 # same as setting it to map from id 0"
-})
+@Examples({"set map of player's tool to new map from world of player",
+        "set map of {_item} to 0 # same as setting it to map from id 0"})
 @Since("1.2.0")
 
 public class ExprMapOfItem extends SimplePropertyExpression<ItemType, MapView> {

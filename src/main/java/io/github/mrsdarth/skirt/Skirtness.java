@@ -1,6 +1,8 @@
 package io.github.mrsdarth.skirt;
 
 import ch.njol.skript.lang.Expression;
+import ch.njol.skript.lang.Variable;
+import ch.njol.skript.variables.Variables;
 import ch.njol.util.Math2;
 import org.bukkit.Server;
 import org.bukkit.World;
@@ -9,13 +11,19 @@ import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.plugin.java.JavaPlugin;
 
+import java.util.Arrays;
 import java.util.Optional;
 import java.util.concurrent.Executor;
 import java.util.function.Consumer;
+import java.util.function.Function;
 
 public class Skirtness {
 
     private static final Skirt plugin = JavaPlugin.getPlugin(Skirt.class);
+
+    public static Skirt getPlugin() {
+        return plugin;
+    }
 
     private static final Server server = plugin.getServer();
 
@@ -57,6 +65,10 @@ public class Skirtness {
     @SuppressWarnings("unchecked")
     public static <T extends Event> void registerEvent(Class<T> eventClass, Consumer<T> eventHandler) {
         server.getPluginManager().registerEvent(eventClass, listener, EventPriority.NORMAL, (l, event) -> eventHandler.accept((T) event), plugin);
+    }
+
+    public static void setVariable(Variable<?> variable, Event e, Object o) {
+        Variables.setVariable(variable.getName().toString(e), o, e, variable.isLocal());
     }
 
     public static <T> T enumAt(Class<T> enumClass, int ordinal) {

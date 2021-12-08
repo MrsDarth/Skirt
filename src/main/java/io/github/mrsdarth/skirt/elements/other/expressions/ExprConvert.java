@@ -24,14 +24,15 @@ import org.jetbrains.annotations.Nullable;
         "set ({_blocks::*} converted to blocks) to air"})
 @Since("1.1.0")
 
-public class ExprConvert extends WrapperExpression<Object> {
+@SuppressWarnings("unchecked")
+public class ExprConvert<T> extends WrapperExpression<T> {
 
     static {
         Skript.registerExpression(ExprConvert.class, Object.class, ExpressionType.COMBINED,
                 "%objects% converted to %*classinfo%");
     }
 
-    private Literal<ClassInfo<?>> classInfoLiteral;
+    private Literal<ClassInfo<? extends T>> classInfoLiteral;
 
 
     @Override
@@ -42,8 +43,8 @@ public class ExprConvert extends WrapperExpression<Object> {
     @SuppressWarnings("unchecked")
     @Override
     public boolean init(Expression<?> @NotNull [] exprs, int matchedPattern, @NotNull Kleenean isDelayed, @NotNull ParseResult parseResult) {
-        classInfoLiteral = ((Literal<ClassInfo<?>>) exprs[1]);
-        Expression<?> expr = LiteralUtils.defendExpression(exprs[0]).getConvertedExpression(classInfoLiteral.getSingle().getC());
+        classInfoLiteral = ((Literal<ClassInfo<? extends T>>) exprs[1]);
+        Expression<? extends T> expr = LiteralUtils.defendExpression(exprs[0]).getConvertedExpression(classInfoLiteral.getSingle().getC());
         if (expr == null) return false;
         setExpr(expr);
         return true;

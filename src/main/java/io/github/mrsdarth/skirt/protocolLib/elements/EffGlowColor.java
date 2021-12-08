@@ -1,10 +1,7 @@
 package io.github.mrsdarth.skirt.protocolLib.elements;
 
 import ch.njol.skript.Skript;
-import ch.njol.skript.doc.Description;
-import ch.njol.skript.doc.Examples;
-import ch.njol.skript.doc.Name;
-import ch.njol.skript.doc.Since;
+import ch.njol.skript.doc.*;
 import ch.njol.skript.lang.Effect;
 import ch.njol.skript.lang.Expression;
 import ch.njol.skript.lang.SkriptParser.ParseResult;
@@ -43,6 +40,7 @@ import java.util.Optional;
         "\t\t\t\tset glow color of player to loop-value-2",
         "\t\t\t\twait 5 ticks"})
 @Since("1.1.0")
+@RequiredPlugins("ProtocolLib")
 
 public class EffGlowColor extends Effect {
 

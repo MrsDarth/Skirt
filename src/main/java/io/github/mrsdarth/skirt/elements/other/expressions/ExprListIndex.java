@@ -1,6 +1,10 @@
 package io.github.mrsdarth.skirt.elements.other.expressions;
 
 import ch.njol.skript.Skript;
+import ch.njol.skript.doc.Description;
+import ch.njol.skript.doc.Examples;
+import ch.njol.skript.doc.Name;
+import ch.njol.skript.doc.Since;
 import ch.njol.skript.lang.Expression;
 import ch.njol.skript.lang.ExpressionType;
 import ch.njol.skript.lang.SkriptParser.ParseResult;
@@ -14,22 +18,27 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Map;
-import java.util.stream.IntStream;
+import java.util.TreeMap;
+import java.util.stream.LongStream;
 import java.util.stream.Stream;
 
+@Name("List Index")
+@Description("gets the index of an element in a list")
+@Examples("set {_i} to index of 1 in 1, 2, 3 # returns 0")
+@Since("2.0.0")
 
 public class ExprListIndex extends SimpleExpression<Object> {
 
     static {
         Skript.registerExpression(ExprListIndex.class, Object.class, ExpressionType.COMBINED,
                 "[(first|2¦last)] [(1¦variable)] index of %object% in %objects%",
-                "[all] [(1¦variable)] ind(ex|ic)es %object% in %objects%");
+                "[all] [(1¦variable)] ind(ex|ic)es of %object% in %objects%");
     }
 
     private Expression<?> elementExpr, listExpr;
 
-    private boolean variable;
-    private int pattern;
+    private boolean variable, all, first;
+
 
     @Override
     protected @Nullable
@@ -38,42 +47,22 @@ public class ExprListIndex extends SimpleExpression<Object> {
         if (element == null) return null;
         if (variable) {
             Object o = ((Variable<?>) listExpr).getRaw(e);
-            if (o instanceof Map) {
+            if (o instanceof TreeMap<?, ?> listVar) {
                 @SuppressWarnings("unchecked")
-                Stream<String> lazyIndexes = ((Map<String, Object>) o).entrySet().stream()
-                        .filter(entry -> entry.getValue().equals(element))
-                        .map(Map.Entry::getKey);
-                return switch (pattern) {
-                    case 0 -> lazyIndexes.findFirst().map(CollectionUtils::array).orElse(null);
-                    case 1 -> lazyIndexes.toArray(String[]::new);
-                    case 2 -> lazyIndexes.reduce((first, last) -> last).map(CollectionUtils::array).orElse(null);
-                    default -> null;
-                };
-            }
-            return null;
+                Stream<String> lazyIndexes = ((TreeMap<String, ?>) (first ? listVar : listVar.descendingMap())).entrySet().stream().filter(entry -> entry.getValue().equals(element)).map(Map.Entry::getKey);
+                return all ? lazyIndexes.toArray(String[]::new) : lazyIndexes.findFirst().map(CollectionUtils::array).orElse(null);
+            } else return null;
         } else {
             Object[] array = listExpr.getArray(e);
-            return switch (pattern) {
-                case 0 -> {
-                    int index = CollectionUtils.indexOf(array, element);
-                    yield index == -1 ? null : CollectionUtils.array(index);
-                }
-                case 1 -> IntStream.range(0, array.length)
-                                .filter(i -> element.equals(array[i]))
-                                .mapToObj(Long::valueOf)
-                                .toArray(Long[]::new);
-                case 2 -> {
-                    int index = CollectionUtils.lastIndexOf(array, element);
-                    yield index == -1 ? null : CollectionUtils.array(index);
-                }
-                default -> null;
-            };
+            if (all) return LongStream.range(0, array.length).filter(i -> element.equals(array[(int) i])).boxed().toArray(Long[]::new);
+            int index = first ? CollectionUtils.indexOf(array, element) : CollectionUtils.lastIndexOf(array, element);
+            return index == -1 ? null : CollectionUtils.array(index);
         }
     }
 
     @Override
     public boolean isSingle() {
-        return pattern != 1;
+        return !all;
     }
 
     @Override
@@ -83,23 +72,19 @@ public class ExprListIndex extends SimpleExpression<Object> {
 
     @Override
     public @NotNull String toString(@Nullable Event e, boolean debug) {
-        return (switch (pattern) {
-            case 0 -> "first";
-            case 1 -> "all";
-            case 2 -> "last";
-            default -> throw new IllegalStateException();
-        }) + (variable ? " variable" : "") + (isSingle() ? " index" : " indexes") + " of " + elementExpr.toString(e, debug) + " in " + listExpr.toString(e, debug);
+        return (all ? "all" : first ? "first" : "last") + (variable ? " variable" : "") + (isSingle() ? " index" : " indexes") + " of " + elementExpr.toString(e, debug) + " in " + listExpr.toString(e, debug);
     }
 
     @Override
     public boolean init(Expression<?> @NotNull [] exprs, int matchedPattern, @NotNull Kleenean isDelayed, @NotNull ParseResult parseResult) {
         variable = (parseResult.mark & 1) == 1;
-        pattern = matchedPattern ^ (parseResult.mark & 2);
+        all = matchedPattern == 1;
+        first = (parseResult.mark & 2) == 0;
         elementExpr = LiteralUtils.defendExpression(exprs[0]);
         listExpr = LiteralUtils.defendExpression(exprs[1]);
-        if (!listExpr.isSingle())
+        if (listExpr.isSingle())
             return false;
-        if (variable && !(elementExpr instanceof Variable)) {
+        if (variable && !(listExpr instanceof Variable)) {
             Skript.error(listExpr + " is not a list variable");
             return false;
         }

@@ -17,7 +17,7 @@ import org.jetbrains.annotations.Nullable;
 
 @Name("Falling Block Data")
 @Description("gets the block data or itemtype of a falling block")
-@Examples("set event-block to falling blockdata of last spawned falling block")
+@Examples("set event-block to falling block data of last spawned falling block")
 @Since("1.2.2")
 
 public class ExprFallingBlockBlockdata extends SimplePropertyExpression<Entity, Object> {

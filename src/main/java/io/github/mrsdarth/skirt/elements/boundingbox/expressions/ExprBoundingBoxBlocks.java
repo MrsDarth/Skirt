@@ -24,8 +24,7 @@ import java.util.stream.StreamSupport;
 
 @Name("Bounding Box Blocks")
 @Description("returns blocks within a bounding box given a world")
-@Examples({"set {_b::*} to blocks within bounding box of player expanded by 0.01",
-        "if ({_b::*} where [input is solid]) is set:",
+@Examples({"if blocks within bounding box of player expanded by 0.01 is not air:",
         "\tsend \"%player% is touching a block!\""})
 @Since("1.0.1")
 

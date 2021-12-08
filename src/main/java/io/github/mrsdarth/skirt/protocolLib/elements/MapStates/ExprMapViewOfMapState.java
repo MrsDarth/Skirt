@@ -2,10 +2,7 @@ package io.github.mrsdarth.skirt.protocolLib.elements.MapStates;
 
 import ch.njol.skript.Skript;
 import ch.njol.skript.classes.Changer;
-import ch.njol.skript.doc.Description;
-import ch.njol.skript.doc.Examples;
-import ch.njol.skript.doc.Name;
-import ch.njol.skript.doc.Since;
+import ch.njol.skript.doc.*;
 import ch.njol.skript.expressions.base.PropertyExpression;
 import ch.njol.skript.lang.Expression;
 import ch.njol.skript.lang.ExpressionType;
@@ -21,6 +18,7 @@ import org.jetbrains.annotations.Nullable;
 @Description("Allows you to get or change the map of a map state to be played on different maps")
 @Examples("set map of map state {_map state} to 0 # or just map from id 0")
 @Since("1.2.3")
+@RequiredPlugins("ProtocolLib")
 
 public class ExprMapViewOfMapState extends PropertyExpression<MapState, Long> {
 
@@ -32,7 +30,7 @@ public class ExprMapViewOfMapState extends PropertyExpression<MapState, Long> {
 
     @Override
     protected Long @NotNull [] get(@NotNull Event e, MapState @NotNull [] source) {
-        return get(source, mapState -> Long.valueOf(mapState.getMapPacket().getIntegers().read(0)));
+        return get(source, mapState -> (long) mapState.getId());
     }
 
     @Override

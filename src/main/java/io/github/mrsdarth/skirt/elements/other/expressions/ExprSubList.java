@@ -1,19 +1,30 @@
 package io.github.mrsdarth.skirt.elements.other.expressions;
 
 import ch.njol.skript.Skript;
+import ch.njol.skript.doc.Description;
+import ch.njol.skript.doc.Examples;
+import ch.njol.skript.doc.Name;
+import ch.njol.skript.doc.Since;
 import ch.njol.skript.expressions.base.WrapperExpression;
 import ch.njol.skript.lang.Expression;
 import ch.njol.skript.lang.ExpressionType;
 import ch.njol.skript.lang.SkriptParser.ParseResult;
 import ch.njol.util.Kleenean;
+import ch.njol.util.coll.iterator.ArrayIterator;
 import org.bukkit.event.Event;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Arrays;
+import java.util.Iterator;
 
 import static java.lang.Math.max;
 import static java.lang.Math.min;
+
+@Name("SubList")
+@Description("returns part of a list")
+@Examples("set {a::*} to first 5 elements of {b::*}")
+@Since("2.0.0")
 
 @SuppressWarnings("unchecked")
 public class ExprSubList<T> extends WrapperExpression<T> {
@@ -38,6 +49,11 @@ public class ExprSubList<T> extends WrapperExpression<T> {
             case 2 -> n1 == null ? null : Arrays.copyOfRange(array, array.length - min(max(n1.intValue() - 1, 0), array.length), array.length);
             default -> null;
         };
+    }
+
+    @Override
+    public @Nullable Iterator<? extends T> iterator(@NotNull Event e) {
+        return new ArrayIterator<>(get(e));
     }
 
     @Override

@@ -38,7 +38,7 @@ public class Skins {
         Classes.registerClass(new ClassInfo<>(ProfileProperty.class, "skin")
                 .name("Skin")
                 .user("skins?")
-                .description()
+                .description("represents the skin of a player, skull block or skull item")
                 .since("2.0.0")
                 .parser(new Parser<>() {
                     @Override

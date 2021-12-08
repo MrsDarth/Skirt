@@ -1,6 +1,7 @@
 package io.github.mrsdarth.skirt.paper.elements.skins;
 
 import ch.njol.skript.Skript;
+import ch.njol.skript.doc.*;
 import ch.njol.skript.lang.Expression;
 import ch.njol.skript.lang.ExpressionType;
 import ch.njol.skript.lang.SkriptParser.ParseResult;
@@ -11,6 +12,12 @@ import com.destroystokyo.paper.profile.ProfileProperty;
 import org.bukkit.event.Event;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+
+@Name("Skin from texture")
+@Description("returns a skin from a value and optional signature, signature is required for player skins but not for skulls")
+@Examples("set skin of player to skin from value \"texture here\" and signature \"signature\"")
+@Since("2.0.0")
+@RequiredPlugins("Paper")
 
 public class ExprSkinFromValue extends SimpleExpression<ProfileProperty> {
 

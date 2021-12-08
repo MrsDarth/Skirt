@@ -35,9 +35,7 @@ public class CondBoundingBoxIntersect extends Condition {
     private Expression<BoundingBox> boxExpr1, boxExpr2;
     private Expression<Vector> vectorExpr;
 
-    private int pattern;
-
-    private boolean not, full;
+    private boolean not, full, boxes;
 
 
     @SuppressWarnings("unchecked")
@@ -45,7 +43,8 @@ public class CondBoundingBoxIntersect extends Condition {
 
     public boolean init(Expression<?>[] exprs, int matchedPattern, @NotNull Kleenean isDelayed, @NotNull ParseResult parseResult) {
         boxExpr1 = (Expression<BoundingBox>) exprs[0];
-        if ((pattern = matchedPattern) == 0) {
+        boxes = matchedPattern == 0;
+        if (boxes) {
             not = parseResult.mark >>> 2 == 1;
             full = (parseResult.mark & 1) == 1;
             boxExpr2 = (Expression<BoundingBox>) exprs[1];
@@ -58,14 +57,14 @@ public class CondBoundingBoxIntersect extends Condition {
 
     @Override
     public @NotNull String toString(@Nullable Event e, boolean debug) {
-        return "bounding box " + boxExpr1.toString(e, debug) + (not ? "does not " : "") + (pattern == 0 ?
+        return "bounding box " + boxExpr1.toString(e, debug) + (not ? "does not " : "") + (boxes ?
                 (full ? "fully contains " : "intersect with ") + boxExpr2.toString(e, debug) :
                 "contains " + vectorExpr.toString(e, debug));
     }
 
     @Override
     public boolean check(@NotNull Event e) {
-        return Skirtness.getSingle(boxExpr1, e).map(box -> (pattern == 0) ?
+        return Skirtness.getSingle(boxExpr1, e).map(box -> boxes ?
                 boxExpr2.check(e, full ? box::contains : box::overlaps, not) :
                 vectorExpr.check(e, box::contains, not)).orElse(not);
     }

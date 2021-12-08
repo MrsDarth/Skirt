@@ -11,9 +11,11 @@ import ch.njol.skript.lang.Expression;
 import ch.njol.skript.lang.SkriptParser;
 import ch.njol.util.Kleenean;
 import io.github.mrsdarth.skirt.Skirt;
+import io.github.mrsdarth.skirt.Skirtness;
 import org.bukkit.Bukkit;
 import org.bukkit.event.Event;
 import org.bukkit.plugin.java.JavaPlugin;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.io.File;
@@ -32,28 +34,27 @@ public class EffDeleteSkript extends Effect {
     boolean addons;
 
     @Override
-    protected void execute(Event event) {
-        if (addons)
-            Skript.getAddons().forEach(this::delete);
+    protected void execute(@NotNull Event e) {
+        if (addons) Skript.getAddons().forEach(EffDeleteSkript::delete);
         delete(Skript.getAddonInstance());
     }
 
-    private void delete(SkriptAddon skriptAddon) {
+    @Override
+    public @NotNull String toString(@Nullable Event e, boolean debug) {
+        return "delete skript" + (addons ? " and all addons" : "");
+    }
+
+    @Override
+    public boolean init(Expression<?> @NotNull [] exprs, int matchedPattern, @NotNull Kleenean isDelayed, SkriptParser.@NotNull ParseResult parseResult) {
+        addons = parseResult.mark == 1;
+        return true;
+    }
+
+    private static void delete(SkriptAddon skriptAddon) {
         File jar = skriptAddon.getFile();
         if (jar != null && jar.delete())
             Bukkit.getPluginManager().disablePlugin(skriptAddon.plugin);
         else
-            JavaPlugin.getPlugin(Skirt.class).getLogger().warning("Failed to delete " + skriptAddon.getName());
-    }
-
-    @Override
-    public String toString(@Nullable Event event, boolean b) {
-        return "delete skript";
-    }
-
-    @Override
-    public boolean init(Expression<?>[] expressions, int i, Kleenean kleenean, SkriptParser.ParseResult parseResult) {
-        addons = parseResult.mark == 1;
-        return true;
+            Skirtness.getPlugin().getLogger().warning("Failed to delete " + skriptAddon.getName());
     }
 }

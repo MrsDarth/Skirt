@@ -1,6 +1,7 @@
 package io.github.mrsdarth.skirt.protocolLib.elements;
 
 import ch.njol.skript.Skript;
+import ch.njol.skript.doc.*;
 import ch.njol.skript.lang.Effect;
 import ch.njol.skript.lang.Expression;
 import ch.njol.skript.lang.SkriptParser.ParseResult;
@@ -18,6 +19,12 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.List;
+
+@Name("Entity Animation")
+@Description("make en entity go in riptide or interact with their hand animation")
+@Examples("play riptide animation on player")
+@Since("2.0.0")
+@RequiredPlugins("ProtocolLib")
 
 public class EffAnimation extends Effect {
 

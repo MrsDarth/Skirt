@@ -1,5 +1,6 @@
 package io.github.mrsdarth.skirt.paper.elements;
 
+import ch.njol.skript.doc.*;
 import ch.njol.skript.expressions.base.SimplePropertyExpression;
 import ch.njol.skript.util.EnchantmentType;
 import com.google.gson.JsonObject;
@@ -18,6 +19,12 @@ import java.io.InputStreamReader;
 import java.text.MessageFormat;
 import java.util.Locale;
 import java.util.ResourceBundle;
+
+@Name("Enchant display")
+@Description("returns an enchantment type as a formatted string example sharpness 7 returns §7Sharpness VII")
+@Examples("send enchant display of enchantments of player's tool")
+@Since("2.0.0")
+@RequiredPlugins("Paper")
 
 public class ExprEnchantDisplay extends SimplePropertyExpression<EnchantmentType, String> {
 

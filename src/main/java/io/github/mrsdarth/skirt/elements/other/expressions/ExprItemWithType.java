@@ -2,6 +2,10 @@ package io.github.mrsdarth.skirt.elements.other.expressions;
 
 import ch.njol.skript.Skript;
 import ch.njol.skript.aliases.ItemType;
+import ch.njol.skript.doc.Description;
+import ch.njol.skript.doc.Examples;
+import ch.njol.skript.doc.Name;
+import ch.njol.skript.doc.Since;
 import ch.njol.skript.expressions.base.PropertyExpression;
 import ch.njol.skript.lang.Expression;
 import ch.njol.skript.lang.ExpressionType;
@@ -12,6 +16,11 @@ import org.bukkit.event.Event;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+
+@Name("ItemType with Type")
+@Description("returns a copy of an item with another type keeps all information such as lore")
+@Examples("set {_item} to stone named \"skirt\" with type dirt # dirt named \"skirt\"")
+@Since("2.0.0")
 
 public class ExprItemWithType extends PropertyExpression<ItemType, ItemType> {
 

@@ -24,12 +24,10 @@ import java.util.Arrays;
 
 @Name("Map Pixels")
 @Description({"returns pixels of map, can be set to a number if you know the map colors or a skript/rgb color", "map pixels range from 1 to 128"})
-@Examples({
-        "edit {_map} in {_canvas}",
+@Examples({"edit {_map} in {_canvas}",
         "set pixels between (1,1) and (128,128) on {_canvas} to black",
         "set pixel at 100, 100 on {_canvas} to rgb(255,0,0)",
-        "set all pixels of {_canvas} to 30"
-})
+        "set all pixels of {_canvas} to 30"})
 @Since("1.2.0")
 
 public class ExprMapPixel extends SimpleExpression<Number> {
@@ -86,7 +84,7 @@ public class ExprMapPixel extends SimpleExpression<Number> {
             Skript.error("You need to specify a map canvas when outside a map edit section");
             return false;
         }
-        pattern = matchedPattern ^ parseResult.mark;
+        pattern = matchedPattern | parseResult.mark;
         switch (matchedPattern) {
             case 0:
                 numberExpr1 = (Expression<Number>) exprs[0];
@@ -145,6 +143,7 @@ public class ExprMapPixel extends SimpleExpression<Number> {
                 canvas.setPixel(127, 127, pixel);
             }
         }
+        Maps.checkClearColorTable();
     }
 
     private void plotLine(int x0, int y0, int x1, int y1, MapCanvas canvas, byte pixel) {

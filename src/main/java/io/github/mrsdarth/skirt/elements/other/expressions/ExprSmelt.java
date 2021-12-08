@@ -2,7 +2,6 @@ package io.github.mrsdarth.skirt.elements.other.expressions;
 
 
 import ch.njol.skript.Skript;
-import ch.njol.skript.aliases.ItemData;
 import ch.njol.skript.aliases.ItemType;
 import ch.njol.skript.doc.Description;
 import ch.njol.skript.doc.Examples;

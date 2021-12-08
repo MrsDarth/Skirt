@@ -46,7 +46,7 @@ import java.util.Map;
         "set {_gif::*} to frames of gif from url \"https://media.tenor.com/images/704d8ce6b217648ccb286b8ebc33268d/tenor.gif\"",
         "split {_gif::*} onto {_images::*}"
 })
-@Since("1.2.4")
+@Since("2
 
 public class EffSplitImage extends Effect {
 
