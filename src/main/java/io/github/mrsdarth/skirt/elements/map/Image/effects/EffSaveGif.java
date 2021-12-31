@@ -14,6 +14,7 @@ import ch.njol.skript.variables.Variables;
 import ch.njol.util.Kleenean;
 import io.github.mrsdarth.skirt.HttpUtils;
 import io.github.mrsdarth.skirt.elements.map.Image.ImageUtils;
+import org.apache.commons.lang.StringUtils;
 import org.bukkit.event.Event;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -69,7 +70,7 @@ public class EffSaveGif extends AsyncEffect {
                     width = Integer.parseInt(lsd.getAttribute("logicalScreenWidth")),
                     height = Integer.parseInt(lsd.getAttribute("logicalScreenHeight"));
             BufferedImage current = null, last = null;
-            String varName = variable.getName().toString(e);
+            String varName = StringUtils.substringBeforeLast(variable.getName().toString(e), "::*");
             boolean local = variable.isLocal();
             for (int i = 0;; i++) {
                 try {
@@ -87,7 +88,7 @@ public class EffSaveGif extends AsyncEffect {
                     String indexSuffix = Variable.SEPARATOR + (i + 1);
                     Variables.setVariable(varName + indexSuffix, last = current, e, local);
                     Variables.setVariable(varName + Variable.SEPARATOR + "delay" + indexSuffix, new Timespan(delayMillis), e, local);
-                    if (!(disposalMethod.equals("none") || disposalMethod.equals("doNotDispose"))) current = null;
+                    if (!disposalMethod.equals("none") && !disposalMethod.equals("doNotDispose")) current = null;
                 } catch (IndexOutOfBoundsException exception) {
                     break;
                 }
