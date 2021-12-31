@@ -28,6 +28,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Arrays;
+import java.util.function.Predicate;
 
 @Name("Ray Trace")
 @Description("Starts a ray trace")
@@ -38,12 +39,12 @@ public class ExprNewRayTrace extends SimpleExpression<RayTraceResult> {
 
     static {
         Skript.registerExpression(ExprNewRayTrace.class, RayTraceResult.class, ExpressionType.COMBINED,
-                "ray[ ]trace[s] (of|from) %livingentities% [using [fluid[collision][mode]] %-fluidcollisionmode%][[,] [with] max %-number%]",
+                "[block] ray[ ]trace[s] (of|from) %livingentities% [using [fluid[collision][mode]] %-fluidcollisionmode%][[,] [with] max %-number%]",
                 "block ray[ ]trace[ starting] from %location% using %direction%[[,] [fluid[collision][mode]] %-fluidcollisionmode%][[,] (1¦(to ignore|ignoring) passable[ blocks])][[,] [with] max %-number%]",
                 "ray[ ]trace [searching] for [this specific] %block% [starting] from %location% using %direction%[[,] [fluid[collision][mode]] %-fluidcollisionmode%][[,] [with] max %-number%]",
                 "ray[ ]trace [searching] for [this specific] %boundingbox% [starting] from %vector/location% using %direction%[[,] [with] max %-number%]",
                 "entity ray[ ]trace [starting] from %location% using %direction%[[,] [with] max %-number%][[,] ray[ ]size %-number%][[,] filter[ing] [out] %-entities%]",
-                "[generic] ray[ ]trace [starting] from %location% using %direction%[[,] [with] max %number%][[,] [fluid[collision][mode]] %fluidcollisionmode%][[,] (1¦(to ignore|ignoring) passable[ blocks])][[, ] ray[ ]size %number%][[, ] filter[ing] [out] %-entities%]");
+                "[generic] ray[ ]trace [starting] from %location% using %direction%[[,] [with] max %number%][[,] [fluid[collision][mode]] %-fluidcollisionmode%][[,] (1¦(to ignore|ignoring) passable[ blocks])][[, ] ray[ ]size %number%][[, ] filter[ing] [out] %-entities%]");
     }
 
     private Expression<LivingEntity> livingEntityExpr;
@@ -63,7 +64,7 @@ public class ExprNewRayTrace extends SimpleExpression<RayTraceResult> {
     protected @Nullable
     RayTraceResult[] get(@NotNull Event e) {
         Number max = numberExpr1 == null ? SkriptConfig.maxTargetBlockDistance.value() : numberExpr1.getSingle(e);
-        Number raySize = numberExpr2 == null ? 0 : numberExpr2.getSingle(e);
+        Number raySize = numberExpr2 == null ? 0.0D : numberExpr2.getSingle(e);
         FluidCollisionMode mode = collisionModeExpr == null ? FluidCollisionMode.ALWAYS : collisionModeExpr.getSingle(e);
 
         if (max == null || mode == null || raySize == null) return null;
@@ -73,6 +74,14 @@ public class ExprNewRayTrace extends SimpleExpression<RayTraceResult> {
         Block block = blockExpr == null ? null : blockExpr.getSingle(e);
         BoundingBox box = boundingBoxExpr == null ? null : boundingBoxExpr.getSingle(e);
         Object position = positionExpr == null ? null : positionExpr.getSingle(e);
+
+        Predicate<Entity> filter;
+        if (entityExpr == null)
+            filter = null;
+        else {
+            Entity[] entities = entityExpr.getArray(e);
+            filter = entity -> !CollectionUtils.contains(entities, entity);
+        }
 
         if (pattern == 0)
             return Arrays.stream(livingEntityExpr.getArray(e))
@@ -103,12 +112,12 @@ public class ExprNewRayTrace extends SimpleExpression<RayTraceResult> {
             case 4 -> {
                 if (loc == null) yield null;
                 Vector vector = dir.getDirection(loc);
-                yield DirectionUtils.isFinite(vector) ? CollectionUtils.array(loc.getWorld().rayTraceEntities(loc, vector, max.doubleValue(), raySize.doubleValue(), entity -> !CollectionUtils.contains(entityExpr.getArray(e), entity))) : null;
+                yield DirectionUtils.isFinite(vector) ? CollectionUtils.array(loc.getWorld().rayTraceEntities(loc, vector, max.doubleValue(), raySize.doubleValue(), filter)) : null;
             }
             case 5 -> {
                 if (loc == null) yield null;
                 Vector vector = dir.getDirection(loc);
-                yield DirectionUtils.isFinite(vector) ? CollectionUtils.array(loc.getWorld().rayTrace(loc, vector, max.doubleValue(), mode, ignore, raySize.doubleValue(), entity -> !CollectionUtils.contains(entityExpr.getArray(e), entity))) : null;
+                yield DirectionUtils.isFinite(vector) ? CollectionUtils.array(loc.getWorld().rayTrace(loc, vector, max.doubleValue(), mode, ignore, raySize.doubleValue(), filter)) : null;
             }
             default -> null;
         };
