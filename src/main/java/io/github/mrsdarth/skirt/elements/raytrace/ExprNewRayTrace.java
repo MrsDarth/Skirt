@@ -44,7 +44,7 @@ public class ExprNewRayTrace extends SimpleExpression<RayTraceResult> {
                 "ray[ ]trace [searching] for [this specific] %block% [starting] from %location% using %direction%[[,] [fluid[collision][mode]] %-fluidcollisionmode%][[,] [with] max %-number%]",
                 "ray[ ]trace [searching] for [this specific] %boundingbox% [starting] from %vector/location% using %direction%[[,] [with] max %-number%]",
                 "entity ray[ ]trace [starting] from %location% using %direction%[[,] [with] max %-number%][[,] ray[ ]size %-number%][[,] filter[ing] [out] %-entities%]",
-                "[generic] ray[ ]trace [starting] from %location% using %direction%[[,] [with] max %number%][[,] [fluid[collision][mode]] %-fluidcollisionmode%][[,] (1¦(to ignore|ignoring) passable[ blocks])][[, ] ray[ ]size %number%][[, ] filter[ing] [out] %-entities%]");
+                "[generic] ray[ ]trace [starting] from %location% using %direction%[[,] [with] max %-number%][[,] [fluid[collision][mode]] %-fluidcollisionmode%][[,] (1¦(to ignore|ignoring) passable[ blocks])][[, ] ray[ ]size %-number%][[, ] filter[ing] [out] %-entities%]");
     }
 
     private Expression<LivingEntity> livingEntityExpr;
