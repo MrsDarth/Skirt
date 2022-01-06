@@ -1,4 +1,4 @@
-package io.github.mrsdarth.skirt.elements.map.sections;
+package io.github.mrsdarth.skirt.skriptv2_6.sections;
 
 import ch.njol.skript.Skript;
 import ch.njol.skript.config.SectionNode;
@@ -14,6 +14,7 @@ import ch.njol.skript.lang.Variable;
 import ch.njol.skript.variables.Variables;
 import ch.njol.util.Kleenean;
 import io.github.mrsdarth.skirt.Skirtness;
+import io.github.mrsdarth.skirt.elements.map.Maps;
 import io.github.mrsdarth.skirt.elements.map.SkirtRenderer;
 import org.bukkit.event.Event;
 import org.bukkit.map.MapCanvas;
@@ -45,8 +46,6 @@ public class SecMapEdit extends EffectSection {
     private boolean replace;
 
     private MapCanvas canvas;
-
-    public static MapCanvas lastCanvas;
 
     public MapCanvas getCanvas() {
         return canvas;
@@ -82,7 +81,7 @@ public class SecMapEdit extends EffectSection {
 
         if (hasSection()) {
             futureCanvas.thenAccept(canvas -> {
-                lastCanvas = this.canvas = canvas;
+                Maps.LAST_CANVAS = this.canvas = canvas;
                 Skirtness.setVariable(variable, e, canvas);
                 if (first != null) walk(first, e);
             });
@@ -90,7 +89,7 @@ public class SecMapEdit extends EffectSection {
         } else {
             Object locals = Variables.removeLocals(e);
             futureCanvas.thenAccept(canvas -> {
-                lastCanvas = this.canvas = canvas;
+                Maps.LAST_CANVAS = this.canvas = canvas;
                 Variables.setLocalVariables(e, locals);
                 Skirtness.setVariable(variable, e, canvas);
                 if (next != null) walk(next, e);

@@ -1,6 +1,7 @@
 package io.github.mrsdarth.skirt.elements.other.expressions;
 
 
+import ch.njol.skript.ScriptLoader;
 import ch.njol.skript.Skript;
 import ch.njol.skript.classes.Changer.ChangeMode;
 import ch.njol.skript.doc.Description;
@@ -13,6 +14,7 @@ import ch.njol.skript.lang.SkriptParser.ParseResult;
 import ch.njol.skript.lang.util.SimpleExpression;
 import ch.njol.util.Kleenean;
 import ch.njol.util.coll.CollectionUtils;
+import io.github.mrsdarth.skirt.Skirtness;
 import org.bukkit.Location;
 import org.bukkit.event.Event;
 import org.bukkit.event.player.PlayerMoveEvent;
@@ -53,9 +55,10 @@ public class ExprFromTo extends SimpleExpression<Location> {
         return "movement location";
     }
 
+    @SuppressWarnings("deprecation")
     @Override
     public boolean init(Expression<?> @NotNull [] exprs, int matchedPattern, @NotNull Kleenean isDelayed, @NotNull ParseResult parseResult) {
-        return getParser().isCurrentEvent(PlayerMoveEvent.class) && getTime() != 0;
+        return (Skirtness.isSkriptv2_6() ? getParser().isCurrentEvent(PlayerMoveEvent.class) : ScriptLoader.isCurrentEvent(PlayerMoveEvent.class)) && getTime() != 0;
     }
 
     @Override

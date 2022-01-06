@@ -4,12 +4,10 @@ import ch.njol.skript.doc.*;
 import ch.njol.skript.expressions.base.SimplePropertyExpression;
 import ch.njol.skript.util.EnchantmentType;
 import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
-import io.github.mrsdarth.skirt.Reflectness;
+import io.github.mrsdarth.skirt.HttpUtils;
 import net.kyori.adventure.key.Key;
 import net.kyori.adventure.text.renderer.TranslatableComponentRenderer;
 import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
-import net.kyori.adventure.translation.GlobalTranslator;
 import net.kyori.adventure.translation.TranslationRegistry;
 import net.kyori.adventure.translation.Translator;
 import org.bukkit.Bukkit;
@@ -19,7 +17,8 @@ import org.jetbrains.annotations.Nullable;
 
 import java.io.InputStreamReader;
 import java.text.MessageFormat;
-import java.util.*;
+import java.util.Locale;
+import java.util.ResourceBundle;
 
 @Name("Enchant display")
 @Description("returns an enchantment type as a formatted string example sharpness 7 returns §7Sharpness VII")
@@ -37,7 +36,7 @@ public class ExprEnchantDisplay extends SimplePropertyExpression<EnchantmentType
             TranslationRegistry registry = TranslationRegistry.create(Key.key("skirt", "mojang-translations"));
             registry.registerAll(Locale.US, ResourceBundle.getBundle("mojang-translations/en_US", module), false);
             RENDERER = TranslatableComponentRenderer.usingTranslationSource(new ChainingTranslator(registry) {
-                private final JsonObject json = JsonParser.parseReader(new InputStreamReader(module.getResourceAsStream("assets/minecraft/lang/en_us.json"))).getAsJsonObject();
+                private final JsonObject json = HttpUtils.parseJson(new InputStreamReader(module.getResourceAsStream("assets/minecraft/lang/en_us.json"))).getAsJsonObject();
                 @Override
                 public @Nullable MessageFormat trans(@NotNull String key, @NotNull Locale locale) {
                     return json.has(key) ? new MessageFormat(json.get(key).getAsString(), locale) : null;

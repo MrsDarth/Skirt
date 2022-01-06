@@ -45,7 +45,8 @@ public class ExprItemFrame extends SimpleExpression<EntityData> {
     static {
         if (Skirtness.hasProtocolLib()) {
             getEntityItemFrame = Reflectness.getConstructor(MinecraftReflection.getMinecraftClass("world.entity.decoration.EntityItemFrame", "EntityItemFrame"), MinecraftReflection.getNmsWorldClass(), MinecraftReflection.getBlockPositionClass(), EnumWrappers.getDirectionClass());
-            getGlowItemFrame = Reflectness.getConstructor(MinecraftReflection.getMinecraftClass("world.entity.decoration.GlowItemFrame", "GlowItemFrame"), MinecraftReflection.getNmsWorldClass(), MinecraftReflection.getBlockPositionClass(), EnumWrappers.getDirectionClass());
+            if (Skript.isRunningMinecraft(1, 17))
+                getGlowItemFrame = Reflectness.getConstructor(MinecraftReflection.getMinecraftClass("world.entity.decoration.GlowItemFrame", "GlowItemFrame"), MinecraftReflection.getNmsWorldClass(), MinecraftReflection.getBlockPositionClass(), EnumWrappers.getDirectionClass());
             addEntity = Reflectness.getMethod(MinecraftReflection.getWorldServerClass(), "addEntity", MinecraftReflection.getEntityClass());
             Skript.registerExpression(ExprItemFrame.class, EntityData.class, ExpressionType.SIMPLE,
                     "[(1¦invisible)] (forced|fixed) [(2¦glow[ing])] item frame [facing %-direction%]");
@@ -95,6 +96,7 @@ public class ExprItemFrame extends SimpleExpression<EntityData> {
     public boolean init(Expression<?>[] exprs, int matchedPattern, @NotNull Kleenean isDelayed, SkriptParser.@NotNull ParseResult parseResult) {
         directionExpr = (Expression<Direction>) exprs[0];
         mark = parseResult.mark;
-        return true;
+        return Skript.isRunningMinecraft(1, 17) || (mark & 2) != 0;
+
     }
 }

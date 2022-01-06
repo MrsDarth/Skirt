@@ -3,7 +3,6 @@ package io.github.mrsdarth.skirt;
 import ch.njol.skript.Skript;
 import ch.njol.skript.SkriptAddon;
 import com.google.gson.JsonElement;
-import com.google.gson.JsonParser;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.event.ClickEvent;
 import net.kyori.adventure.text.event.HoverEvent;
@@ -43,12 +42,16 @@ public class Skirt extends JavaPlugin implements Listener {
         if (Skirtness.hasProtocolLib())
             tryLoad(skirt, "Protocol Lib", "protocolLib");
 
+        if (Skirtness.isSkriptv2_6())
+            tryLoad(skirt, "skript 2.6 elements", "skriptv2_6");
+
         tryLoad(skirt, "skirt", "elements");
+
 
         if (getServer().getOnlineMode()) {
             String skirtGithub = "MrsDarth/Skirt/releases/latest";
             HttpUtils.simpleGetRequest("https://api.github.com/repos/" + skirtGithub)
-                    .map(JsonParser::parseString)
+                    .map(HttpUtils::parseJson)
                     .map(JsonElement::getAsJsonObject)
                     .ifPresent(body -> {
                         String latestVersion = body.get("tag_name").getAsString();

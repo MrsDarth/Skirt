@@ -8,7 +8,6 @@ import com.destroystokyo.paper.profile.PlayerProfile;
 import com.destroystokyo.paper.profile.ProfileProperty;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
 import com.mojang.authlib.yggdrasil.YggdrasilMinecraftSessionService;
 import io.github.mrsdarth.skirt.HttpUtils;
 import org.bukkit.Bukkit;
@@ -80,7 +79,7 @@ public class Skins {
     private static ProfileProperty mineSkinRequest(HttpRequest request) {
         return HttpUtils.send(request, HttpResponse.BodyHandlers.ofString())
                 .map(HttpResponse::body)
-                .map(JsonParser::parseString)
+                .map(HttpUtils::parseJson)
                 .map(JsonElement::getAsJsonObject)
                 .map(json -> json.getAsJsonObject("data").getAsJsonObject("texture"))
                 .map(Skins::fromJson)

@@ -9,8 +9,9 @@ import ch.njol.skript.lang.Expression;
 import ch.njol.skript.lang.SkriptParser.ParseResult;
 import ch.njol.skript.util.AsyncEffect;
 import ch.njol.util.Kleenean;
+import io.github.mrsdarth.skirt.Skirtness;
 import io.github.mrsdarth.skirt.elements.map.SkirtRenderer;
-import io.github.mrsdarth.skirt.elements.map.sections.SecMapEdit;
+import io.github.mrsdarth.skirt.skriptv2_6.sections.SecMapEdit;
 import org.bukkit.event.Event;
 import org.bukkit.map.MapCanvas;
 import org.jetbrains.annotations.NotNull;
@@ -52,7 +53,8 @@ public class EffWaitRender extends AsyncEffect {
     @Override
     public boolean init(Expression<?> @NotNull [] exprs, int matchedPattern, @NotNull Kleenean isDelayed, @NotNull ParseResult parseResult) {
         if (matchedPattern == 0) {
-            mapEditSection = getParser().getCurrentSection(SecMapEdit.class);
+            if (!Skirtness.isSkriptv2_6())
+                mapEditSection = getParser().getCurrentSection(SecMapEdit.class);
             if (mapEditSection == null) {
                 Skript.error("You need to specify a map canvas when outside a map edit section");
                 return false;

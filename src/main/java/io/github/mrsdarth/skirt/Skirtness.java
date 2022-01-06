@@ -1,7 +1,9 @@
 package io.github.mrsdarth.skirt;
 
+import ch.njol.skript.Skript;
 import ch.njol.skript.lang.Expression;
 import ch.njol.skript.lang.Variable;
+import ch.njol.skript.util.Version;
 import ch.njol.skript.variables.Variables;
 import ch.njol.util.Math2;
 import org.bukkit.Server;
@@ -11,11 +13,9 @@ import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.plugin.java.JavaPlugin;
 
-import java.util.Arrays;
 import java.util.Optional;
 import java.util.concurrent.Executor;
 import java.util.function.Consumer;
-import java.util.function.Function;
 
 public class Skirtness {
 
@@ -36,7 +36,8 @@ public class Skirtness {
     private static final boolean
             paper       = Reflectness.classExists("com.destroystokyo.paper.PaperConfig"),
             protocolLib = Reflectness.classExists("com.comphenix.protocol.ProtocolLibrary"),
-            nbt         = Reflectness.classExists("de.tr7zw.changeme.nbtapi.NBTCompound");
+            nbt         = Reflectness.classExists("de.tr7zw.changeme.nbtapi.NBTCompound"),
+            skriptv2_6  = Skript.getVersion().compareTo(new Version(2, 6)) >= 0;
 
     public static boolean hasNBT() {
         return nbt;
@@ -48,6 +49,10 @@ public class Skirtness {
 
     public static boolean hasProtocolLib() {
         return protocolLib;
+    }
+
+    public static boolean isSkriptv2_6() {
+        return skriptv2_6;
     }
 
     private static final Executor mainThreadExecutor = server.getScheduler().getMainThreadExecutor(plugin);

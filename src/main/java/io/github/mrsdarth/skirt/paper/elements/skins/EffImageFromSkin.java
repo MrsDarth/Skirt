@@ -8,7 +8,7 @@ import ch.njol.skript.lang.SkriptParser;
 import ch.njol.skript.lang.Variable;
 import ch.njol.util.Kleenean;
 import com.destroystokyo.paper.profile.ProfileProperty;
-import com.google.gson.JsonParser;
+import io.github.mrsdarth.skirt.HttpUtils;
 import io.github.mrsdarth.skirt.Skirtness;
 import org.bukkit.event.Event;
 import org.jetbrains.annotations.NotNull;
@@ -38,7 +38,7 @@ public class EffImageFromSkin extends Effect {
             ProfileProperty skin = skinExpr.getSingle(e);
             if (skin == null) return;
         try {
-            Skirtness.setVariable(variable, e, ImageIO.read(new URL(JsonParser.parseString(new String(Base64.getDecoder().decode(skin.getValue()))).getAsJsonObject().getAsJsonObject("textures").getAsJsonObject("SKIN").get("url").getAsString())));
+            Skirtness.setVariable(variable, e, ImageIO.read(new URL(HttpUtils.parseJson(Base64.getDecoder().decode(skin.getValue())).getAsJsonObject().getAsJsonObject("textures").getAsJsonObject("SKIN").get("url").getAsString())));
         } catch (Exception ex) {
             ex.printStackTrace();
         }

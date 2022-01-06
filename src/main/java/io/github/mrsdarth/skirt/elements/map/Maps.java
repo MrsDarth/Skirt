@@ -69,7 +69,7 @@ public class Maps {
 
 
 
-
+    public static MapCanvas LAST_CANVAS;
 
     private static final Map<MapCanvas, byte[]> BUFFERS = new WeakHashMap<>();
 

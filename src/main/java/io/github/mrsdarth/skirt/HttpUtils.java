@@ -1,5 +1,12 @@
 package io.github.mrsdarth.skirt;
 
+import com.google.gson.JsonElement;
+import com.google.gson.JsonParser;
+
+import java.io.ByteArrayInputStream;
+import java.io.InputStreamReader;
+import java.io.Reader;
+import java.io.StringReader;
 import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
@@ -7,6 +14,25 @@ import java.net.http.HttpResponse;
 import java.util.Optional;
 
 public class HttpUtils {
+
+    @SuppressWarnings("deprecation")
+    private static final JsonParser JSON_PARSER = new JsonParser();
+
+    @SuppressWarnings("deprecation")
+    public static JsonElement parseJson(Reader json) {
+        return JSON_PARSER.parse(json);
+    }
+
+    public static JsonElement parseJson(String json) {
+        return parseJson(new StringReader(json));
+    }
+
+    public static JsonElement parseJson(byte[] json) {
+        return parseJson(new InputStreamReader(new ByteArrayInputStream(json)));
+    }
+
+
+
 
     private static final HttpClient CLIENT = HttpClient.newHttpClient();
 

@@ -10,11 +10,9 @@ import ch.njol.skript.lang.Effect;
 import ch.njol.skript.lang.Expression;
 import ch.njol.skript.lang.SkriptParser;
 import ch.njol.util.Kleenean;
-import io.github.mrsdarth.skirt.Skirt;
 import io.github.mrsdarth.skirt.Skirtness;
 import org.bukkit.Bukkit;
 import org.bukkit.event.Event;
-import org.bukkit.plugin.java.JavaPlugin;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 

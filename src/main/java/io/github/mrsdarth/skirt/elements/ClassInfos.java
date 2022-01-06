@@ -11,6 +11,7 @@ import ch.njol.skript.util.Utils;
 import ch.njol.util.VectorMath;
 import ch.njol.yggdrasil.Fields;
 import io.github.mrsdarth.skirt.Reflectness;
+import io.github.mrsdarth.skirt.Skirtness;
 import io.github.mrsdarth.skirt.elements.map.Maps;
 import org.bukkit.FluidCollisionMode;
 import org.bukkit.Statistic;
@@ -35,7 +36,7 @@ public class ClassInfos {
 
         //Bounding Box
 
-        Classes.registerClass(new ClassInfo<>(BoundingBox.class, "boundingbox")
+        ClassInfo<BoundingBox> boundingBoxClassInfo = new ClassInfo<>(BoundingBox.class, "boundingbox")
                 .user("bounding ?box(es)?")
                 .name("Bounding Box")
                 .description("Represents a bounding box between 2 points")
@@ -70,9 +71,11 @@ public class ClassInfos {
                         f.putPrimitive("z2", box.getMaxZ());
                         return f;
                     }
-                })
-                .cloner(BoundingBox::clone)
-        );
+                });
+
+        Classes.registerClass(boundingBoxClassInfo);
+
+        if (Skirtness.isSkriptv2_6()) boundingBoxClassInfo.cloner(BoundingBox::clone);
 
 
         // RayTrace
